@@ -12,6 +12,9 @@ export enum EventType {
 
   NoteSelected,
 
+  LoadNoteTextSuccess,
+  NoteLoadFailed,
+
   RestApiError,
 }
 
@@ -38,6 +41,18 @@ export interface NoteSelectedEvent {
   note: Note;
 }
 
+export interface LoadNoteTextSuccessEvent {
+  type: EventType.LoadNoteTextSuccess;
+  note: Note;
+  text: string;
+}
+
+export interface NoteLoadFailedEvent {
+  type: EventType.NoteLoadFailed;
+  note: Note;
+  err: string;
+}
+
 export interface RestApiErrorEvent {
   type: EventType.RestApiError;
   err: string;
@@ -49,4 +64,6 @@ export type AppEvent =
   | UserSessionCreatedEvent
   | RetrieveFileListSuccessEvent
   | NoteSelectedEvent
+  | LoadNoteTextSuccessEvent
+  | NoteLoadFailedEvent
   | RestApiErrorEvent;

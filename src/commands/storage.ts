@@ -1,6 +1,11 @@
-import { CommandType, RetrieveFileListCommand } from "../commands";
+import {
+  CommandType,
+  LoadNoteTextCommand,
+  RetrieveFileListCommand,
+} from "../commands";
 import { EventType } from "../events";
-import { getFiles } from "../sessionapi";
+import { Note } from "../model";
+import { getFile, getFiles } from "../sessionapi";
 
 interface FileData {
   fileName: string;
@@ -61,6 +66,28 @@ export const RetrieveFileList = (): RetrieveFileListCommand => ({
     } catch (err) {
       dispatch({
         type: EventType.RestApiError,
+        err: `${err}`,
+      });
+    }
+  },
+});
+
+export const LoadNoteText = (note: Note): LoadNoteTextCommand => ({
+  type: CommandType.LoadNoteText,
+  note,
+  execute: (dispatch) => {
+    try {
+      getFile(note.path).then((text: string) => {
+        dispatch({
+          type: EventType.LoadNoteTextSuccess,
+          note,
+          text,
+        });
+      });
+    } catch (err) {
+      dispatch({
+        type: EventType.NoteLoadFailed,
+        note,
         err: `${err}`,
       });
     }

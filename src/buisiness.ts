@@ -1,8 +1,9 @@
 import { AppCommand, DoMany, DoNothing } from "./commands";
 import { ScheduleIdTokenRefresh, StartUserSession } from "./commands/auth";
-import { RetrieveFileList } from "./commands/storage";
+import { LoadNoteText, RetrieveFileList } from "./commands/storage";
 import { getTitleFromPath } from "./conversion";
 import {
+  LoadNoteTextSuccessEvent,
   NoteSelectedEvent,
   RetrieveFileListSuccessEvent,
   UserAuthenticatedEvent,
@@ -12,6 +13,7 @@ import {
   AppStateAuthenticated,
   AppStateUnauthenticated,
   AuthenticationStatus,
+  NoteEditorState,
   NoteListState,
 } from "./model";
 
@@ -52,6 +54,9 @@ export const handleRetrieveFileListSuccess = (
         title: getTitleFromPath(f),
       })),
       selectedNote: undefined,
+      noteEditor: {
+        state: NoteEditorState.Inactive,
+      },
     },
   };
   return JustStateAuthenticated(newState);
@@ -60,17 +65,43 @@ export const handleRetrieveFileListSuccess = (
 export const handleNoteSelected = (
   state: AppStateAuthenticated,
   event: NoteSelectedEvent
-) => {
+): [AppStateAuthenticated, AppCommand] => {
   if (state.noteList.state == NoteListState.Retrieved) {
     const newState: AppStateAuthenticated = {
       ...state,
       noteList: {
         ...state.noteList,
         selectedNote: event.note,
+        noteEditor: {
+          state: NoteEditorState.LoadingNoteContent,
+          note: event.note,
+        },
       },
     };
-    return JustStateAuthenticated(newState);
+    return [newState, LoadNoteText(event.note)];
   }
 
+  return JustStateAuthenticated(state);
+};
+
+export const handleLoadNoteTextSuccess = (
+  state: AppStateAuthenticated,
+  event: LoadNoteTextSuccessEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const newState: AppStateAuthenticated = {
+      ...state,
+      noteList: {
+        ...state.noteList,
+        noteEditor: {
+          state: NoteEditorState.EditingNote,
+          note: event.note,
+          text: event.text,
+        },
+      },
+    };
+
+    return JustStateAuthenticated(newState);
+  }
   return JustStateAuthenticated(state);
 };

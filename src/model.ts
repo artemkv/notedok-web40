@@ -1,3 +1,33 @@
+// note editor
+
+// TODO: rethink all of it
+
+export enum NoteEditorState {
+  Inactive,
+  LoadingNoteContent,
+  EditingNote,
+}
+
+export interface NoteEditorInactive {
+  state: NoteEditorState.Inactive;
+}
+
+export interface NoteEditorLoadingNoteContent {
+  state: NoteEditorState.LoadingNoteContent;
+  note: Note;
+}
+
+export interface NoteEditorEditingNote {
+  state: NoteEditorState.EditingNote;
+  note: Note;
+  text: string;
+}
+
+export type NoteEditor =
+  | NoteEditorInactive
+  | NoteEditorLoadingNoteContent
+  | NoteEditorEditingNote;
+
 // file list
 
 export interface Note {
@@ -18,6 +48,7 @@ export interface NoteListRetrieved {
   state: NoteListState.Retrieved;
   notes: Note[];
   selectedNote: Note | undefined;
+  noteEditor: NoteEditor;
 }
 
 export type NoteList = NoteListRetrieving | NoteListRetrieved;

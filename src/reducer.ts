@@ -1,4 +1,5 @@
 import {
+  handleLoadNoteTextSuccess,
   handleNoteSelected,
   handleRetrieveFileListSuccess,
   handleUserAuthenticated,
@@ -38,6 +39,10 @@ export const Reducer = (
 
     if (event.type == EventType.NoteSelected) {
       return handleNoteSelected(state, event);
+    }
+
+    if (event.type == EventType.LoadNoteTextSuccess) {
+      return handleLoadNoteTextSuccess(state, event);
     }
   }
 
