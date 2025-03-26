@@ -3,7 +3,7 @@ import CognitoSignin from "./components/CognitoSignIn";
 import ProgressIndicator from "./components/ProgressIndicator";
 import { AppEvent } from "./events";
 import { Dispatch } from "./hooks/useReducer";
-import { AppState, AuthenticationStatus, FileListState } from "./model";
+import { AppState, AuthenticationStatus, NoteListState } from "./model";
 
 function App(props: { state: AppState; dispatch: Dispatch<AppEvent> }) {
   const state = props.state;
@@ -13,14 +13,14 @@ function App(props: { state: AppState; dispatch: Dispatch<AppEvent> }) {
     return <CognitoSignin dispatch={dispatch} />;
   }
 
-  if (state.fileList.state == FileListState.Retrieving) {
+  if (state.noteList.state == NoteListState.Retrieving) {
     return <ProgressIndicator />;
   }
 
   return (
     <div>
-      {state.fileList.files.map((f) => (
-        <div key={f}>{f}</div>
+      {state.noteList.notes.map((note) => (
+        <div key={note.path}>{note.title}</div>
       ))}
     </div>
   );

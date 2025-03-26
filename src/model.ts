@@ -1,18 +1,25 @@
-export enum FileListState {
+// file list
+
+export interface Note {
+  path: string;
+  title: string;
+}
+
+export enum NoteListState {
   Retrieving,
   Retrieved,
 }
 
-export interface FileListRetrieving {
-  state: FileListState.Retrieving;
+export interface NoteListRetrieving {
+  state: NoteListState.Retrieving;
 }
 
-export interface FileListRetrieved {
-  state: FileListState.Retrieved;
-  files: string[];
+export interface NoteListRetrieved {
+  state: NoteListState.Retrieved;
+  notes: Note[];
 }
 
-export type FileList = FileListRetrieving | FileListRetrieved;
+export type NoteList = NoteListRetrieving | NoteListRetrieved;
 
 // App state
 
@@ -27,7 +34,7 @@ export interface AppStateUnauthenticated {
 
 export interface AppStateAuthenticated {
   auth: AuthenticationStatus.Authenticated;
-  fileList: FileList;
+  noteList: NoteList;
 }
 
 export type AppState = AppStateUnauthenticated | AppStateAuthenticated;

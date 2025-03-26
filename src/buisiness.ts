@@ -1,13 +1,14 @@
 import { AppCommand, DoMany, DoNothing } from "./commands";
 import { ScheduleIdTokenRefresh, StartUserSession } from "./commands/auth";
 import { RetrieveFileList } from "./commands/storage";
+import { getTitleFromPath } from "./conversion";
 import { RetrieveFileListSuccessEvent, UserAuthenticatedEvent } from "./events";
 import {
   AppState,
   AppStateAuthenticated,
   AppStateUnauthenticated,
   AuthenticationStatus,
-  FileListState,
+  NoteListState,
 } from "./model";
 
 export const JustStateAuthenticated = (
@@ -27,8 +28,8 @@ export const handleUserSessionCreated = (): [
 ] => {
   const newState: AppStateAuthenticated = {
     auth: AuthenticationStatus.Authenticated,
-    fileList: {
-      state: FileListState.Retrieving,
+    noteList: {
+      state: NoteListState.Retrieving,
     },
   };
 
@@ -40,9 +41,12 @@ export const handleRetrieveFileListSuccess = (
 ): [AppStateAuthenticated, AppCommand] => {
   const newState: AppStateAuthenticated = {
     auth: AuthenticationStatus.Authenticated,
-    fileList: {
-      state: FileListState.Retrieved,
-      files: event.fileList,
+    noteList: {
+      state: NoteListState.Retrieved,
+      notes: event.fileList.map((f) => ({
+        path: f,
+        title: getTitleFromPath(f),
+      })),
     },
   };
   return JustStateAuthenticated(newState);
