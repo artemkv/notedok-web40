@@ -1,6 +1,7 @@
+import { handleUserAuthenticated, handleUserSessionCreated } from "./buisiness";
 import { AppCommand, DoNothing } from "./commands";
 import { AppEvent, EventType } from "./events";
-import { AppState } from "./model";
+import { AppState, AuthenticationStatus } from "./model";
 
 export const JustState = (state: AppState): [AppState, AppCommand] => [
   state,
@@ -17,7 +18,17 @@ export const Reducer = (
     `Reducing event '${EventType[event.type]} ${JSON.stringify(event)}'`
   );*/
 
-  // TODO:
+  if (state.auth === AuthenticationStatus.Unauthenticated) {
+    if (event.type == EventType.UserAuthenticated) {
+      return handleUserAuthenticated(state, event);
+    }
+
+    if (event.type == EventType.UserSessionCreated) {
+      return handleUserSessionCreated();
+    }
+  } else {
+    // TODO:
+  }
 
   console.error(
     `Unknown event ${EventType[event.type]} '${JSON.stringify(event)}'`

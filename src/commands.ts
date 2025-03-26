@@ -4,6 +4,8 @@ import { Command } from "./hooks/useReducer";
 export enum CommandType {
   DoNothing,
   DoMany,
+  CreateUserSession,
+  ScheduleIdTokenRefresh,
 }
 
 export interface DoNothingCommand extends Command<AppEvent> {
@@ -15,7 +17,20 @@ export interface DoManyCommand extends Command<AppEvent> {
   commands: AppCommand[];
 }
 
-export type AppCommand = DoNothingCommand | DoManyCommand;
+export interface CreateUserSessionCommand extends Command<AppEvent> {
+  type: CommandType.CreateUserSession;
+  idToken: string;
+}
+
+export interface ScheduleIdTokenRefreshCommand extends Command<AppEvent> {
+  type: CommandType.ScheduleIdTokenRefresh;
+}
+
+export type AppCommand =
+  | DoNothingCommand
+  | DoManyCommand
+  | CreateUserSessionCommand
+  | ScheduleIdTokenRefreshCommand;
 
 export const DoNothing: DoNothingCommand = {
   type: CommandType.DoNothing,
