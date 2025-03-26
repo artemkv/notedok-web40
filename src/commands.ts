@@ -6,6 +6,7 @@ export enum CommandType {
   DoMany,
   CreateUserSession,
   ScheduleIdTokenRefresh,
+  RetrieveFileList,
 }
 
 export interface DoNothingCommand extends Command<AppEvent> {
@@ -26,10 +27,15 @@ export interface ScheduleIdTokenRefreshCommand extends Command<AppEvent> {
   type: CommandType.ScheduleIdTokenRefresh;
 }
 
+export interface RetrieveFileListCommand extends Command<AppEvent> {
+  type: CommandType.RetrieveFileList;
+}
+
 export type AppCommand =
   | DoNothingCommand
   | DoManyCommand
   | CreateUserSessionCommand
+  | RetrieveFileListCommand
   | ScheduleIdTokenRefreshCommand;
 
 export const DoNothing: DoNothingCommand = {

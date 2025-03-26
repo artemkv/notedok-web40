@@ -5,6 +5,10 @@ export enum EventType {
 
   UserAuthenticated,
   UserSessionCreated,
+
+  RetrieveFileListSuccess,
+
+  RestApiError,
 }
 
 export interface NeverEvent {
@@ -20,7 +24,19 @@ export interface UserSessionCreatedEvent {
   type: EventType.UserSessionCreated;
 }
 
+export interface RetrieveFileListSuccessEvent {
+  type: EventType.RetrieveFileListSuccess;
+  fileList: string[];
+}
+
+export interface RestApiErrorEvent {
+  type: EventType.RestApiError;
+  err: string;
+}
+
 export type AppEvent =
   | NeverEvent
   | UserAuthenticatedEvent
-  | UserSessionCreatedEvent;
+  | UserSessionCreatedEvent
+  | RetrieveFileListSuccessEvent
+  | RestApiErrorEvent;

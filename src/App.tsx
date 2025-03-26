@@ -1,8 +1,9 @@
 import "./App.css";
 import CognitoSignin from "./components/CognitoSignIn";
+import ProgressIndicator from "./components/ProgressIndicator";
 import { AppEvent } from "./events";
 import { Dispatch } from "./hooks/useReducer";
-import { AppState, AuthenticationStatus } from "./model";
+import { AppState, AuthenticationStatus, FileListState } from "./model";
 
 function App(props: { state: AppState; dispatch: Dispatch<AppEvent> }) {
   const state = props.state;
@@ -12,7 +13,17 @@ function App(props: { state: AppState; dispatch: Dispatch<AppEvent> }) {
     return <CognitoSignin dispatch={dispatch} />;
   }
 
-  return <p>{state.todo}</p>;
+  if (state.fileList.state == FileListState.Retrieving) {
+    return <ProgressIndicator />;
+  }
+
+  return (
+    <div>
+      {state.fileList.files.map((f) => (
+        <div key={f}>{f}</div>
+      ))}
+    </div>
+  );
 }
 
 export default App;

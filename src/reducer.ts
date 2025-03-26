@@ -1,4 +1,8 @@
-import { handleUserAuthenticated, handleUserSessionCreated } from "./buisiness";
+import {
+  handleRetrieveFileListSuccess,
+  handleUserAuthenticated,
+  handleUserSessionCreated,
+} from "./buisiness";
 import { AppCommand, DoNothing } from "./commands";
 import { AppEvent, EventType } from "./events";
 import { AppState, AuthenticationStatus } from "./model";
@@ -27,7 +31,9 @@ export const Reducer = (
       return handleUserSessionCreated();
     }
   } else {
-    // TODO:
+    if (event.type === EventType.RetrieveFileListSuccess) {
+      return handleRetrieveFileListSuccess(event);
+    }
   }
 
   console.error(
