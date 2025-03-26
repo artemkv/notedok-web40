@@ -1,3 +1,5 @@
+import { Note } from "./model";
+
 export enum EventType {
   // "Never" event is never triggered in the app
   // this is just to make TS happy
@@ -7,6 +9,8 @@ export enum EventType {
   UserSessionCreated,
 
   RetrieveFileListSuccess,
+
+  NoteSelected,
 
   RestApiError,
 }
@@ -29,6 +33,11 @@ export interface RetrieveFileListSuccessEvent {
   fileList: string[];
 }
 
+export interface NoteSelectedEvent {
+  type: EventType.NoteSelected;
+  note: Note;
+}
+
 export interface RestApiErrorEvent {
   type: EventType.RestApiError;
   err: string;
@@ -39,4 +48,5 @@ export type AppEvent =
   | UserAuthenticatedEvent
   | UserSessionCreatedEvent
   | RetrieveFileListSuccessEvent
+  | NoteSelectedEvent
   | RestApiErrorEvent;

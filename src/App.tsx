@@ -1,4 +1,5 @@
 import "./App.css";
+import ClientArea from "./components/ClientArea";
 import CognitoSignin from "./components/CognitoSignIn";
 import ProgressIndicator from "./components/ProgressIndicator";
 import { AppEvent } from "./events";
@@ -17,13 +18,7 @@ function App(props: { state: AppState; dispatch: Dispatch<AppEvent> }) {
     return <ProgressIndicator />;
   }
 
-  return (
-    <div>
-      {state.noteList.notes.map((note) => (
-        <div key={note.path}>{note.title}</div>
-      ))}
-    </div>
-  );
+  return <ClientArea noteList={state.noteList} dispatch={dispatch} />;
 }
 
 export default App;

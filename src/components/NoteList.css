@@ -1,0 +1,9 @@
+.note-list {
+    /* TODO: */
+    flex-grow: 1;
+}
+
+.note-list-item-selected {
+    background-color: lightgray;
+    /* TODO: */
+}

@@ -2,7 +2,11 @@ import { AppCommand, DoMany, DoNothing } from "./commands";
 import { ScheduleIdTokenRefresh, StartUserSession } from "./commands/auth";
 import { RetrieveFileList } from "./commands/storage";
 import { getTitleFromPath } from "./conversion";
-import { RetrieveFileListSuccessEvent, UserAuthenticatedEvent } from "./events";
+import {
+  NoteSelectedEvent,
+  RetrieveFileListSuccessEvent,
+  UserAuthenticatedEvent,
+} from "./events";
 import {
   AppState,
   AppStateAuthenticated,
@@ -47,7 +51,26 @@ export const handleRetrieveFileListSuccess = (
         path: f,
         title: getTitleFromPath(f),
       })),
+      selectedNote: undefined,
     },
   };
   return JustStateAuthenticated(newState);
+};
+
+export const handleNoteSelected = (
+  state: AppStateAuthenticated,
+  event: NoteSelectedEvent
+) => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const newState: AppStateAuthenticated = {
+      ...state,
+      noteList: {
+        ...state.noteList,
+        selectedNote: event.note,
+      },
+    };
+    return JustStateAuthenticated(newState);
+  }
+
+  return JustStateAuthenticated(state);
 };

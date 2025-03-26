@@ -1,4 +1,5 @@
 import {
+  handleNoteSelected,
   handleRetrieveFileListSuccess,
   handleUserAuthenticated,
   handleUserSessionCreated,
@@ -33,6 +34,10 @@ export const Reducer = (
   } else {
     if (event.type === EventType.RetrieveFileListSuccess) {
       return handleRetrieveFileListSuccess(event);
+    }
+
+    if (event.type == EventType.NoteSelected) {
+      return handleNoteSelected(state, event);
     }
   }
 

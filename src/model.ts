@@ -17,6 +17,7 @@ export interface NoteListRetrieving {
 export interface NoteListRetrieved {
   state: NoteListState.Retrieved;
   notes: Note[];
+  selectedNote: Note | undefined;
 }
 
 export type NoteList = NoteListRetrieving | NoteListRetrieved;
