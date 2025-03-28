@@ -1,7 +1,7 @@
 .note-list {
     height: 100%;
     min-width: 300px;
-    border-right: 1px #e5e5e5 solid;
+    border-right: solid 1px #f1f1f1;
 }
 
 .note-list-item {
@@ -12,5 +12,5 @@
 }
 
 .note-list-item-selected {
-    background-color: #e5e5e5;
+    background-color: #f1f1f1;
 }
