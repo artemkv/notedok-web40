@@ -15,6 +15,7 @@ export enum NoteState {
   New,
   Creating,
   FailedToCreate,
+  NoteLoading,
 }
 
 export interface NoteRef {
@@ -178,6 +179,7 @@ export interface NoteListRetrieving {
 
 export interface NoteListRetrieved {
   state: NoteListState.Retrieved;
+  lastUsedNoteId: number;
   notes: Note[];
   selectedNote: Note | undefined;
 }

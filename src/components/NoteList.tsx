@@ -30,6 +30,7 @@ function NoteList(props: {
     <div className="note-list">
       {notes.map((note) => (
         <div
+          id={note.id}
           key={note.id}
           className={note === selectedNote ? "note-list-item-selected" : ""}
           onClick={() => onNoteSelected(note)}

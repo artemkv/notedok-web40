@@ -1,8 +1,8 @@
 import { AppCommand, DoMany, DoNothing } from "./commands";
 import { ScheduleIdTokenRefresh, StartUserSession } from "./commands/auth";
 import { LoadNoteText, RetrieveFileList } from "./commands/storage";
-import { getTitleFromPath } from "./conversion";
 import {
+  LoadNoteTextSuccessEvent,
   NoteSelectedEvent,
   RetrieveFileListSuccessEvent,
   UserAuthenticatedEvent,
@@ -12,9 +12,15 @@ import {
   AppStateAuthenticated,
   AppStateUnauthenticated,
   AuthenticationStatus,
+  Note,
   NoteListState,
   NoteState,
 } from "./model";
+import {
+  createNewNoteRef,
+  noteLoadingToLoaded,
+  noteRefToLoading,
+} from "./noteLifecycle";
 
 export const JustStateAuthenticated = (
   state: AppStateAuthenticated
@@ -48,12 +54,8 @@ export const handleRetrieveFileListSuccess = (
     auth: AuthenticationStatus.Authenticated,
     noteList: {
       state: NoteListState.Retrieved,
-      notes: event.fileList.map((f) => ({
-        state: NoteState.Ref,
-        id: "TODO",
-        path: f,
-        title: getTitleFromPath(f),
-      })),
+      lastUsedNoteId: event.fileList.length - 1,
+      notes: event.fileList.map((f, idx) => createNewNoteRef(idx, f)),
       selectedNote: undefined,
     },
   };
@@ -65,6 +67,21 @@ export const handleNoteSelected = (
   event: NoteSelectedEvent
 ): [AppStateAuthenticated, AppCommand] => {
   if (state.noteList.state == NoteListState.Retrieved) {
+    // If ref -> load
+    if (event.note.state == NoteState.Ref) {
+      const noteLoading = noteRefToLoading(event.note);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteLoading),
+          selectedNote: noteLoading,
+        },
+      };
+      return [newState, LoadNoteText(noteLoading)];
+    }
+
+    // Not ref -> simply select
     const newState: AppStateAuthenticated = {
       ...state,
       noteList: {
@@ -72,8 +89,39 @@ export const handleNoteSelected = (
         selectedNote: event.note,
       },
     };
-    return [newState, LoadNoteText(event.note)];
+    return JustStateAuthenticated(newState);
   }
 
   return JustStateAuthenticated(state);
+};
+
+export const handleLoadNoteTextSuccess = (
+  state: AppStateAuthenticated,
+  event: LoadNoteTextSuccessEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    if (event.note.state == NoteState.Loading) {
+      const noteLoaded = noteLoadingToLoaded(event.note, event.text);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteLoaded),
+          selectedNote: noteLoaded,
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+const replace = (notes: Note[], note: Note): Note[] => {
+  return notes.map((n) => {
+    if (n.id == note.id) {
+      return note;
+    }
+    return n;
+  });
 };

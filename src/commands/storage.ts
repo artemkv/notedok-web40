@@ -4,7 +4,7 @@ import {
   RetrieveFileListCommand,
 } from "../commands";
 import { EventType } from "../events";
-import { Note } from "../model";
+import { NoteLoading } from "../model";
 import { getFile, getFiles } from "../sessionapi";
 
 interface FileData {
@@ -72,7 +72,7 @@ export const RetrieveFileList = (): RetrieveFileListCommand => ({
   },
 });
 
-export const LoadNoteText = (note: Note): LoadNoteTextCommand => ({
+export const LoadNoteText = (note: NoteLoading): LoadNoteTextCommand => ({
   type: CommandType.LoadNoteText,
   note,
   execute: (dispatch) => {

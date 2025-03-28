@@ -19,7 +19,7 @@ function ClientArea(props: {
         selectedNote={noteList.selectedNote}
         dispatch={dispatch}
       />
-      <EditorPanel />
+      <EditorPanel note={noteList.selectedNote} />
     </div>
   );
 }
