@@ -3,7 +3,7 @@ import { AppEvent } from "../events";
 import { Dispatch } from "../hooks/useReducer";
 import { NoteListRetrieved } from "../model";
 import NoteList from "./NoteList";
-import NotePane from "./NotePane";
+import EditorPanel from "./EditorPanel";
 
 function ClientArea(props: {
   noteList: NoteListRetrieved;
@@ -19,7 +19,7 @@ function ClientArea(props: {
         selectedNote={noteList.selectedNote}
         dispatch={dispatch}
       />
-      <NotePane noteEditor={noteList.noteEditor} />
+      <EditorPanel />
     </div>
   );
 }

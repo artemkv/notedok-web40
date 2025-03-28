@@ -1,7 +1,7 @@
 import "./NoteList.css";
 import { AppEvent, EventType } from "../events";
 import { Dispatch } from "../hooks/useReducer";
-import { Note } from "../model";
+import { Note, NoteState } from "../model";
 
 function NoteList(props: {
   notes: Note[];
@@ -19,15 +19,22 @@ function NoteList(props: {
     });
   };
 
+  const getTitle = (note: Note) => {
+    if (note.state == NoteState.New) {
+      return "";
+    }
+    return note.title;
+  };
+
   return (
     <div className="note-list">
       {notes.map((note) => (
         <div
-          key={note.path}
+          key={note.id}
           className={note === selectedNote ? "note-list-item-selected" : ""}
           onClick={() => onNoteSelected(note)}
         >
-          {note.title}
+          {getTitle(note)}
         </div>
       ))}
     </div>

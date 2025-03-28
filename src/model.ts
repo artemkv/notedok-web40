@@ -1,39 +1,171 @@
-// note editor
+// Note States
 
-// TODO: rethink all of it
-
-export enum NoteEditorState {
-  Inactive,
-  LoadingNoteContent,
-  EditingNote,
+export enum NoteState {
+  Ref,
+  Loading,
+  Loaded,
+  FailedToLoad,
+  Saving,
+  FailedToSave,
+  Deleting,
+  Deleted,
+  FailedToDelete,
+  Restoring,
+  FailedToRestore,
+  New,
+  Creating,
+  FailedToCreate,
 }
 
-export interface NoteEditorInactive {
-  state: NoteEditorState.Inactive;
-}
+export interface NoteRef {
+  state: NoteState.Ref;
 
-export interface NoteEditorLoadingNoteContent {
-  state: NoteEditorState.LoadingNoteContent;
-  note: Note;
-}
-
-export interface NoteEditorEditingNote {
-  state: NoteEditorState.EditingNote;
-  note: Note;
-  text: string;
-}
-
-export type NoteEditor =
-  | NoteEditorInactive
-  | NoteEditorLoadingNoteContent
-  | NoteEditorEditingNote;
-
-// file list
-
-export interface Note {
+  id: string;
   path: string;
   title: string;
 }
+
+export interface NoteLoading {
+  state: NoteState.Loading;
+
+  id: string;
+  path: string;
+  title: string;
+}
+
+export interface NoteLoaded {
+  state: NoteState.Loaded;
+
+  id: string;
+  path: string;
+  title: string;
+  text: string;
+}
+
+export interface NoteFailedToLoad {
+  state: NoteState.FailedToLoad;
+
+  id: string;
+  path: string;
+  title: string;
+
+  err: string;
+}
+
+export interface NoteSaving {
+  state: NoteState.Saving;
+
+  id: string;
+  path: string;
+  title: string;
+  text: string;
+
+  newTitle: string;
+  newText: string;
+}
+
+export interface NoteFailedToSave {
+  state: NoteState.FailedToSave;
+
+  id: string;
+  path: string;
+  title: string;
+  text: string;
+
+  newTitle: string;
+  newText: string;
+
+  err: string;
+}
+
+export interface NoteDeleting {
+  state: NoteState.Deleting;
+
+  id: string;
+  path: string;
+  title: string;
+  text: string;
+}
+
+export interface NoteDeleted {
+  state: NoteState.Deleted;
+
+  id: string;
+  path: string;
+  title: string;
+  text: string;
+}
+
+export interface NoteFailedToDelete {
+  state: NoteState.FailedToDelete;
+
+  id: string;
+  path: string;
+  title: string;
+  text: string;
+
+  err: string;
+}
+
+export interface NoteRestoring {
+  state: NoteState.Restoring;
+
+  id: string;
+  path: string;
+  title: string;
+  text: string;
+}
+
+export interface NoteFailedToRestore {
+  state: NoteState.FailedToRestore;
+
+  id: string;
+  path: string;
+  title: string;
+  text: string;
+
+  err: string;
+}
+
+export interface NoteNew {
+  state: NoteState.New;
+
+  id: string;
+}
+
+export interface NoteCreating {
+  state: NoteState.Creating;
+
+  id: string;
+  title: string;
+  text: string;
+}
+
+export interface NoteFailedToCreate {
+  state: NoteState.FailedToCreate;
+
+  id: string;
+  title: string;
+  text: string;
+}
+
+export type Note =
+  | NoteRef
+  | NoteLoading
+  | NoteLoaded
+  | NoteFailedToLoad
+  | NoteSaving
+  | NoteFailedToSave
+  | NoteDeleting
+  | NoteDeleted
+  | NoteFailedToDelete
+  | NoteRestoring
+  | NoteFailedToRestore
+  | NoteNew
+  | NoteCreating
+  | NoteFailedToCreate;
+
+// Note List
 
 export enum NoteListState {
   Retrieving,
@@ -48,7 +180,6 @@ export interface NoteListRetrieved {
   state: NoteListState.Retrieved;
   notes: Note[];
   selectedNote: Note | undefined;
-  noteEditor: NoteEditor;
 }
 
 export type NoteList = NoteListRetrieving | NoteListRetrieved;

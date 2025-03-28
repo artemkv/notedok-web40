@@ -3,7 +3,6 @@ import { ScheduleIdTokenRefresh, StartUserSession } from "./commands/auth";
 import { LoadNoteText, RetrieveFileList } from "./commands/storage";
 import { getTitleFromPath } from "./conversion";
 import {
-  LoadNoteTextSuccessEvent,
   NoteSelectedEvent,
   RetrieveFileListSuccessEvent,
   UserAuthenticatedEvent,
@@ -13,8 +12,8 @@ import {
   AppStateAuthenticated,
   AppStateUnauthenticated,
   AuthenticationStatus,
-  NoteEditorState,
   NoteListState,
+  NoteState,
 } from "./model";
 
 export const JustStateAuthenticated = (
@@ -50,13 +49,12 @@ export const handleRetrieveFileListSuccess = (
     noteList: {
       state: NoteListState.Retrieved,
       notes: event.fileList.map((f) => ({
+        state: NoteState.Ref,
+        id: "TODO",
         path: f,
         title: getTitleFromPath(f),
       })),
       selectedNote: undefined,
-      noteEditor: {
-        state: NoteEditorState.Inactive,
-      },
     },
   };
   return JustStateAuthenticated(newState);
@@ -72,36 +70,10 @@ export const handleNoteSelected = (
       noteList: {
         ...state.noteList,
         selectedNote: event.note,
-        noteEditor: {
-          state: NoteEditorState.LoadingNoteContent,
-          note: event.note,
-        },
       },
     };
     return [newState, LoadNoteText(event.note)];
   }
 
-  return JustStateAuthenticated(state);
-};
-
-export const handleLoadNoteTextSuccess = (
-  state: AppStateAuthenticated,
-  event: LoadNoteTextSuccessEvent
-): [AppStateAuthenticated, AppCommand] => {
-  if (state.noteList.state == NoteListState.Retrieved) {
-    const newState: AppStateAuthenticated = {
-      ...state,
-      noteList: {
-        ...state.noteList,
-        noteEditor: {
-          state: NoteEditorState.EditingNote,
-          note: event.note,
-          text: event.text,
-        },
-      },
-    };
-
-    return JustStateAuthenticated(newState);
-  }
   return JustStateAuthenticated(state);
 };
