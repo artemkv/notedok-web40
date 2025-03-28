@@ -32,7 +32,11 @@ function NoteList(props: {
         <div
           id={note.id}
           key={note.id}
-          className={note === selectedNote ? "note-list-item-selected" : ""}
+          className={
+            note === selectedNote
+              ? "note-list-item note-list-item-selected"
+              : "note-list-item"
+          }
           onClick={() => onNoteSelected(note)}
         >
           {getTitle(note)}
