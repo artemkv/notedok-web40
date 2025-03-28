@@ -1,6 +1,7 @@
 .note-list {
     height: 100%;
     min-width: 300px;
+    border-right: 1px #e5e5e5 solid;
 }
 
 .note-list-item {
