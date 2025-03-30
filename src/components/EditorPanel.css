@@ -11,3 +11,9 @@
     max-width: 900px;
     padding: 16px;
 }
+
+[contenteditable="true"]:active,
+[contenteditable="true"]:focus {
+    border: none !important;
+    outline: none !important;
+}

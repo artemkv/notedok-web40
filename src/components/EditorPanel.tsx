@@ -4,6 +4,8 @@ import { Note, NoteState } from "../model";
 import Empty from "./Empty";
 import ProgressIndicator from "./ProgressIndicator";
 import { useEffect, useRef } from "react";
+import { MilkdownProvider } from "@milkdown/react";
+import MilkdownEditor from "./MilkdownEditor";
 
 function EditorPanel(props: { note: Note | undefined }) {
   const note = props.note;
@@ -39,11 +41,38 @@ function EditorPanel(props: { note: Note | undefined }) {
     );
   }
 
+  // TODO: extract so that I don't have to deal with MilkdownProvider
+  // TODO: provide the way to get back edits
+  // TODO: test all supported elements
+
+  // TODO: try make links clickable
+  // TODO: try to supper subscript and superscript
+
+  /*
+const LinkRenderer = (props: any) => {
+return (
+  <a href={props.href} target="_blank">
+    {props.children}
+  </a>
+);
+};
+
+<ReactMarkdown
+  components={{ a: LinkRenderer }}
+  remarkPlugins={[[gfm, { singleTilde: false }], supersub]}
+>
+*/
+
+  // TODO: maybe #editor should be a separate div
   if (note.state == NoteState.Loaded) {
     return (
       <div className="editor-panel">
         <div className="editor-panel-left" />
-        <div className="editor-panel-inner">{note.text}</div>
+        <div id="editor" className="editor-panel-inner">
+          <MilkdownProvider>
+            <MilkdownEditor markdown={note.text} />
+          </MilkdownProvider>
+        </div>
         <div className="editor-panel-right" />
       </div>
     );
