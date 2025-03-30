@@ -3,7 +3,7 @@ import "github-markdown-css";
 import { Note, NoteState } from "../model";
 import Empty from "./Empty";
 import ProgressIndicator from "./ProgressIndicator";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { MilkdownProvider } from "@milkdown/react";
 import MilkdownEditor from "./MilkdownEditor";
 
@@ -43,25 +43,10 @@ function EditorPanel(props: { note: Note | undefined }) {
 
   // TODO: extract so that I don't have to deal with MilkdownProvider
   // TODO: provide the way to get back edits
-  // TODO: test all supported elements
 
   // TODO: try make links clickable
   // TODO: try to supper subscript and superscript
-
-  /*
-const LinkRenderer = (props: any) => {
-return (
-  <a href={props.href} target="_blank">
-    {props.children}
-  </a>
-);
-};
-
-<ReactMarkdown
-  components={{ a: LinkRenderer }}
-  remarkPlugins={[[gfm, { singleTilde: false }], supersub]}
->
-*/
+  // TODO: Spellchecking in code blocks is annoying
 
   // TODO: maybe #editor should be a separate div
   if (note.state == NoteState.Loaded) {

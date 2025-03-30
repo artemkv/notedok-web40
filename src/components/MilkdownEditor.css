@@ -1,0 +1,105 @@
+milkdown-link-preview {
+  box-shadow: 1px 1px 5px 0 rgb(0 0 0 / 0.1);
+  overflow: hidden;
+  position: absolute;
+}
+
+milkdown-link-preview[data-show='false'] {
+  display: none;
+}
+
+milkdown-link-preview>.link-preview {
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  height: 2.5rem;
+}
+
+milkdown-link-preview>.link-preview>.link-icon {
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+milkdown-link-preview>.link-preview>.link-icon>svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+milkdown-link-preview>.link-preview>.link-display {
+  max-width: 300px;
+  line-height: 24px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  color: #0969DA;
+}
+
+milkdown-link-preview>.link-preview>.link-display {
+  text-decoration: none;
+}
+
+milkdown-link-preview>.link-preview>.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border-radius: 9999px;
+}
+
+milkdown-link-preview>.link-preview>.button>svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+milkdown-link-preview>.link-preview>.button:hover {
+  background-color: #f1f1f1;
+}
+
+milkdown-link-edit {
+  box-shadow: 1px 1px 5px 0 rgb(0 0 0 / 0.1);
+  overflow: hidden;
+  position: absolute;
+}
+
+milkdown-link-edit[data-show='false'] {
+  display: none;
+}
+
+milkdown-link-edit>.link-edit {
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  height: 2.5rem;
+}
+
+milkdown-link-edit>.link-edit>.input-area {
+  border: 1px solid #f1f1f1;
+  outline: none;
+  background-color: transparent;
+  width: 300px;
+  font-size: 14px;
+}
+
+milkdown-link-edit>.link-edit>.button {
+  cursor: pointer;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+}
+
+milkdown-link-edit>.link-edit>.button:hover {
+  background-color: #f1f1f1;
+}
+
+milkdown-link-edit>.link-edit>.button.hidden {
+  visibility: hidden;
+  pointer-events: none;
+}

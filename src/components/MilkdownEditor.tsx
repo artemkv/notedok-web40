@@ -1,3 +1,8 @@
+import "./MilkdownEditor.css";
+import {
+  configureLinkTooltip,
+  linkTooltipPlugin,
+} from "@milkdown/kit/component/link-tooltip";
 import {
   defaultValueCtx,
   Editor,
@@ -27,6 +32,8 @@ const MilkdownEditor = function MilkdownEditor(props: { markdown: string }) {
         ctx.set(rootCtx, "#editor");
         // pass the initial value
         ctx.set(defaultValueCtx, markdown);
+        // TODO: this works, but editor eats clicks, so using linkTooltipPlugin
+        // ctx.set(linkAttr.key, () => ({ target: "_blank" }));
         // update editor attributes
         ctx.update(editorViewOptionsCtx, (prev) => ({
           ...prev,
@@ -35,9 +42,12 @@ const MilkdownEditor = function MilkdownEditor(props: { markdown: string }) {
             class: "markdown-body",
           },
         }));
+        // this is for link tooltip
+        configureLinkTooltip(ctx);
       })
       .use(commonmark)
       .use(gfm)
+      .use(linkTooltipPlugin)
       .use(history) // undo-redo
       .use(clipboard) // md-aware copy-paste
       .use(indent)
