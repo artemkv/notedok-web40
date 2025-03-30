@@ -2,11 +2,12 @@
     height: 100%;
     min-width: 300px;
     border-right: solid 1px #f1f1f1;
+    overflow-y: auto;
 }
 
 .note-list-item {
     padding: 4px 16px;
-    cursor: default;
+    cursor: pointer;
     font-size: 14px;
 }
 
@@ -14,8 +15,9 @@
     font-weight: 600;
 }
 
+/* TODO: review
 @media (max-width: 1200px) {
     .note-list {
         display: none;
     }
-}
+}*/
