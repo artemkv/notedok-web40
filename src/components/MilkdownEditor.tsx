@@ -17,8 +17,12 @@ import { gfm } from "@milkdown/kit/preset/gfm";
 import { Milkdown } from "@milkdown/react";
 import { useEffect } from "react";
 
-const MilkdownEditor = function MilkdownEditor(props: { markdown: string }) {
-  const markdown = props.markdown;
+const MilkdownEditor = function MilkdownEditor(props: {
+  noteId: string;
+  defaultMarkdown: string;
+}) {
+  const defaultMarkdown = props.defaultMarkdown;
+  const noteId = props.noteId;
 
   // TODO: getting md string: https://milkdown.dev/docs/guide/interacting-with-editor, Using Actions
   // TODO: add toolbar with commands (https://milkdown.dev/docs/guide/commands)
@@ -31,7 +35,7 @@ const MilkdownEditor = function MilkdownEditor(props: { markdown: string }) {
         // attach to #editor
         ctx.set(rootCtx, "#editor");
         // pass the initial value
-        ctx.set(defaultValueCtx, markdown);
+        ctx.set(defaultValueCtx, defaultMarkdown);
         // TODO: this works, but editor eats clicks, so using linkTooltipPlugin
         // ctx.set(linkAttr.key, () => ({ target: "_blank" }));
         // update editor attributes
@@ -57,7 +61,11 @@ const MilkdownEditor = function MilkdownEditor(props: { markdown: string }) {
     return () => {
       editor.then((e) => e.destroy());
     };
-  }, [markdown]);
+    // this is on purpose. Only reload editor when noteId changes
+    // the default markdown may update, but it can be stale
+    // the most latest state is ephemeral, and is found inside the editor itself
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [noteId]);
 
   return <Milkdown />;
 };

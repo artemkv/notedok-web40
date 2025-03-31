@@ -1,0 +1,22 @@
+.note-list-item-container {
+    display: flex;
+    flex-direction: row;
+    cursor: pointer;
+}
+
+.note-list-item {
+    padding: 4px 16px;
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+}
+
+.note-list-item-selected {
+    font-weight: 600;
+}
+
+.note-list-item-status {
+    margin: 4px 8px 0px;
+    text-align: right;
+}

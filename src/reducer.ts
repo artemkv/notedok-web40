@@ -1,5 +1,8 @@
 import {
   handleLoadNoteTextSuccess,
+  handleNoteAllChangesSaved,
+  handleNoteQueuedForSaving,
+  handleNoteReachedSavePoint,
   handleNoteSelected,
   handleRetrieveFileListSuccess,
   handleUserAuthenticated,
@@ -43,6 +46,14 @@ export const Reducer = (
 
     if (event.type == EventType.LoadNoteTextSuccess) {
       return handleLoadNoteTextSuccess(state, event);
+    }
+
+    if (event.type == EventType.NoteReachedSavePoint) {
+      return handleNoteReachedSavePoint(state, event);
+    }
+
+    if (event.type == EventType.NoteAllChangesSaved) {
+      return handleNoteAllChangesSaved(state, event);
     }
   }
 

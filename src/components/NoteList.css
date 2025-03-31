@@ -1,18 +1,9 @@
 .note-list {
     height: 100%;
     min-width: 300px;
+    max-width: 300px;
     border-right: solid 1px #f1f1f1;
     overflow-y: auto;
-}
-
-.note-list-item {
-    padding: 4px 16px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.note-list-item-selected {
-    font-weight: 600;
 }
 
 /* TODO: review

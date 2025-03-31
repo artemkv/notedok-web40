@@ -3,20 +3,19 @@ import "github-markdown-css";
 import { Note, NoteState } from "../model";
 import Empty from "./Empty";
 import ProgressIndicator from "./ProgressIndicator";
-import { useEffect } from "react";
 import { MilkdownProvider } from "@milkdown/react";
 import MilkdownEditor from "./MilkdownEditor";
+import { Dispatch } from "../hooks/useReducer";
+import { AppEvent, EventType } from "../events";
 
-function EditorPanel(props: { note: Note | undefined }) {
+function EditorPanel(props: {
+  note: Note | undefined;
+  dispatch: Dispatch<AppEvent>;
+}) {
   const note = props.note;
+  const dispatch = props.dispatch;
 
-  // TODO: integrate this better with the rest of the ui logic
-  useEffect(() => {
-    /*let noteText = "";
-    if (note?.state == NoteState.Loaded) {
-      noteText = note.text;
-    }*/
-  }, [note]);
+  // TODO: make sure to handle all possible note states properly
 
   if (note == undefined) {
     return (
@@ -41,6 +40,24 @@ function EditorPanel(props: { note: Note | undefined }) {
     );
   }
 
+  // TODO: debug code
+  const onSave = () => {
+    let noteTitle = "unknown";
+    let noteText = "unknown";
+    if (note != undefined && note.state == NoteState.Loaded) {
+      noteTitle = note.title;
+      noteText = note.text;
+    }
+
+    // TODO: from here, see what happens when multiple changes go in succession
+    dispatch({
+      type: EventType.NoteReachedSavePoint,
+      noteId: note.id,
+      currentTitle: noteTitle + ".upd",
+      currentText: "upd." + noteText,
+    });
+  };
+
   // TODO: extract so that I don't have to deal with MilkdownProvider
   // TODO: provide the way to get back edits
 
@@ -49,13 +66,15 @@ function EditorPanel(props: { note: Note | undefined }) {
   // TODO: Spellchecking in code blocks is annoying
 
   // TODO: maybe #editor should be a separate div
-  if (note.state == NoteState.Loaded) {
+  // TODO: remove save button, it is for debugging
+  if (note.state == NoteState.Loaded || note.state == NoteState.Saving) {
     return (
       <div className="editor-panel">
         <div className="editor-panel-left" />
         <div id="editor" className="editor-panel-inner">
+          <button onClick={() => onSave()}>Save</button>
           <MilkdownProvider>
-            <MilkdownEditor markdown={note.text} />
+            <MilkdownEditor noteId={note.id} defaultMarkdown={note.text} />
           </MilkdownProvider>
         </div>
         <div className="editor-panel-right" />

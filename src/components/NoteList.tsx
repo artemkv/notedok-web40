@@ -1,46 +1,27 @@
 import "./NoteList.css";
-import { AppEvent, EventType } from "../events";
+import { AppEvent } from "../events";
 import { Dispatch } from "../hooks/useReducer";
-import { Note, NoteState } from "../model";
+import { Note } from "../model";
+import NoteListItem from "./NoteListItem";
 
 function NoteList(props: {
   notes: Note[];
-  selectedNote: Note | undefined;
+  selectedNoteId: string;
   dispatch: Dispatch<AppEvent>;
 }) {
   const notes = props.notes;
-  const selectedNote = props.selectedNote;
+  const selectedNoteId = props.selectedNoteId;
   const dispatch = props.dispatch;
-
-  const onNoteSelected = (note: Note) => {
-    dispatch({
-      type: EventType.NoteSelected,
-      note,
-    });
-  };
-
-  const getTitle = (note: Note) => {
-    if (note.state == NoteState.New) {
-      return "";
-    }
-    return note.title;
-  };
 
   return (
     <div className="note-list">
       {notes.map((note) => (
-        <div
-          id={note.id}
+        <NoteListItem
           key={note.id}
-          className={
-            note === selectedNote
-              ? "note-list-item note-list-item-selected"
-              : "note-list-item"
-          }
-          onClick={() => onNoteSelected(note)}
-        >
-          {getTitle(note)}
-        </div>
+          note={note}
+          isSelected={note.id === selectedNoteId}
+          dispatch={dispatch}
+        />
       ))}
     </div>
   );

@@ -1,7 +1,9 @@
+import { ChangeType, makeChannel } from "../changeHandler";
 import {
   CommandType,
   LoadNoteTextCommand,
   RetrieveFileListCommand,
+  SaveChangesCommand,
 } from "../commands";
 import { EventType } from "../events";
 import { NoteLoading } from "../model";
@@ -91,5 +93,43 @@ export const LoadNoteText = (note: NoteLoading): LoadNoteTextCommand => ({
         err: `${err}`,
       });
     }
+  },
+});
+
+const updateChannel = makeChannel();
+
+updateChannel.attachHandler(async (c) => {
+  console.log(JSON.stringify(c));
+
+  setTimeout(() => {
+    c.onSuccess();
+  }, 3000);
+
+  // TODO: handle errors
+});
+
+export const SaveChanges = (
+  noteId: string,
+  newTitle: string,
+  newText: string
+): SaveChangesCommand => ({
+  type: CommandType.SaveChanges,
+  noteId,
+  newTitle,
+  newText,
+  execute: (dispatch) => {
+    updateChannel.write({
+      type: ChangeType.Save,
+      noteId,
+      newTitle,
+      newText,
+      onSuccess: () => {
+        dispatch({
+          type: EventType.NoteAllChangesSaved,
+          noteId,
+        });
+      },
+      onFailure: () => {},
+    });
   },
 });

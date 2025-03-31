@@ -4,6 +4,7 @@ import {
   NoteLoaded,
   NoteLoading,
   NoteRef,
+  NoteSaving,
   NoteState,
 } from "./model";
 
@@ -65,5 +66,34 @@ export const noteLoadingToLoaded = (
     path: note.path,
     title: note.title,
     text,
+  };
+};
+
+export const noteLoadedToSaving = (
+  note: NoteLoaded,
+  newTitle: string,
+  newText: string
+): NoteSaving => {
+  return {
+    state: NoteState.Saving,
+
+    id: note.id,
+    path: note.path,
+    title: note.title,
+    text: note.text,
+
+    newTitle,
+    newText,
+  };
+};
+
+export const noteSavingToLoaded = (note: NoteSaving): NoteLoaded => {
+  return {
+    state: NoteState.Loaded,
+
+    id: note.id,
+    path: note.path,
+    title: note.newTitle,
+    text: note.newText,
   };
 };

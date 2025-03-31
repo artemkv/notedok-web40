@@ -166,6 +166,27 @@ export type Note =
   | NoteCreating
   | NoteFailedToCreate;
 
+export type NoteEditable =
+  | NoteLoaded
+  | NoteSaving
+  | NoteFailedToSave
+  | NoteFailedToDelete
+  | NoteNew
+  | NoteCreating
+  | NoteFailedToCreate;
+
+export const isNoteEditable = (note: Note) => {
+  return (
+    note.state == NoteState.Loaded ||
+    note.state == NoteState.Saving ||
+    note.state == NoteState.FailedToSave ||
+    note.state == NoteState.FailedToDelete ||
+    note.state == NoteState.New ||
+    note.state == NoteState.Creating ||
+    note.state == NoteState.FailedToCreate
+  );
+};
+
 // Note List
 
 export enum NoteListState {
@@ -181,7 +202,7 @@ export interface NoteListRetrieved {
   state: NoteListState.Retrieved;
   lastUsedNoteId: number;
   notes: Note[];
-  selectedNote: Note | undefined;
+  selectedNoteId: string;
 }
 
 export type NoteList = NoteListRetrieving | NoteListRetrieved;

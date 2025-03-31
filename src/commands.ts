@@ -9,6 +9,7 @@ export enum CommandType {
   ScheduleIdTokenRefresh,
   RetrieveFileList,
   LoadNoteText,
+  SaveChanges,
 }
 
 export interface DoNothingCommand extends Command<AppEvent> {
@@ -38,13 +39,21 @@ export interface LoadNoteTextCommand extends Command<AppEvent> {
   note: Note;
 }
 
+export interface SaveChangesCommand extends Command<AppEvent> {
+  type: CommandType.SaveChanges;
+  noteId: string;
+  newTitle: string;
+  newText: string;
+}
+
 export type AppCommand =
   | DoNothingCommand
   | DoManyCommand
   | CreateUserSessionCommand
   | ScheduleIdTokenRefreshCommand
   | RetrieveFileListCommand
-  | LoadNoteTextCommand;
+  | LoadNoteTextCommand
+  | SaveChangesCommand;
 
 export const DoNothing: DoNothingCommand = {
   type: CommandType.DoNothing,
