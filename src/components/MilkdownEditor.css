@@ -1,3 +1,7 @@
+.milkdown {
+  flex: 1;
+}
+
 milkdown-link-preview {
   box-shadow: 1px 1px 5px 0 rgb(0 0 0 / 0.1);
   overflow: hidden;

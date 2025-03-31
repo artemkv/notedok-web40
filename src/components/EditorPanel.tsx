@@ -7,6 +7,8 @@ import { MilkdownProvider } from "@milkdown/react";
 import MilkdownEditor from "./MilkdownEditor";
 import { Dispatch } from "../hooks/useReducer";
 import { AppEvent, EventType } from "../events";
+import { getEffectiveText, getEffectiveTitle } from "../buisiness";
+import NoteTitleEditor from "./NoteTitleEditor";
 
 function EditorPanel(props: {
   note: Note | undefined;
@@ -40,21 +42,12 @@ function EditorPanel(props: {
     );
   }
 
-  // TODO: debug code
-  const onSave = () => {
-    let noteTitle = "unknown";
-    let noteText = "unknown";
-    if (note != undefined && note.state == NoteState.Loaded) {
-      noteTitle = note.title;
-      noteText = note.text;
-    }
-
-    // TODO: from here, see what happens when multiple changes go in succession
+  const onTitleUpdated = (newTitle: string) => {
     dispatch({
       type: EventType.NoteReachedSavePoint,
       noteId: note.id,
-      currentTitle: noteTitle + ".upd",
-      currentText: "upd." + noteText,
+      currentTitle: newTitle,
+      currentText: getEffectiveText(note), // TODO:
     });
   };
 
@@ -72,9 +65,16 @@ function EditorPanel(props: {
       <div className="editor-panel">
         <div className="editor-panel-left" />
         <div id="editor" className="editor-panel-inner">
-          <button onClick={() => onSave()}>Save</button>
+          <NoteTitleEditor
+            noteId={note.id}
+            defaultTitle={getEffectiveTitle(note)}
+            onUpdated={onTitleUpdated}
+          />
           <MilkdownProvider>
-            <MilkdownEditor noteId={note.id} defaultMarkdown={note.text} />
+            <MilkdownEditor
+              noteId={note.id}
+              defaultMarkdown={getEffectiveText(note)}
+            />
           </MilkdownProvider>
         </div>
         <div className="editor-panel-right" />

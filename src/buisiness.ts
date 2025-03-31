@@ -32,6 +32,35 @@ import {
   noteSavingToLoaded,
 } from "./noteLifecycle";
 
+// TODO: make sure to handle all possible note states properly
+export const getEffectiveTitle = (note: Note) => {
+  if (note.state == NoteState.New) {
+    return "";
+  }
+  if (note.state == NoteState.Saving) {
+    return note.newTitle;
+  }
+  return note.title;
+};
+
+// TODO: make sure to handle all possible note states properly
+export const getEffectiveText = (note: Note) => {
+  if (
+    note.state == NoteState.Ref ||
+    note.state == NoteState.Loading ||
+    note.state == NoteState.FailedToLoad
+  ) {
+    return "";
+  }
+  if (note.state == NoteState.New) {
+    return "";
+  }
+  if (note.state == NoteState.Saving) {
+    return note.newText;
+  }
+  return note.text;
+};
+
 export const JustStateAuthenticated = (
   state: AppStateAuthenticated
 ): [AppStateAuthenticated, AppCommand] => [state, DoNothing];

@@ -21,8 +21,8 @@ const MilkdownEditor = function MilkdownEditor(props: {
   noteId: string;
   defaultMarkdown: string;
 }) {
-  const defaultMarkdown = props.defaultMarkdown;
   const noteId = props.noteId;
+  const defaultMarkdown = props.defaultMarkdown;
 
   // TODO: getting md string: https://milkdown.dev/docs/guide/interacting-with-editor, Using Actions
   // TODO: add toolbar with commands (https://milkdown.dev/docs/guide/commands)

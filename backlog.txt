@@ -1,0 +1,2 @@
+- multiple updates don't stack up
+- some note text doesn't wrap when browser width gets smaller (ai_general_methods)

@@ -3,6 +3,7 @@ import { AppEvent, EventType } from "../events";
 import { Dispatch } from "../hooks/useReducer";
 import { Note, NoteState } from "../model";
 import OrbitProgressIndicator from "./OrbitProgressIndicator";
+import { getEffectiveTitle } from "../buisiness";
 
 function NoteList(props: {
   note: Note;
@@ -14,17 +15,6 @@ function NoteList(props: {
   const dispatch = props.dispatch;
 
   // TODO: make sure to handle all possible note states properly
-
-  const getTitle = (note: Note) => {
-    if (note.state == NoteState.New) {
-      return "";
-    }
-    if (note.state == NoteState.Saving) {
-      return note.newTitle;
-    }
-    return note.title;
-  };
-
   const isPending = (note: Note) => {
     if (note.state == NoteState.Saving) {
       return true;
@@ -49,7 +39,7 @@ function NoteList(props: {
         }
         onClick={() => onNoteSelected(note)}
       >
-        {getTitle(note)}
+        {getEffectiveTitle(note)}
       </div>
       {isPending(note) ? (
         <div className="note-list-item-status">
