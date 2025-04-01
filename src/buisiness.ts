@@ -1,6 +1,7 @@
 import { AppCommand, DoMany, DoNothing } from "./commands";
 import { ScheduleIdTokenRefresh, StartUserSession } from "./commands/auth";
 import {
+  DeleteNote,
   LoadNoteText,
   RetrieveFileList,
   SaveChanges,
@@ -9,6 +10,7 @@ import {
   DeleteNoteRequestedEvent,
   LoadNoteTextSuccessEvent,
   NoteAllChangesSavedEvent,
+  NoteDeletedEvent,
   NoteReachedSavePointEvent,
   NoteSelectedEvent,
   RestoreNoteRequestedEvent,
@@ -30,6 +32,7 @@ import {
   createNewNote,
   createNewNoteRef,
   noteDeletedToRestoring,
+  noteDeletingToDeleted,
   noteLoadedToDeleting,
   noteLoadedToSaving,
   noteLoadingToLoaded,
@@ -186,10 +189,7 @@ export const handleNoteReachedSavePoint = (
             notes: replace(state.noteList.notes, noteSaving),
           },
         };
-        return [
-          newState,
-          SaveChanges(noteSaving.id, noteSaving.newTitle, noteSaving.newText),
-        ];
+        return [newState, SaveChanges(noteSaving)];
       }
     }
   }
@@ -258,7 +258,30 @@ export const handleDeleteNoteRequested = (
           notes: replace(state.noteList.notes, noteDeleting),
         },
       };
-      // TODO: delete
+      return [newState, DeleteNote(noteDeleting)];
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+export const handleNoteDeleted = (
+  state: AppStateAuthenticated,
+  event: NoteDeletedEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const note = getNote(state.noteList.notes, event.noteId);
+
+    // TODO: make sure to handle all possible note states properly
+    if (note && note.state == NoteState.Deleting) {
+      const noteDeleted = noteDeletingToDeleted(note);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteDeleted),
+        },
+      };
       return JustStateAuthenticated(newState);
     }
   }

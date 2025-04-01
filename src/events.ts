@@ -19,7 +19,10 @@ export enum EventType {
   NoteAllChangesSaved,
 
   CreateNoteRequested,
+
   DeleteNoteRequested,
+  NoteDeleted,
+
   RestoreNoteRequested,
 
   RestApiError,
@@ -81,6 +84,11 @@ export interface DeleteNoteRequestedEvent {
   noteId: string;
 }
 
+export interface NoteDeletedEvent {
+  type: EventType.NoteDeleted;
+  noteId: string;
+}
+
 export interface RestoreNoteRequestedEvent {
   type: EventType.RestoreNoteRequested;
   noteId: string;
@@ -103,5 +111,6 @@ export type AppEvent =
   | NoteAllChangesSavedEvent
   | CreateNoteRequestedEvent
   | DeleteNoteRequestedEvent
+  | NoteDeletedEvent
   | RestoreNoteRequestedEvent
   | RestApiErrorEvent;

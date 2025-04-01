@@ -1,20 +1,29 @@
+import { NoteDeleting, NoteSaving } from "./model";
+
 export enum ChangeType {
   Save,
+  Delete,
 }
 
 export interface SaveChange {
   type: ChangeType.Save;
-  noteId: string;
-  newTitle: string;
-  newText: string;
+  note: NoteSaving;
 
   onSuccess: () => void;
   onFailure: (err: string) => void;
 }
 
-export type Change = SaveChange;
+export interface DeleteChange {
+  type: ChangeType.Delete;
+  note: NoteDeleting;
 
-export type Handler = (c: Change) => void;
+  onSuccess: () => void;
+  onFailure: (err: string) => void;
+}
+
+export type Change = SaveChange | DeleteChange;
+
+export type Handler = (c: Change) => Promise<void>;
 
 export const makeChannel = () => {
   let handler: Handler | undefined = void 0;
@@ -46,7 +55,7 @@ export const makeChannel = () => {
       }
     },
     hasPendingChanges: (noteId: string): boolean => {
-      const c = q.find((c) => c.noteId == noteId);
+      const c = q.find((c) => c.note.id == noteId);
       if (c !== undefined) {
         return true;
       }
@@ -71,7 +80,7 @@ export const makeChannel = () => {
 export const pushWithDedup = (q: Change[], c: Change): Change[] => {
   const dupIdx = q.findIndex(
     // TODO: dedup all
-    (x) => x.noteId == c.noteId && x.type == ChangeType.Save
+    (x) => x.note.id == c.note.id && x.type == ChangeType.Save
   );
 
   if (dupIdx >= 0) {

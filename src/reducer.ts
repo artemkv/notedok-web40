@@ -3,6 +3,7 @@ import {
   handleDeleteNoteRequested,
   handleLoadNoteTextSuccess,
   handleNoteAllChangesSaved,
+  handleNoteDeleted,
   handleNoteReachedSavePoint,
   handleNoteSelected,
   handleRestoreNoteRequested,
@@ -64,6 +65,10 @@ export const Reducer = (
 
     if (event.type == EventType.DeleteNoteRequested) {
       return handleDeleteNoteRequested(state, event);
+    }
+
+    if (event.type == EventType.NoteDeleted) {
+      return handleNoteDeleted(state, event);
     }
 
     if (event.type == EventType.RestoreNoteRequested) {

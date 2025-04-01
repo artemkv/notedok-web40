@@ -1,12 +1,13 @@
 import { ChangeType, makeChannel } from "../changeHandler";
 import {
   CommandType,
+  DeleteNoteCommand,
   LoadNoteTextCommand,
   RetrieveFileListCommand,
   SaveChangesCommand,
 } from "../commands";
 import { EventType } from "../events";
-import { NoteLoading } from "../model";
+import { NoteDeleting, NoteLoading, NoteSaving } from "../model";
 import { getFile, getFiles } from "../sessionapi";
 
 interface FileData {
@@ -108,25 +109,35 @@ updateChannel.attachHandler(async (c) => {
   // TODO: handle errors
 });
 
-export const SaveChanges = (
-  noteId: string,
-  newTitle: string,
-  newText: string
-): SaveChangesCommand => ({
+export const SaveChanges = (note: NoteSaving): SaveChangesCommand => ({
   type: CommandType.SaveChanges,
-  noteId,
-  newTitle,
-  newText,
+  note,
   execute: (dispatch) => {
     updateChannel.write({
       type: ChangeType.Save,
-      noteId,
-      newTitle,
-      newText,
+      note,
       onSuccess: () => {
         dispatch({
           type: EventType.NoteAllChangesSaved,
-          noteId,
+          noteId: note.id,
+        });
+      },
+      onFailure: () => {},
+    });
+  },
+});
+
+export const DeleteNote = (note: NoteDeleting): DeleteNoteCommand => ({
+  type: CommandType.DeleteNote,
+  note,
+  execute: (dispatch) => {
+    updateChannel.write({
+      type: ChangeType.Delete,
+      note,
+      onSuccess: () => {
+        dispatch({
+          type: EventType.NoteDeleted,
+          noteId: note.id,
         });
       },
       onFailure: () => {},

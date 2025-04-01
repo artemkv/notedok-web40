@@ -61,7 +61,14 @@ function EditorPanel(props: {
 
   // TODO: maybe #editor should be a separate div
   // TODO: remove save button, it is for debugging
-  if (note.state == NoteState.Loaded || note.state == NoteState.Saving) {
+  if (
+    note.state == NoteState.New ||
+    note.state == NoteState.Loaded ||
+    note.state == NoteState.Saving ||
+    note.state == NoteState.Deleting ||
+    note.state == NoteState.Deleted ||
+    note.state == NoteState.Restoring
+  ) {
     return (
       <div className="editor-panel">
         <div className="editor-panel-left" />

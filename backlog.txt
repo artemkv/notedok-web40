@@ -1,2 +1,6 @@
 - multiple updates don't stack up
 - some note text doesn't wrap when browser width gets smaller (ai_general_methods)
+- review note list items in every state
+- review editor in every state
+- new could be visible before loading any note
+- text placeholder for md
