@@ -1,0 +1,27 @@
+.control-panel {
+    display: flex;
+    flex-direction: row;
+    padding-bottom: 8px;
+}
+
+.control-panel-left {
+    flex-grow: 1;
+}
+
+.control-panel-right {
+    flex-grow: 1;
+    text-align: right;
+}
+
+.control-panel-button {
+    font-size: 13px;
+    color: #a9a9a9;
+    margin-left: 4px;
+    margin-right: 16px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.control-panel-button:hover {
+    color: #000000;
+}

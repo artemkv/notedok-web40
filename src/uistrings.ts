@@ -7,6 +7,7 @@ const uistrings = {
   NoteTextPlaceholder: "Type your text here",
   MoreButtonText: "More",
   MoreButtonNotLoadedText: "not loaded",
+  NewButtonText: "New",
   EditButtonText: "Edit",
   DeleteButtonText: "Delete",
   ShareButtonText: "Share",

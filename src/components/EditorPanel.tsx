@@ -9,6 +9,7 @@ import { Dispatch } from "../hooks/useReducer";
 import { AppEvent, EventType } from "../events";
 import { getEffectiveText, getEffectiveTitle } from "../buisiness";
 import NoteTitleEditor from "./NoteTitleEditor";
+import ControlPanel from "./ControlPanel";
 
 function EditorPanel(props: {
   note: Note | undefined;
@@ -65,6 +66,7 @@ function EditorPanel(props: {
       <div className="editor-panel">
         <div className="editor-panel-left" />
         <div id="editor" className="editor-panel-inner">
+          <ControlPanel dispatch={dispatch} />
           <NoteTitleEditor
             noteId={note.id}
             defaultTitle={getEffectiveTitle(note)}
