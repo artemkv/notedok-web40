@@ -1,4 +1,5 @@
-- restore flow
+- --restore flow--
+
 - make a solid correct dedup
 - collect changes from the editor
 - auto-save every 3 seconds, if there are changes

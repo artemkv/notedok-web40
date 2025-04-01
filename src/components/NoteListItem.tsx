@@ -50,7 +50,12 @@ function NoteList(props: {
   if (!effectiveTitle) {
     className += " note-list-item-placeholder";
   }
-  if (note.state == NoteState.Deleted) {
+  if (
+    note.state == NoteState.Deleting ||
+    note.state == NoteState.Deleted ||
+    note.state == NoteState.Restoring ||
+    note.state == NoteState.FailedToRestore
+  ) {
     className += " note-list-item-deleted";
   }
 
