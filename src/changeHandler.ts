@@ -1,9 +1,10 @@
-import { NoteCreating, NoteDeleting, NoteSaving } from "./model";
+import { NoteCreating, NoteDeleting, NoteRestoring, NoteSaving } from "./model";
 
 export enum ChangeType {
   Create,
   Save,
   Delete,
+  Restore,
 }
 
 export interface CreateChange {
@@ -30,7 +31,15 @@ export interface DeleteChange {
   onFailure: (err: string) => void;
 }
 
-export type Change = CreateChange | SaveChange | DeleteChange;
+export interface RestoreChange {
+  type: ChangeType.Restore;
+  note: NoteRestoring;
+
+  onSuccess: () => void;
+  onFailure: (err: string) => void;
+}
+
+export type Change = CreateChange | SaveChange | DeleteChange | RestoreChange;
 
 export type Handler = (c: Change) => Promise<void>;
 

@@ -1,3 +1,21 @@
+- restore flow
+- make a solid correct dedup
+- collect changes from the editor
+- auto-save every 3 seconds, if there are changes
+
+- actually call backend
+- handle all the errors
+
+- search
+
+- correct editor state for all note states
+
+- switch to text edit
+
+- handle .txt
+
+- unit-tests
+
 - multiple updates don't stack up
 - some note text doesn't wrap when browser width gets smaller (ai_general_methods)
 - review note list items in every state

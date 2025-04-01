@@ -4,11 +4,18 @@ import {
   CreateNoteCommand,
   DeleteNoteCommand,
   LoadNoteTextCommand,
+  RestoreNoteCommand,
   RetrieveFileListCommand,
   SaveNoteCommand,
 } from "../commands";
 import { EventType } from "../events";
-import { NoteCreating, NoteDeleting, NoteLoading, NoteSaving } from "../model";
+import {
+  NoteCreating,
+  NoteDeleting,
+  NoteLoading,
+  NoteRestoring,
+  NoteSaving,
+} from "../model";
 import { getFile, getFiles } from "../sessionapi";
 
 interface FileData {
@@ -100,6 +107,7 @@ export const LoadNoteText = (note: NoteLoading): LoadNoteTextCommand => ({
 
 const updateChannel = makeChannel();
 
+// TODO: implement
 updateChannel.attachHandler(async (c) => {
   console.log(JSON.stringify(c));
 
@@ -157,6 +165,24 @@ export const DeleteNote = (note: NoteDeleting): DeleteNoteCommand => ({
       onSuccess: () => {
         dispatch({
           type: EventType.NoteDeleted,
+          noteId: note.id,
+        });
+      },
+      onFailure: () => {},
+    });
+  },
+});
+
+export const RestoreNote = (note: NoteRestoring): RestoreNoteCommand => ({
+  type: CommandType.RestoreNote,
+  note,
+  execute: (dispatch) => {
+    updateChannel.write({
+      type: ChangeType.Restore,
+      note,
+      onSuccess: () => {
+        dispatch({
+          type: EventType.NoteRestored,
           noteId: note.id,
         });
       },

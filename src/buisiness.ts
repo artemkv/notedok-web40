@@ -4,6 +4,7 @@ import {
   CreateNote,
   DeleteNote,
   LoadNoteText,
+  RestoreNote,
   RetrieveFileList,
   SaveNote,
 } from "./commands/storage";
@@ -14,6 +15,7 @@ import {
   NoteCreatedEvent,
   NoteDeletedEvent,
   NoteReachedSavePointEvent,
+  NoteRestoredEvent,
   NoteSelectedEvent,
   RestoreNoteRequestedEvent,
   RetrieveFileListSuccessEvent,
@@ -41,6 +43,7 @@ import {
   noteLoadingToLoaded,
   noteNewToCreating,
   noteRefToLoading,
+  noteRestoringToLoaded,
   noteSavingToLoaded,
 } from "./noteLifecycle";
 
@@ -349,7 +352,30 @@ export const handleRestoreNoteRequested = (
           notes: replace(state.noteList.notes, noteRestoring),
         },
       };
-      // TODO: restore
+      return [newState, RestoreNote(noteRestoring)];
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+export const handleNoteRestored = (
+  state: AppStateAuthenticated,
+  event: NoteRestoredEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const note = getNote(state.noteList.notes, event.noteId);
+
+    // TODO: make sure to handle all possible note states properly
+    if (note && note.state == NoteState.Restoring) {
+      const noteLoaded = noteRestoringToLoaded(note);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteLoaded),
+        },
+      };
       return JustStateAuthenticated(newState);
     }
   }

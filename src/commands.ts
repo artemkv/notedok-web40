@@ -1,6 +1,12 @@
 import { AppEvent } from "./events";
 import { Command } from "./hooks/useReducer";
-import { Note, NoteCreating, NoteDeleting, NoteSaving } from "./model";
+import {
+  Note,
+  NoteCreating,
+  NoteDeleting,
+  NoteRestoring,
+  NoteSaving,
+} from "./model";
 
 export enum CommandType {
   DoNothing,
@@ -13,6 +19,7 @@ export enum CommandType {
   CreateNote,
   SaveNote,
   DeleteNote,
+  RestoreNote,
 }
 
 export interface DoNothingCommand extends Command<AppEvent> {
@@ -57,6 +64,11 @@ export interface DeleteNoteCommand extends Command<AppEvent> {
   note: NoteDeleting;
 }
 
+export interface RestoreNoteCommand extends Command<AppEvent> {
+  type: CommandType.RestoreNote;
+  note: NoteRestoring;
+}
+
 export type AppCommand =
   | DoNothingCommand
   | DoManyCommand
@@ -66,7 +78,8 @@ export type AppCommand =
   | LoadNoteTextCommand
   | CreateNoteCommand
   | SaveNoteCommand
-  | DeleteNoteCommand;
+  | DeleteNoteCommand
+  | RestoreNoteCommand;
 
 export const DoNothing: DoNothingCommand = {
   type: CommandType.DoNothing,
