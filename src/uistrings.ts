@@ -1,12 +1,10 @@
 // TODO: review
 
 const uistrings = {
-  TemplateNoteTitlePlaceholder: "New note",
+  NewNoteTitlePlaceholder: "New note",
   NoteTitlePlaceholder: "No title",
-  TemplateNoteNoteTextPlaceholder: "Type your text here",
+  NewNoteNoteTextPlaceholder: "Type your text here",
   NoteTextPlaceholder: "Type your text here",
-  MoreButtonText: "More",
-  MoreButtonNotLoadedText: "not loaded",
   NewButtonText: "New",
   EditButtonText: "Edit",
   DeleteButtonText: "Delete",

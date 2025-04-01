@@ -16,6 +16,14 @@
     font-weight: 600;
 }
 
+.note-list-item-placeholder {
+    color: grey;
+}
+
+.note-list-item-deleted {
+    text-decoration: line-through;
+}
+
 .note-list-item-status {
     margin: 4px 8px 0px;
     text-align: right;

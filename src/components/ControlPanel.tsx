@@ -1,31 +1,57 @@
 import "./ControlPanel.css";
-import { AppEvent } from "../events";
+import { AppEvent, EventType } from "../events";
 import { Dispatch } from "../hooks/useReducer";
 import uistrings from "../uistrings";
 
-function ControlPanel(props: { dispatch: Dispatch<AppEvent> }) {
+function ControlPanel(props: { noteId: string; dispatch: Dispatch<AppEvent> }) {
+  const noteId = props.noteId;
   const dispatch = props.dispatch;
 
-  const onCreateNote = () => {};
+  const onCreateNote = () => {
+    dispatch({
+      type: EventType.CreateNoteRequested,
+    });
+  };
 
   const noteCreateButtonOnClick = (e: React.KeyboardEvent) => {
     if (e.key === " " || e.key === "Enter") {
+      dispatch({
+        type: EventType.CreateNoteRequested,
+      });
       e.preventDefault();
     }
   };
 
-  const onDeleteNote = () => {};
+  const onDeleteNote = () => {
+    dispatch({
+      type: EventType.DeleteNoteRequested,
+      noteId,
+    });
+  };
 
   const noteDeleteButtonOnClick = (e: React.KeyboardEvent) => {
     if (e.key === " " || e.key === "Enter") {
+      dispatch({
+        type: EventType.DeleteNoteRequested,
+        noteId,
+      });
       e.preventDefault();
     }
   };
 
-  const onRestoreNote = () => {};
+  const onRestoreNote = () => {
+    dispatch({
+      type: EventType.RestoreNoteRequested,
+      noteId,
+    });
+  };
 
   const noteRestoreButtonOnClick = (e: React.KeyboardEvent) => {
     if (e.key === " " || e.key === "Enter") {
+      dispatch({
+        type: EventType.RestoreNoteRequested,
+        noteId,
+      });
       e.preventDefault();
     }
   };

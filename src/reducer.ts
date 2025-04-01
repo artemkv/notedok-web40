@@ -1,9 +1,11 @@
 import {
+  handleCreateNoteRequested,
+  handleDeleteNoteRequested,
   handleLoadNoteTextSuccess,
   handleNoteAllChangesSaved,
-  handleNoteQueuedForSaving,
   handleNoteReachedSavePoint,
   handleNoteSelected,
+  handleRestoreNoteRequested,
   handleRetrieveFileListSuccess,
   handleUserAuthenticated,
   handleUserSessionCreated,
@@ -54,6 +56,18 @@ export const Reducer = (
 
     if (event.type == EventType.NoteAllChangesSaved) {
       return handleNoteAllChangesSaved(state, event);
+    }
+
+    if (event.type == EventType.CreateNoteRequested) {
+      return handleCreateNoteRequested(state);
+    }
+
+    if (event.type == EventType.DeleteNoteRequested) {
+      return handleDeleteNoteRequested(state, event);
+    }
+
+    if (event.type == EventType.RestoreNoteRequested) {
+      return handleRestoreNoteRequested(state, event);
     }
   }
 

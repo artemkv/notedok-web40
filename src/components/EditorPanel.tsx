@@ -66,7 +66,7 @@ function EditorPanel(props: {
       <div className="editor-panel">
         <div className="editor-panel-left" />
         <div id="editor" className="editor-panel-inner">
-          <ControlPanel dispatch={dispatch} />
+          <ControlPanel noteId={note.id} dispatch={dispatch} />
           <NoteTitleEditor
             noteId={note.id}
             defaultTitle={getEffectiveTitle(note)}

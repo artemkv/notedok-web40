@@ -4,6 +4,7 @@ import { Dispatch } from "../hooks/useReducer";
 import { Note, NoteState } from "../model";
 import OrbitProgressIndicator from "./OrbitProgressIndicator";
 import { getEffectiveTitle } from "../buisiness";
+import uistrings from "../uistrings";
 
 function NoteList(props: {
   note: Note;
@@ -14,12 +15,25 @@ function NoteList(props: {
   const isSelected = props.isSelected;
   const dispatch = props.dispatch;
 
-  // TODO: make sure to handle all possible note states properly
+  const effectiveTitle = getEffectiveTitle(note);
+
   const isPending = (note: Note) => {
-    if (note.state == NoteState.Saving) {
+    if (
+      note.state == NoteState.Creating ||
+      note.state == NoteState.Saving ||
+      note.state == NoteState.Deleting ||
+      note.state == NoteState.Restoring
+    ) {
       return true;
     }
     return false;
+  };
+
+  const placeholderText = (note: Note) => {
+    if (note.state == NoteState.New) {
+      return uistrings.NewNoteTitlePlaceholder;
+    }
+    return uistrings.NoteTitlePlaceholder;
   };
 
   const onNoteSelected = (note: Note) => {
@@ -29,17 +43,23 @@ function NoteList(props: {
     });
   };
 
+  let className = "note-list-item";
+  if (isSelected) {
+    className += " note-list-item-selected";
+  }
+  if (!effectiveTitle) {
+    className += " note-list-item-placeholder";
+  }
+  if (note.state == NoteState.Deleted) {
+    className += " note-list-item-deleted";
+  }
+
   return (
     <div className="note-list-item-container" id={note.id}>
-      <div
-        className={
-          isSelected
-            ? "note-list-item note-list-item-selected"
-            : "note-list-item"
-        }
-        onClick={() => onNoteSelected(note)}
-      >
-        {getEffectiveTitle(note)}
+      <div className={className} onClick={() => onNoteSelected(note)}>
+        {getEffectiveTitle(note) !== ""
+          ? getEffectiveTitle(note)
+          : placeholderText(note)}
       </div>
       {isPending(note) ? (
         <div className="note-list-item-status">

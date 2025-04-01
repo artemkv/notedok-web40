@@ -6,10 +6,12 @@ import {
   SaveChanges,
 } from "./commands/storage";
 import {
+  DeleteNoteRequestedEvent,
   LoadNoteTextSuccessEvent,
   NoteAllChangesSavedEvent,
   NoteReachedSavePointEvent,
   NoteSelectedEvent,
+  RestoreNoteRequestedEvent,
   RetrieveFileListSuccessEvent,
   UserAuthenticatedEvent,
 } from "./events";
@@ -25,7 +27,10 @@ import {
   NoteState,
 } from "./model";
 import {
+  createNewNote,
   createNewNoteRef,
+  noteDeletedToRestoring,
+  noteLoadedToDeleting,
   noteLoadedToSaving,
   noteLoadingToLoaded,
   noteRefToLoading,
@@ -209,6 +214,76 @@ export const handleNoteAllChangesSaved = (
           notes: replace(state.noteList.notes, noteLoaded),
         },
       };
+      return JustStateAuthenticated(newState);
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+export const handleCreateNoteRequested = (
+  state: AppStateAuthenticated
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const newNote = createNewNote(state.noteList.lastUsedNoteId + 1);
+    const newState: AppStateAuthenticated = {
+      ...state,
+      noteList: {
+        ...state.noteList,
+        lastUsedNoteId: state.noteList.lastUsedNoteId + 1,
+        notes: [newNote, ...state.noteList.notes],
+        selectedNoteId: newNote.id,
+      },
+    };
+    return JustStateAuthenticated(newState);
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+export const handleDeleteNoteRequested = (
+  state: AppStateAuthenticated,
+  event: DeleteNoteRequestedEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const note = getNote(state.noteList.notes, event.noteId);
+
+    // TODO: make sure to handle all possible note states properly
+    if (note && note.state == NoteState.Loaded) {
+      const noteDeleting = noteLoadedToDeleting(note);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteDeleting),
+        },
+      };
+      // TODO: delete
+      return JustStateAuthenticated(newState);
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+export const handleRestoreNoteRequested = (
+  state: AppStateAuthenticated,
+  event: RestoreNoteRequestedEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const note = getNote(state.noteList.notes, event.noteId);
+
+    // TODO: make sure to handle all possible note states properly
+    if (note && note.state == NoteState.Deleted) {
+      const noteRestoring = noteDeletedToRestoring(note);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteRestoring),
+        },
+      };
+      // TODO: restore
       return JustStateAuthenticated(newState);
     }
   }
