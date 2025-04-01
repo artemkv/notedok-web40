@@ -148,6 +148,8 @@ export interface NoteFailedToCreate {
   id: string;
   title: string;
   text: string;
+
+  err: string;
 }
 
 export type Note =
