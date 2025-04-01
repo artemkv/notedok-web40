@@ -177,13 +177,14 @@ export type NoteEditable =
   | NoteCreating
   | NoteFailedToCreate;
 
+// TODO: cross-check with the condition inside the editor panel
 export const isNoteEditable = (note: Note) => {
   return (
+    note.state == NoteState.New ||
     note.state == NoteState.Loaded ||
     note.state == NoteState.Saving ||
     note.state == NoteState.FailedToSave ||
     note.state == NoteState.FailedToDelete ||
-    note.state == NoteState.New ||
     note.state == NoteState.Creating ||
     note.state == NoteState.FailedToCreate
   );

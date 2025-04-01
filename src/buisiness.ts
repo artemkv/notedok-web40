@@ -1,15 +1,17 @@
 import { AppCommand, DoMany, DoNothing } from "./commands";
 import { ScheduleIdTokenRefresh, StartUserSession } from "./commands/auth";
 import {
+  CreateNote,
   DeleteNote,
   LoadNoteText,
   RetrieveFileList,
-  SaveChanges,
+  SaveNote,
 } from "./commands/storage";
 import {
   DeleteNoteRequestedEvent,
   LoadNoteTextSuccessEvent,
   NoteAllChangesSavedEvent,
+  NoteCreatedEvent,
   NoteDeletedEvent,
   NoteReachedSavePointEvent,
   NoteSelectedEvent,
@@ -31,11 +33,13 @@ import {
 import {
   createNewNote,
   createNewNoteRef,
+  noteCreatingToLoaded,
   noteDeletedToRestoring,
   noteDeletingToDeleted,
   noteLoadedToDeleting,
   noteLoadedToSaving,
   noteLoadingToLoaded,
+  noteNewToCreating,
   noteRefToLoading,
   noteSavingToLoaded,
 } from "./noteLifecycle";
@@ -189,7 +193,22 @@ export const handleNoteReachedSavePoint = (
             notes: replace(state.noteList.notes, noteSaving),
           },
         };
-        return [newState, SaveChanges(noteSaving)];
+        return [newState, SaveNote(noteSaving)];
+      }
+      if (note.state == NoteState.New) {
+        const noteCreating = noteNewToCreating(
+          note,
+          event.currentTitle,
+          event.currentText
+        );
+        const newState: AppStateAuthenticated = {
+          ...state,
+          noteList: {
+            ...state.noteList,
+            notes: replace(state.noteList.notes, noteCreating),
+          },
+        };
+        return [newState, CreateNote(noteCreating)];
       }
     }
   }
@@ -236,6 +255,30 @@ export const handleCreateNoteRequested = (
       },
     };
     return JustStateAuthenticated(newState);
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+export const handleNoteCreated = (
+  state: AppStateAuthenticated,
+  event: NoteCreatedEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const note = getNote(state.noteList.notes, event.noteId);
+
+    // TODO: make sure to handle all possible note states properly
+    if (note && note.state == NoteState.Creating) {
+      const noteCreated = noteCreatingToLoaded(note, event.path);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteCreated),
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
   }
 
   return JustStateAuthenticated(state);

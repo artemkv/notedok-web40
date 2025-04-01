@@ -1,8 +1,17 @@
-import { NoteDeleting, NoteSaving } from "./model";
+import { NoteCreating, NoteDeleting, NoteSaving } from "./model";
 
 export enum ChangeType {
+  Create,
   Save,
   Delete,
+}
+
+export interface CreateChange {
+  type: ChangeType.Create;
+  note: NoteCreating;
+
+  onSuccess: () => void;
+  onFailure: (err: string) => void;
 }
 
 export interface SaveChange {
@@ -21,7 +30,7 @@ export interface DeleteChange {
   onFailure: (err: string) => void;
 }
 
-export type Change = SaveChange | DeleteChange;
+export type Change = CreateChange | SaveChange | DeleteChange;
 
 export type Handler = (c: Change) => Promise<void>;
 
@@ -78,10 +87,19 @@ export const makeChannel = () => {
 };
 
 export const pushWithDedup = (q: Change[], c: Change): Change[] => {
-  const dupIdx = q.findIndex(
-    // TODO: dedup all
-    (x) => x.note.id == c.note.id && x.type == ChangeType.Save
-  );
+  // TODO: dedup all
+  // TODO: dedup should actually be from the back
+  const dupIdx = q.findIndex((x) => {
+    if (x.note.id == c.note.id) {
+      // TODO: make sure it's actually like this
+      if (c.type == ChangeType.Create && x.type == ChangeType.Create) {
+        return true;
+      }
+      if (c.type == ChangeType.Save && x.type == ChangeType.Save) {
+        return true;
+      }
+    }
+  });
 
   if (dupIdx >= 0) {
     const qNew = [...q.slice(0, dupIdx), c];

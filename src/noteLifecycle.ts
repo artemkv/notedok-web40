@@ -279,6 +279,20 @@ export const noteNewToCreating = (
   };
 };
 
+export const noteCreatingToLoaded = (
+  note: NoteCreating,
+  path: string
+): NoteLoaded => {
+  return {
+    state: NoteState.Loaded,
+
+    id: note.id,
+    path,
+    title: note.title,
+    text: note.text,
+  };
+};
+
 export const noteCreatingToFailedToCreate = (
   note: NoteCreating,
   err: string

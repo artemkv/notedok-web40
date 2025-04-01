@@ -65,6 +65,7 @@ function EditorPanel(props: {
     note.state == NoteState.New ||
     note.state == NoteState.Loaded ||
     note.state == NoteState.Saving ||
+    note.state == NoteState.Creating ||
     note.state == NoteState.Deleting ||
     note.state == NoteState.Deleted ||
     note.state == NoteState.Restoring
