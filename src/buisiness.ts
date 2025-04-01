@@ -19,6 +19,7 @@ import {
   NoteSelectedEvent,
   RestoreNoteRequestedEvent,
   RetrieveFileListSuccessEvent,
+  SearchTextUpdatedEvent,
   UserAuthenticatedEvent,
 } from "./events";
 import {
@@ -111,9 +112,28 @@ export const handleRetrieveFileListSuccess = (
       lastUsedNoteId: event.fileList.length - 1,
       notes: event.fileList.map((f, idx) => createNewNoteRef(idx, f)),
       selectedNoteId: "",
+      searchText: "",
     },
   };
   return JustStateAuthenticated(newState);
+};
+
+export const handleSearchTextUpdated = (
+  state: AppStateAuthenticated,
+  event: SearchTextUpdatedEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const newState: AppStateAuthenticated = {
+      ...state,
+      noteList: {
+        ...state.noteList,
+        searchText: event.searchText,
+      },
+    };
+    return JustStateAuthenticated(newState);
+  }
+
+  return JustStateAuthenticated(state);
 };
 
 export const handleNoteSelected = (

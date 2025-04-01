@@ -1,8 +1,5 @@
 .note-list {
     height: 100%;
-    min-width: 300px;
-    max-width: 300px;
-    border-right: solid 1px #f1f1f1;
     overflow-y: auto;
 }
 

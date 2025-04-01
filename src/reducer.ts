@@ -10,6 +10,7 @@ import {
   handleNoteSelected,
   handleRestoreNoteRequested,
   handleRetrieveFileListSuccess,
+  handleSearchTextUpdated,
   handleUserAuthenticated,
   handleUserSessionCreated,
 } from "./buisiness";
@@ -43,6 +44,10 @@ export const Reducer = (
   } else {
     if (event.type === EventType.RetrieveFileListSuccess) {
       return handleRetrieveFileListSuccess(event);
+    }
+
+    if (event.type == EventType.SearchTextUpdated) {
+      return handleSearchTextUpdated(state, event);
     }
 
     if (event.type == EventType.NoteSelected) {

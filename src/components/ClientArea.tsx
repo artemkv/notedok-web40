@@ -4,6 +4,7 @@ import { Dispatch } from "../hooks/useReducer";
 import { NoteListRetrieved } from "../model";
 import NoteList from "./NoteList";
 import EditorPanel from "./EditorPanel";
+import SearchPanel from "./SearchPanel";
 
 function ClientArea(props: {
   noteList: NoteListRetrieved;
@@ -15,15 +16,20 @@ function ClientArea(props: {
   // TODO: review how I get to the selected note
   return (
     <div className="client-area">
-      <NoteList
-        notes={noteList.notes}
-        selectedNoteId={noteList.selectedNoteId}
-        dispatch={dispatch}
-      />
-      <EditorPanel
-        note={noteList.notes.find((x) => x.id === noteList.selectedNoteId)}
-        dispatch={dispatch}
-      />
+      <div className="client-area-left">
+        <SearchPanel searchText={noteList.searchText} dispatch={dispatch} />
+        <NoteList
+          notes={noteList.notes}
+          selectedNoteId={noteList.selectedNoteId}
+          dispatch={dispatch}
+        />
+      </div>
+      <div className="client-area-right">
+        <EditorPanel
+          note={noteList.notes.find((x) => x.id === noteList.selectedNoteId)}
+          dispatch={dispatch}
+        />
+      </div>
     </div>
   );
 }

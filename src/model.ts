@@ -203,6 +203,7 @@ export interface NoteListRetrieving {
 
 export interface NoteListRetrieved {
   state: NoteListState.Retrieved;
+  searchText: string;
   lastUsedNoteId: number;
   notes: Note[];
   selectedNoteId: string;

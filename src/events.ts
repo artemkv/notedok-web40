@@ -10,6 +10,8 @@ export enum EventType {
 
   RetrieveFileListSuccess,
 
+  SearchTextUpdated,
+
   NoteSelected,
 
   LoadNoteTextSuccess,
@@ -46,6 +48,11 @@ export interface UserSessionCreatedEvent {
 export interface RetrieveFileListSuccessEvent {
   type: EventType.RetrieveFileListSuccess;
   fileList: string[];
+}
+
+export interface SearchTextUpdatedEvent {
+  type: EventType.SearchTextUpdated;
+  searchText: string;
 }
 
 export interface NoteSelectedEvent {
@@ -117,6 +124,7 @@ export type AppEvent =
   | UserAuthenticatedEvent
   | UserSessionCreatedEvent
   | RetrieveFileListSuccessEvent
+  | SearchTextUpdatedEvent
   | NoteSelectedEvent
   | LoadNoteTextSuccessEvent
   | NoteLoadFailedEvent
