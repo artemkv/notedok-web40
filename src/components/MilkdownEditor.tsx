@@ -6,8 +6,10 @@ import {
 import {
   defaultValueCtx,
   Editor,
+  editorViewCtx,
   editorViewOptionsCtx,
   rootCtx,
+  serializerCtx,
 } from "@milkdown/kit/core";
 import { clipboard } from "@milkdown/kit/plugin/clipboard";
 import { history } from "@milkdown/kit/plugin/history";
@@ -17,17 +19,25 @@ import { gfm } from "@milkdown/kit/preset/gfm";
 import { Milkdown } from "@milkdown/react";
 import { useEffect } from "react";
 
+const CHECKPOINT_INTERVAL = 3000;
+
 const MilkdownEditor = function MilkdownEditor(props: {
   noteId: string;
   defaultMarkdown: string;
+  reportText: (text: string) => void;
 }) {
   const noteId = props.noteId;
   const defaultMarkdown = props.defaultMarkdown;
+  const reportText = props.reportText;
 
-  // TODO: getting md string: https://milkdown.dev/docs/guide/interacting-with-editor, Using Actions
   // TODO: add toolbar with commands (https://milkdown.dev/docs/guide/commands)
   // TODO: if I need to access it somewhere else, `useInstance()` hook is to the rescue
   // TODO: review plugins (https://milkdown.dev/docs/plugin/using-plugins)
+
+  // TODO: also do that on blur
+  const runCheckpoint = (markdown: string) => {
+    reportText(markdown);
+  };
 
   useEffect(() => {
     const editor = Editor.make()
@@ -57,10 +67,31 @@ const MilkdownEditor = function MilkdownEditor(props: {
       .use(indent)
       .create();
 
+    const editorAndInterval = editor.then((editor) => {
+      // function to return the markdown as string
+      const getMarkdown = () =>
+        editor.action((ctx) => {
+          const editorView = ctx.get(editorViewCtx);
+          const serializer = ctx.get(serializerCtx);
+          return serializer(editorView.state.doc);
+        });
+
+      // report markdown every 3 seconds
+      const intervalId = setInterval(
+        () => runCheckpoint(getMarkdown()),
+        CHECKPOINT_INTERVAL
+      );
+      return { editor, intervalId };
+    });
+
     // properly destroy
     return () => {
-      editor.then((e) => e.destroy());
+      editorAndInterval.then((x) => {
+        clearInterval(x.intervalId);
+        x.editor.destroy();
+      });
     };
+
     // this is on purpose. Only reload editor when noteId changes
     // the default markdown may update, but it can be stale
     // the most latest state is ephemeral, and is found inside the editor itself

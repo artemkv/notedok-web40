@@ -3,7 +3,8 @@ V0.1
 - --restore flow--
 - --search--
 
-- make a solid correct dedup
+- having note on a change queue will get state as more updates arrive
+- make a solid correct dedup (maybe the prev point can be solved here)
 
 - collect changes from the editor
 - auto-save every 3 seconds, if there are changes
@@ -23,6 +24,7 @@ V0.1
 - review note list items in every state
 - review editor in every state
 
+- if item already selected, don't re-select it
 
 Later
 
@@ -39,3 +41,4 @@ Later
 - sign out
 - lens icon in search textbox
 - cross in search textbox to clean the search text
+- title field autocompletes by chrome

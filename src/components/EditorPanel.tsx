@@ -38,14 +38,16 @@ function EditorPanel(props: {
     );
   }
 
-  const onTitleUpdated = (newTitle: string) => {
+  const reportTitle = (title: string) => {
     dispatch({
       type: EventType.NoteReachedSavePoint,
       noteId: note.id,
-      currentTitle: newTitle,
+      currentTitle: title,
       currentText: getEffectiveText(note), // TODO:
     });
   };
+
+  const reportText = (text: string) => {};
 
   // TODO: extract so that I don't have to deal with MilkdownProvider
   // TODO: provide the way to get back edits
@@ -73,12 +75,13 @@ function EditorPanel(props: {
           <NoteTitleEditor
             noteId={note.id}
             defaultTitle={getEffectiveTitle(note)}
-            onUpdated={onTitleUpdated}
+            reportTitle={reportTitle}
           />
           <MilkdownProvider>
             <MilkdownEditor
               noteId={note.id}
               defaultMarkdown={getEffectiveText(note)}
+              reportText={reportText}
             />
           </MilkdownProvider>
         </div>
