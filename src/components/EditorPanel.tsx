@@ -1,7 +1,6 @@
 import "./EditorPanel.css";
 import "github-markdown-css";
 import { Note, NoteState } from "../model";
-import Empty from "./Empty";
 import ProgressIndicator from "./ProgressIndicator";
 import { MilkdownProvider } from "@milkdown/react";
 import MilkdownEditor from "./MilkdownEditor";
@@ -21,11 +20,7 @@ function EditorPanel(props: {
   // TODO: make sure to handle all possible note states properly
 
   if (note == undefined) {
-    return (
-      <div className="editor-panel">
-        <Empty />
-      </div>
-    );
+    return <div className="editor-panel"></div>;
   }
 
   if (note.state == NoteState.Ref) {
@@ -92,11 +87,7 @@ function EditorPanel(props: {
     );
   }
 
-  return (
-    <div className="editor-panel">
-      <Empty />
-    </div>
-  );
+  return <div className="editor-panel"></div>;
 }
 
 export default EditorPanel;

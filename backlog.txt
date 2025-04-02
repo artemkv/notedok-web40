@@ -23,3 +23,5 @@
 - review editor in every state
 - new could be visible before loading any note
 - text placeholder for md
+
+- proper layout
