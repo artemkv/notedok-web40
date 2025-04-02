@@ -20,6 +20,7 @@ function ClientArea(props: {
         <SearchPanel searchText={noteList.searchText} dispatch={dispatch} />
         <NoteList
           notes={noteList.notes}
+          searchText={noteList.searchText}
           selectedNoteId={noteList.selectedNoteId}
           dispatch={dispatch}
         />

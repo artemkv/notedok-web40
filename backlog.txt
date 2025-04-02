@@ -1,4 +1,5 @@
 - --restore flow--
+- --search--
 
 - make a solid correct dedup
 - collect changes from the editor
@@ -6,8 +7,6 @@
 
 - actually call backend
 - handle all the errors
-
-- search
 
 - correct editor state for all note states
 
@@ -25,3 +24,5 @@
 - text placeholder for md
 
 - proper layout
+
+- consider search by multiple tokens from search text

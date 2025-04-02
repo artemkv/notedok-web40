@@ -49,7 +49,7 @@ import {
 } from "./noteLifecycle";
 
 // TODO: make sure to handle all possible note states properly
-export const getEffectiveTitle = (note: Note) => {
+export const getEffectiveTitle = (note: Note): string => {
   if (note.state == NoteState.New) {
     return "";
   }
@@ -75,6 +75,12 @@ export const getEffectiveText = (note: Note) => {
     return note.newText;
   }
   return note.text;
+};
+
+export const filter = (notes: Note[], searchText: string) => {
+  return notes.filter((x) =>
+    getEffectiveTitle(x).toLowerCase().includes(searchText.toLowerCase())
+  );
 };
 
 export const JustStateAuthenticated = (
