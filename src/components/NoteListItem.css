@@ -10,6 +10,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     flex: 1;
+    color: #101720;
 }
 
 .note-list-item-selected {
