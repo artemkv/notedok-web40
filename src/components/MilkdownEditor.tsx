@@ -12,7 +12,7 @@ import {
 import { clipboard } from "@milkdown/kit/plugin/clipboard";
 import { history } from "@milkdown/kit/plugin/history";
 import { indent } from "@milkdown/kit/plugin/indent";
-import { commonmark } from "@milkdown/kit/preset/commonmark";
+import { commonmark, linkAttr } from "@milkdown/kit/preset/commonmark";
 import { gfm } from "@milkdown/kit/preset/gfm";
 import { Milkdown } from "@milkdown/react";
 import { useEffect } from "react";
@@ -39,8 +39,8 @@ const MilkdownEditor = function MilkdownEditor(props: {
         ctx.set(rootCtx, "#editor");
         // pass the initial value
         ctx.set(defaultValueCtx, defaultMarkdown);
-        // TODO: this works, but editor eats clicks, so using linkTooltipPlugin
-        // ctx.set(linkAttr.key, () => ({ target: "_blank" }));
+        // when editing is enabled, the editor eats clicks, so using linkTooltipPlugin
+        ctx.set(linkAttr.key, () => ({ target: "_blank" }));
         // update editor attributes
         ctx.update(editorViewOptionsCtx, (prev) => ({
           ...prev,
