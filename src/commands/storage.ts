@@ -1,21 +1,12 @@
-import { ChangeType, makeChannel } from "../changeHandler";
 import {
   CommandType,
-  CreateNoteCommand,
   DeleteNoteCommand,
   LoadNoteTextCommand,
   RestoreNoteCommand,
   RetrieveFileListCommand,
-  SaveNoteCommand,
 } from "../commands";
 import { EventType } from "../events";
-import {
-  NoteCreating,
-  NoteDeleting,
-  NoteLoading,
-  NoteRestoring,
-  NoteSaving,
-} from "../model";
+import { NoteDeleting, NoteLoading, NoteRestoring } from "../model";
 import { getFile, getFiles } from "../sessionapi";
 
 interface FileData {
@@ -105,71 +96,17 @@ export const LoadNoteText = (note: NoteLoading): LoadNoteTextCommand => ({
   },
 });
 
-const updateChannel = makeChannel();
-
-// TODO: implement
-updateChannel.attachHandler(async (c) => {
-  console.log(JSON.stringify(c));
-
-  setTimeout(() => {
-    c.onSuccess();
-  }, 3000);
-
-  // TODO: handle errors
-});
-
-export const CreateNote = (note: NoteCreating): CreateNoteCommand => ({
-  type: CommandType.CreateNote,
-  note,
-  execute: (dispatch) => {
-    updateChannel.write({
-      type: ChangeType.Create,
-      note,
-      onSuccess: () => {
-        dispatch({
-          type: EventType.NoteCreated,
-          noteId: note.id,
-          path: "new path", // TODO:
-        });
-      },
-      onFailure: () => {},
-    });
-  },
-});
-
-export const SaveNote = (note: NoteSaving): SaveNoteCommand => ({
-  type: CommandType.SaveNote,
-  note,
-  execute: (dispatch) => {
-    updateChannel.write({
-      type: ChangeType.Save,
-      note,
-      onSuccess: () => {
-        dispatch({
-          type: EventType.NoteAllChangesSaved,
-          noteId: note.id,
-        });
-      },
-      onFailure: () => {},
-    });
-  },
-});
-
 export const DeleteNote = (note: NoteDeleting): DeleteNoteCommand => ({
   type: CommandType.DeleteNote,
   note,
   execute: (dispatch) => {
-    updateChannel.write({
-      type: ChangeType.Delete,
-      note,
-      onSuccess: () => {
-        dispatch({
-          type: EventType.NoteDeleted,
-          noteId: note.id,
-        });
-      },
-      onFailure: () => {},
-    });
+    // TODO:
+    setTimeout(() => {
+      dispatch({
+        type: EventType.NoteDeleted,
+        noteId: note.id,
+      });
+    }, 3000);
   },
 });
 
@@ -177,16 +114,12 @@ export const RestoreNote = (note: NoteRestoring): RestoreNoteCommand => ({
   type: CommandType.RestoreNote,
   note,
   execute: (dispatch) => {
-    updateChannel.write({
-      type: ChangeType.Restore,
-      note,
-      onSuccess: () => {
-        dispatch({
-          type: EventType.NoteRestored,
-          noteId: note.id,
-        });
-      },
-      onFailure: () => {},
-    });
+    // TODO:
+    setTimeout(() => {
+      dispatch({
+        type: EventType.NoteRestored,
+        noteId: note.id,
+      });
+    }, 3000);
   },
 });
