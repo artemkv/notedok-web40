@@ -2,11 +2,17 @@ import {
   CommandType,
   DeleteNoteCommand,
   LoadNoteTextCommand,
+  RenameNoteCommand,
   RestoreNoteCommand,
   RetrieveFileListCommand,
 } from "../commands";
 import { EventType } from "../events";
-import { NoteDeleting, NoteLoading, NoteRestoring } from "../model";
+import {
+  NoteDeleting,
+  NoteLoading,
+  NoteRenaming,
+  NoteRestoring,
+} from "../model";
 import { getFile, getFiles } from "../sessionapi";
 
 interface FileData {
@@ -93,6 +99,20 @@ export const LoadNoteText = (note: NoteLoading): LoadNoteTextCommand => ({
         err: `${err}`,
       });
     }
+  },
+});
+
+export const RenameNote = (note: NoteRenaming): RenameNoteCommand => ({
+  type: CommandType.RenameNote,
+  note,
+  execute: (dispatch) => {
+    // TODO:
+    setTimeout(() => {
+      dispatch({
+        type: EventType.NoteRenamed,
+        noteId: note.id,
+      });
+    }, 3000);
   },
 });
 

@@ -3,6 +3,7 @@ import { ScheduleIdTokenRefresh, StartUserSession } from "./commands/auth";
 import {
   DeleteNote,
   LoadNoteText,
+  RenameNote,
   RestoreNote,
   RetrieveFileList,
 } from "./commands/storage";
@@ -10,8 +11,10 @@ import {
   DeleteNoteRequestedEvent,
   LoadNoteTextSuccessEvent,
   NoteDeletedEvent,
+  NoteRenamedEvent,
   NoteRestoredEvent,
   NoteSelectedEvent,
+  NoteTitleUpdatedEvent,
   RestoreNoteRequestedEvent,
   RetrieveFileListSuccessEvent,
   SearchTextUpdatedEvent,
@@ -33,8 +36,10 @@ import {
   noteDeletedToRestoring,
   noteDeletingToDeleted,
   noteLoadedToDeleting,
+  noteLoadedToRenaming,
   noteLoadingToLoaded,
   noteRefToLoading,
+  noteRenamingToLoaded,
   noteRestoringToLoaded,
 } from "./noteLifecycle";
 
@@ -237,6 +242,56 @@ export const handleCreateNoteRequested = (
       },
     };
     return JustStateAuthenticated(newState);
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+export const handleNoteTitleUpdated = (
+  state: AppStateAuthenticated,
+  event: NoteTitleUpdatedEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const note = getNote(state.noteList.notes, event.noteId);
+
+    // TODO: make sure to handle all possible note states properly
+    if (note && note.state == NoteState.Loaded) {
+      if (note.title !== event.newTitle) {
+        const noteRenaming = noteLoadedToRenaming(note, event.newTitle);
+        const newState: AppStateAuthenticated = {
+          ...state,
+          noteList: {
+            ...state.noteList,
+            notes: replace(state.noteList.notes, noteRenaming),
+          },
+        };
+        return [newState, RenameNote(noteRenaming)];
+      }
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+export const handleNoteRenamed = (
+  state: AppStateAuthenticated,
+  event: NoteRenamedEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const note = getNote(state.noteList.notes, event.noteId);
+
+    // TODO: make sure to handle all possible note states properly
+    if (note && note.state == NoteState.Renaming) {
+      const noteLoaded = noteRenamingToLoaded(note);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteLoaded),
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
   }
 
   return JustStateAuthenticated(state);

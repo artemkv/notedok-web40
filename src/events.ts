@@ -81,10 +81,13 @@ export interface NoteLoadFailedEvent {
 
 export interface NoteTitleUpdatedEvent {
   type: EventType.NoteTitleUpdated;
+  noteId: string;
+  newTitle: string;
 }
 
 export interface NoteRenamedEvent {
   type: EventType.NoteRenamed;
+  noteId: string;
 }
 
 export interface EditNoteRequestedEvent {

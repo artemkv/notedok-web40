@@ -11,7 +11,8 @@ export enum CommandType {
   LoadNoteText,
 
   CreateNote,
-  SaveNote,
+  RenameNote,
+  SaveNoteText,
   DeleteNote,
   RestoreNote,
 }
@@ -43,6 +44,11 @@ export interface LoadNoteTextCommand extends Command<AppEvent> {
   note: Note;
 }
 
+export interface RenameNoteCommand extends Command<AppEvent> {
+  type: CommandType.RenameNote;
+  note: Note;
+}
+
 export interface DeleteNoteCommand extends Command<AppEvent> {
   type: CommandType.DeleteNote;
   note: NoteDeleting;
@@ -60,6 +66,7 @@ export type AppCommand =
   | ScheduleIdTokenRefreshCommand
   | RetrieveFileListCommand
   | LoadNoteTextCommand
+  | RenameNoteCommand
   | DeleteNoteCommand
   | RestoreNoteCommand;
 

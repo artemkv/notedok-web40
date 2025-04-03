@@ -1,40 +1,50 @@
 import { useEffect, useState } from "react";
 import uistrings from "../uistrings";
 import "./NoteTitleEditor.css";
+import { AppEvent, EventType } from "../events";
+import { Dispatch } from "../hooks/useReducer";
 
 const NoteTitleEditor = function NoteTitleEditor(props: {
   noteId: string;
   defaultTitle: string;
+  editable: boolean;
+  dispatch: Dispatch<AppEvent>;
 }) {
   // We reset to default title when note id changes
   const noteId = props.noteId;
   const defaultTitle = props.defaultTitle;
+  const editable = props.editable;
+  const dispatch = props.dispatch;
 
   // Local editor state
   const [title, setTitle] = useState(defaultTitle);
 
-  // TODO: title could also save on timer, just like text
+  // Update when note changes
   useEffect(() => {
-    setTitle(defaultTitle);
-
-    // TODO: actually review this
-    // this is on purpose. Only reload editor when noteId changes
-    // the default title may update, but it can be stale
-    // the most latest state is ephemeral, and is found inside the editor itself
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [noteId]);
+    setTitle(() => defaultTitle);
+  }, [noteId, defaultTitle]);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(() => e.target.value);
+    if (editable) {
+      setTitle(() => e.target.value);
+    }
   };
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    // TODO:
+    dispatch({
+      type: EventType.NoteTitleUpdated,
+      noteId,
+      newTitle: title,
+    });
     e.preventDefault();
   };
 
   const onBlur = () => {
-    // TODO:
+    dispatch({
+      type: EventType.NoteTitleUpdated,
+      noteId,
+      newTitle: title,
+    });
   };
 
   const onKeyUp = (e: React.KeyboardEvent) => {

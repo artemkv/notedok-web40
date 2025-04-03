@@ -4,8 +4,10 @@ import {
   handleEditNoteRequested,
   handleLoadNoteTextSuccess,
   handleNoteDeleted,
+  handleNoteRenamed,
   handleNoteRestored,
   handleNoteSelected,
+  handleNoteTitleUpdated,
   handleRestoreNoteRequested,
   handleRetrieveFileListSuccess,
   handleSearchTextUpdated,
@@ -58,6 +60,14 @@ export const Reducer = (
 
     if (event.type == EventType.EditNoteRequested) {
       return handleEditNoteRequested(state);
+    }
+
+    if (event.type == EventType.NoteTitleUpdated) {
+      return handleNoteTitleUpdated(state, event);
+    }
+
+    if (event.type == EventType.NoteRenamed) {
+      return handleNoteRenamed(state, event);
     }
 
     if (event.type == EventType.CreateNoteRequested) {

@@ -40,9 +40,18 @@ function EditorPanel(props: {
     );
   }
 
+  const isTitleEditable = () => {
+    if (note.state == NoteState.Loaded) {
+      return true;
+    }
+    // TODO: show spinner next to the title while saving?
+    return false;
+  };
+
   if (
     note.state == NoteState.New ||
     note.state == NoteState.Loaded ||
+    note.state == NoteState.Renaming ||
     note.state == NoteState.Deleting ||
     note.state == NoteState.Deleted ||
     note.state == NoteState.Restoring
@@ -58,6 +67,8 @@ function EditorPanel(props: {
           <NoteTitleEditor
             noteId={note.id}
             defaultTitle={getEffectiveTitle(note)}
+            editable={isTitleEditable()}
+            dispatch={dispatch}
           />
           <MilkdownProvider>
             <MilkdownEditor
