@@ -2,10 +2,7 @@ import {
   handleCreateNoteRequested,
   handleDeleteNoteRequested,
   handleLoadNoteTextSuccess,
-  handleNoteAllChangesSaved,
-  handleNoteCreated,
   handleNoteDeleted,
-  handleNoteReachedSavePoint,
   handleNoteRestored,
   handleNoteSelected,
   handleRestoreNoteRequested,
@@ -58,21 +55,13 @@ export const Reducer = (
       return handleLoadNoteTextSuccess(state, event);
     }
 
-    if (event.type == EventType.NoteReachedSavePoint) {
-      return handleNoteReachedSavePoint(state, event);
-    }
-
-    if (event.type == EventType.NoteAllChangesSaved) {
-      return handleNoteAllChangesSaved(state, event);
-    }
-
     if (event.type == EventType.CreateNoteRequested) {
       return handleCreateNoteRequested(state);
     }
 
-    if (event.type == EventType.NoteCreated) {
+    /* TODO: if (event.type == EventType.NoteCreated) {
       return handleNoteCreated(state, event);
-    }
+    }*/
 
     if (event.type == EventType.DeleteNoteRequested) {
       return handleDeleteNoteRequested(state, event);

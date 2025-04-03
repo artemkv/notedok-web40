@@ -5,12 +5,10 @@ import "./NoteTitleEditor.css";
 const NoteTitleEditor = function NoteTitleEditor(props: {
   noteId: string;
   defaultTitle: string;
-  reportTitle: (title: string) => void;
 }) {
   // We reset to default title when note id changes
   const noteId = props.noteId;
   const defaultTitle = props.defaultTitle;
-  const reportTitle = props.reportTitle;
 
   // Local editor state
   const [title, setTitle] = useState(defaultTitle);
@@ -30,12 +28,12 @@ const NoteTitleEditor = function NoteTitleEditor(props: {
   };
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    reportTitle(title);
+    // TODO:
     e.preventDefault();
   };
 
   const onBlur = () => {
-    reportTitle(title);
+    // TODO:
   };
 
   const onKeyUp = (e: React.KeyboardEvent) => {

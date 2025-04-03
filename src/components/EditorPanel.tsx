@@ -5,7 +5,7 @@ import ProgressIndicator from "./ProgressIndicator";
 import { MilkdownProvider } from "@milkdown/react";
 import MilkdownEditor from "./MilkdownEditor";
 import { Dispatch } from "../hooks/useReducer";
-import { AppEvent, EventType } from "../events";
+import { AppEvent } from "../events";
 import { getEffectiveText, getEffectiveTitle } from "../buisiness";
 import NoteTitleEditor from "./NoteTitleEditor";
 import ControlPanel from "./ControlPanel";
@@ -38,17 +38,6 @@ function EditorPanel(props: {
     );
   }
 
-  const reportTitle = (title: string) => {
-    dispatch({
-      type: EventType.NoteReachedSavePoint,
-      noteId: note.id,
-      currentTitle: title,
-      currentText: getEffectiveText(note), // TODO:
-    });
-  };
-
-  const reportText = (text: string) => {};
-
   // TODO: extract so that I don't have to deal with MilkdownProvider
   // TODO: provide the way to get back edits
 
@@ -61,8 +50,6 @@ function EditorPanel(props: {
   if (
     note.state == NoteState.New ||
     note.state == NoteState.Loaded ||
-    note.state == NoteState.Saving ||
-    note.state == NoteState.Creating ||
     note.state == NoteState.Deleting ||
     note.state == NoteState.Deleted ||
     note.state == NoteState.Restoring
@@ -75,13 +62,11 @@ function EditorPanel(props: {
           <NoteTitleEditor
             noteId={note.id}
             defaultTitle={getEffectiveTitle(note)}
-            reportTitle={reportTitle}
           />
           <MilkdownProvider>
             <MilkdownEditor
               noteId={note.id}
               defaultMarkdown={getEffectiveText(note)}
-              reportText={reportText}
             />
           </MilkdownProvider>
         </div>

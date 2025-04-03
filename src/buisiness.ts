@@ -1,20 +1,15 @@
 import { AppCommand, DoMany, DoNothing } from "./commands";
 import { ScheduleIdTokenRefresh, StartUserSession } from "./commands/auth";
 import {
-  CreateNote,
   DeleteNote,
   LoadNoteText,
   RestoreNote,
   RetrieveFileList,
-  SaveNote,
 } from "./commands/storage";
 import {
   DeleteNoteRequestedEvent,
   LoadNoteTextSuccessEvent,
-  NoteAllChangesSavedEvent,
-  NoteCreatedEvent,
   NoteDeletedEvent,
-  NoteReachedSavePointEvent,
   NoteRestoredEvent,
   NoteSelectedEvent,
   RestoreNoteRequestedEvent,
@@ -27,33 +22,34 @@ import {
   AppStateAuthenticated,
   AppStateUnauthenticated,
   AuthenticationStatus,
-  isNoteEditable,
   Note,
-  NoteEditable,
   NoteListState,
   NoteState,
 } from "./model";
 import {
   createNewNote,
   createNewNoteRef,
-  noteCreatingToLoaded,
   noteDeletedToRestoring,
   noteDeletingToDeleted,
   noteLoadedToDeleting,
-  noteLoadedToSaving,
   noteLoadingToLoaded,
-  noteNewToCreating,
   noteRefToLoading,
   noteRestoringToLoaded,
-  noteSavingToLoaded,
 } from "./noteLifecycle";
 
 // TODO: make sure to handle all possible note states properly
 export const getEffectiveTitle = (note: Note): string => {
-  if (note.state == NoteState.New) {
+  if (
+    note.state == NoteState.New ||
+    note.state == NoteState.CreatingFromText ||
+    note.state == NoteState.FailedToCreateFromText
+  ) {
     return "";
   }
-  if (note.state == NoteState.Saving) {
+  if (
+    note.state == NoteState.Renaming ||
+    note.state == NoteState.FailedToRename
+  ) {
     return note.newTitle;
   }
   return note.title;
@@ -68,10 +64,17 @@ export const getEffectiveText = (note: Note) => {
   ) {
     return "";
   }
-  if (note.state == NoteState.New) {
+  if (
+    note.state == NoteState.New ||
+    note.state == NoteState.CreatingFromTitle ||
+    note.state == NoteState.FailedToCreateFromTitle
+  ) {
     return "";
   }
-  if (note.state == NoteState.Saving) {
+  if (
+    note.state == NoteState.SavingText ||
+    note.state == NoteState.FailedToSaveText
+  ) {
     return note.newText;
   }
   return note.text;
@@ -196,79 +199,6 @@ export const handleLoadNoteTextSuccess = (
   return JustStateAuthenticated(state);
 };
 
-export const handleNoteReachedSavePoint = (
-  state: AppStateAuthenticated,
-  event: NoteReachedSavePointEvent
-): [AppStateAuthenticated, AppCommand] => {
-  if (state.noteList.state == NoteListState.Retrieved) {
-    const note = getNote(state.noteList.notes, event.noteId);
-
-    // TODO: make sure to handle all possible note states properly
-    if (
-      note &&
-      isNoteEditable(note) &&
-      hasChanged(note, event.currentTitle, event.currentText)
-    ) {
-      if (note.state == NoteState.Loaded) {
-        const noteSaving = noteLoadedToSaving(
-          note,
-          event.currentTitle,
-          event.currentText
-        );
-        const newState: AppStateAuthenticated = {
-          ...state,
-          noteList: {
-            ...state.noteList,
-            notes: replace(state.noteList.notes, noteSaving),
-          },
-        };
-        return [newState, SaveNote(noteSaving)];
-      }
-      if (note.state == NoteState.New) {
-        const noteCreating = noteNewToCreating(
-          note,
-          event.currentTitle,
-          event.currentText
-        );
-        const newState: AppStateAuthenticated = {
-          ...state,
-          noteList: {
-            ...state.noteList,
-            notes: replace(state.noteList.notes, noteCreating),
-          },
-        };
-        return [newState, CreateNote(noteCreating)];
-      }
-    }
-  }
-
-  return JustStateAuthenticated(state);
-};
-
-export const handleNoteAllChangesSaved = (
-  state: AppStateAuthenticated,
-  event: NoteAllChangesSavedEvent
-): [AppStateAuthenticated, AppCommand] => {
-  if (state.noteList.state == NoteListState.Retrieved) {
-    const note = getNote(state.noteList.notes, event.noteId);
-
-    // TODO: make sure to handle all possible note states properly
-    if (note && note.state == NoteState.Saving) {
-      const noteLoaded = noteSavingToLoaded(note);
-      const newState: AppStateAuthenticated = {
-        ...state,
-        noteList: {
-          ...state.noteList,
-          notes: replace(state.noteList.notes, noteLoaded),
-        },
-      };
-      return JustStateAuthenticated(newState);
-    }
-  }
-
-  return JustStateAuthenticated(state);
-};
-
 export const handleCreateNoteRequested = (
   state: AppStateAuthenticated
 ): [AppStateAuthenticated, AppCommand] => {
@@ -289,6 +219,7 @@ export const handleCreateNoteRequested = (
   return JustStateAuthenticated(state);
 };
 
+/* TODO:
 export const handleNoteCreated = (
   state: AppStateAuthenticated,
   event: NoteCreatedEvent
@@ -312,6 +243,7 @@ export const handleNoteCreated = (
 
   return JustStateAuthenticated(state);
 };
+*/
 
 export const handleDeleteNoteRequested = (
   state: AppStateAuthenticated,
@@ -420,16 +352,4 @@ const replace = (notes: Note[], note: Note): Note[] => {
 
 const getNote = (notes: Note[], noteId: string) => {
   return notes.find((x) => x.id === noteId);
-};
-
-const hasChanged = (
-  note: NoteEditable,
-  currentTitle: string,
-  currentText: string
-) => {
-  if (note.state == NoteState.New) {
-    return currentTitle !== "" || currentText !== "";
-  }
-
-  return note.title !== currentTitle || note.text != currentText;
 };

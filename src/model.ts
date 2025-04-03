@@ -5,16 +5,20 @@ export enum NoteState {
   Loading,
   Loaded,
   FailedToLoad,
-  Saving,
-  FailedToSave,
+  SavingText,
+  FailedToSaveText,
+  Renaming,
+  FailedToRename,
   Deleting,
   Deleted,
   FailedToDelete,
   Restoring,
   FailedToRestore,
   New,
-  Creating,
-  FailedToCreate,
+  CreatingFromTitle,
+  FailedToCreateFromTitle,
+  CreatingFromText,
+  FailedToCreateFromText,
   NoteLoading,
 }
 
@@ -53,20 +57,32 @@ export interface NoteFailedToLoad {
   err: string;
 }
 
-export interface NoteSaving {
-  state: NoteState.Saving;
+export interface NoteSavingText {
+  state: NoteState.SavingText;
 
   id: string;
   path: string;
   title: string;
   text: string;
 
-  newTitle: string;
   newText: string;
 }
 
-export interface NoteFailedToSave {
-  state: NoteState.FailedToSave;
+export interface NoteFailedToSaveText {
+  state: NoteState.FailedToSaveText;
+
+  id: string;
+  path: string;
+  title: string;
+  text: string;
+
+  newText: string;
+
+  err: string;
+}
+
+export interface NoteRenaming {
+  state: NoteState.Renaming;
 
   id: string;
   path: string;
@@ -74,7 +90,17 @@ export interface NoteFailedToSave {
   text: string;
 
   newTitle: string;
-  newText: string;
+}
+
+export interface NoteFailedToRename {
+  state: NoteState.FailedToRename;
+
+  id: string;
+  path: string;
+  title: string;
+  text: string;
+
+  newTitle: string;
 
   err: string;
 }
@@ -134,19 +160,33 @@ export interface NoteNew {
   id: string;
 }
 
-export interface NoteCreating {
-  state: NoteState.Creating;
+export interface NoteCreatingFromTitle {
+  state: NoteState.CreatingFromTitle;
 
   id: string;
   title: string;
+}
+
+export interface NoteFailedToCreateFromTitle {
+  state: NoteState.FailedToCreateFromTitle;
+
+  id: string;
+  title: string;
+
+  err: string;
+}
+
+export interface NoteCreatingFromText {
+  state: NoteState.CreatingFromText;
+
+  id: string;
   text: string;
 }
 
-export interface NoteFailedToCreate {
-  state: NoteState.FailedToCreate;
+export interface NoteFailedToCreateFromText {
+  state: NoteState.FailedToCreateFromText;
 
   id: string;
-  title: string;
   text: string;
 
   err: string;
@@ -157,38 +197,20 @@ export type Note =
   | NoteLoading
   | NoteLoaded
   | NoteFailedToLoad
-  | NoteSaving
-  | NoteFailedToSave
+  | NoteSavingText
+  | NoteFailedToSaveText
+  | NoteRenaming
+  | NoteFailedToRename
   | NoteDeleting
   | NoteDeleted
   | NoteFailedToDelete
   | NoteRestoring
   | NoteFailedToRestore
   | NoteNew
-  | NoteCreating
-  | NoteFailedToCreate;
-
-export type NoteEditable =
-  | NoteLoaded
-  | NoteSaving
-  | NoteFailedToSave
-  | NoteFailedToDelete
-  | NoteNew
-  | NoteCreating
-  | NoteFailedToCreate;
-
-// TODO: cross-check with the condition inside the editor panel
-export const isNoteEditable = (note: Note) => {
-  return (
-    note.state == NoteState.New ||
-    note.state == NoteState.Loaded ||
-    note.state == NoteState.Saving ||
-    note.state == NoteState.FailedToSave ||
-    note.state == NoteState.FailedToDelete ||
-    note.state == NoteState.Creating ||
-    note.state == NoteState.FailedToCreate
-  );
-};
+  | NoteCreatingFromTitle
+  | NoteFailedToCreateFromTitle
+  | NoteCreatingFromText
+  | NoteFailedToCreateFromText;
 
 // Note List
 

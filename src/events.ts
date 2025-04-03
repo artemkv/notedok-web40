@@ -1,4 +1,6 @@
-import { Note } from "./model";
+import { Note, NoteLoading } from "./model";
+
+// TODO: maybe I'll need separate events for the case path changes
 
 export enum EventType {
   // "Never" event is never triggered in the app
@@ -17,8 +19,11 @@ export enum EventType {
   LoadNoteTextSuccess,
   NoteLoadFailed,
 
-  NoteReachedSavePoint,
-  NoteAllChangesSaved,
+  NoteTitleUpdated,
+  NoteRenamed,
+
+  NoteSaveTextRequested,
+  NoteTextSaved,
 
   CreateNoteRequested,
   NoteCreated,
@@ -62,26 +67,30 @@ export interface NoteSelectedEvent {
 
 export interface LoadNoteTextSuccessEvent {
   type: EventType.LoadNoteTextSuccess;
-  note: Note;
+  note: NoteLoading;
   text: string;
 }
 
 export interface NoteLoadFailedEvent {
   type: EventType.NoteLoadFailed;
-  note: Note;
+  note: NoteLoading;
   err: string;
 }
 
-export interface NoteReachedSavePointEvent {
-  type: EventType.NoteReachedSavePoint;
-  noteId: string;
-  currentTitle: string;
-  currentText: string;
+export interface NoteTitleUpdatedEvent {
+  type: EventType.NoteTitleUpdated;
 }
 
-export interface NoteAllChangesSavedEvent {
-  type: EventType.NoteAllChangesSaved;
-  noteId: string;
+export interface NoteRenamedEvent {
+  type: EventType.NoteRenamed;
+}
+
+export interface NoteSaveTextRequestedEvent {
+  type: EventType.NoteSaveTextRequested;
+}
+
+export interface NoteTextSavedEvent {
+  type: EventType.NoteTextSaved;
 }
 
 export interface CreateNoteRequestedEvent {
@@ -128,8 +137,10 @@ export type AppEvent =
   | NoteSelectedEvent
   | LoadNoteTextSuccessEvent
   | NoteLoadFailedEvent
-  | NoteReachedSavePointEvent
-  | NoteAllChangesSavedEvent
+  | NoteTitleUpdatedEvent
+  | NoteRenamedEvent
+  | NoteSaveTextRequestedEvent
+  | NoteTextSavedEvent
   | CreateNoteRequestedEvent
   | NoteCreatedEvent
   | DeleteNoteRequestedEvent
