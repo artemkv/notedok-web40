@@ -21,6 +21,8 @@ V0.1
 
 Later
 
+- extract layout css into a single place
+- use ems/rems?
 - some note text doesn't wrap when browser width gets smaller (ai_general_methods)
 - "New" could be visible before loading any note
 - text placeholder for md

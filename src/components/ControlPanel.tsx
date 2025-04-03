@@ -56,6 +56,7 @@ function ControlPanel(props: { noteId: string; dispatch: Dispatch<AppEvent> }) {
     }
   };
 
+  // TODO: make buttons and extract into a separate component
   return (
     <div className="control-panel">
       <div className="control-panel-left">
