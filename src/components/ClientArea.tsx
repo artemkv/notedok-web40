@@ -13,7 +13,10 @@ function ClientArea(props: {
   const noteList = props.noteList;
   const dispatch = props.dispatch;
 
-  // TODO: review how I get to the selected note
+  const selectedNote = noteList.notes.find(
+    (x) => x.id === noteList.selectedNoteId
+  );
+
   return (
     <div className="client-area">
       <div className="client-area-left">
@@ -26,10 +29,7 @@ function ClientArea(props: {
         />
       </div>
       <div className="client-area-right">
-        <EditorPanel
-          note={noteList.notes.find((x) => x.id === noteList.selectedNoteId)}
-          dispatch={dispatch}
-        />
+        <EditorPanel note={selectedNote} dispatch={dispatch} />
       </div>
     </div>
   );

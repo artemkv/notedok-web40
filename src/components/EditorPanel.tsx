@@ -38,15 +38,6 @@ function EditorPanel(props: {
     );
   }
 
-  // TODO: extract so that I don't have to deal with MilkdownProvider
-  // TODO: provide the way to get back edits
-
-  // TODO: try make links clickable
-  // TODO: try to supper subscript and superscript
-  // TODO: Spellchecking in code blocks is annoying
-
-  // TODO: maybe #editor should be a separate div
-  // TODO: remove save button, it is for debugging
   if (
     note.state == NoteState.New ||
     note.state == NoteState.Loaded ||
@@ -54,6 +45,9 @@ function EditorPanel(props: {
     note.state == NoteState.Deleted ||
     note.state == NoteState.Restoring
   ) {
+    // TODO: try make links clickable
+    // TODO: try to support subscript and superscript
+    // TODO: Spellchecking in code blocks is annoying
     return (
       <div className="editor-panel">
         <div className="editor-panel-left" />

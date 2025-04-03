@@ -1,12 +1,6 @@
 import { AppEvent } from "./events";
 import { Command } from "./hooks/useReducer";
-import {
-  Note,
-  NoteCreating,
-  NoteDeleting,
-  NoteRestoring,
-  NoteSaving,
-} from "./model";
+import { Note, NoteDeleting, NoteRestoring } from "./model";
 
 export enum CommandType {
   DoNothing,
@@ -49,16 +43,6 @@ export interface LoadNoteTextCommand extends Command<AppEvent> {
   note: Note;
 }
 
-export interface CreateNoteCommand extends Command<AppEvent> {
-  type: CommandType.CreateNote;
-  note: NoteCreating;
-}
-
-export interface SaveNoteCommand extends Command<AppEvent> {
-  type: CommandType.SaveNote;
-  note: NoteSaving;
-}
-
 export interface DeleteNoteCommand extends Command<AppEvent> {
   type: CommandType.DeleteNote;
   note: NoteDeleting;
@@ -76,8 +60,6 @@ export type AppCommand =
   | ScheduleIdTokenRefreshCommand
   | RetrieveFileListCommand
   | LoadNoteTextCommand
-  | CreateNoteCommand
-  | SaveNoteCommand
   | DeleteNoteCommand
   | RestoreNoteCommand;
 

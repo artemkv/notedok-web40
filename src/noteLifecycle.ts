@@ -10,14 +10,14 @@ import {
   NoteFailedToLoad,
   NoteFailedToRename,
   NoteFailedToRestore,
-  NoteFailedToSave,
+  NoteFailedToSaveText,
   NoteLoaded,
   NoteLoading,
   NoteNew,
   NoteRef,
   NoteRenaming,
   NoteRestoring,
-  NoteSaving,
+  NoteSavingText,
   NoteState,
 } from "./model";
 
@@ -87,9 +87,9 @@ export const noteLoadingToLoaded = (
 export const noteLoadedToSaving = (
   note: NoteLoaded,
   newText: string
-): NoteSaving => {
+): NoteSavingText => {
   return {
-    state: NoteState.Saving,
+    state: NoteState.SavingText,
 
     id: note.id,
     path: note.path,
@@ -100,7 +100,7 @@ export const noteLoadedToSaving = (
   };
 };
 
-export const noteSavingToLoaded = (note: NoteSaving): NoteLoaded => {
+export const noteSavingToLoaded = (note: NoteSavingText): NoteLoaded => {
   return {
     state: NoteState.Loaded,
 
@@ -111,12 +111,12 @@ export const noteSavingToLoaded = (note: NoteSaving): NoteLoaded => {
   };
 };
 
-export const noteSavingToFailedToSave = (
-  note: NoteSaving,
+export const noteSavingTextToFailedToSaveText = (
+  note: NoteSavingText,
   err: string
-): NoteFailedToSave => {
+): NoteFailedToSaveText => {
   return {
-    state: NoteState.FailedToSave,
+    state: NoteState.FailedToSaveText,
 
     id: note.id,
     path: note.path,
@@ -129,11 +129,11 @@ export const noteSavingToFailedToSave = (
   };
 };
 
-export const noteFailedToSaveToSaving = (
-  note: NoteFailedToSave
-): NoteSaving => {
+export const noteFailedToSaveTextToSavingText = (
+  note: NoteFailedToSaveText
+): NoteSavingText => {
   return {
-    state: NoteState.Saving,
+    state: NoteState.SavingText,
 
     id: note.id,
     path: note.path,

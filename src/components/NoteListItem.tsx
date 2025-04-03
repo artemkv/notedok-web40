@@ -19,8 +19,10 @@ function NoteList(props: {
 
   const isPending = (note: Note) => {
     if (
-      note.state == NoteState.Creating ||
-      note.state == NoteState.Saving ||
+      note.state == NoteState.CreatingFromTitle ||
+      note.state == NoteState.CreatingFromText ||
+      note.state == NoteState.SavingText ||
+      note.state == NoteState.Renaming ||
       note.state == NoteState.Deleting ||
       note.state == NoteState.Restoring
     ) {
