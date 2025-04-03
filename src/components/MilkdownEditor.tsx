@@ -21,9 +21,11 @@ import { useEffect } from "react";
 
 const MilkdownEditor = function MilkdownEditor(props: {
   noteId: string;
+  editable: boolean;
   defaultMarkdown: string;
 }) {
   const noteId = props.noteId;
+  const editable = props.editable;
   const defaultMarkdown = props.defaultMarkdown;
 
   // TODO: add toolbar with commands (https://milkdown.dev/docs/guide/commands)
@@ -46,6 +48,7 @@ const MilkdownEditor = function MilkdownEditor(props: {
             // set the class to apply 'github-markdown-css'
             class: "markdown-body",
           },
+          editable: () => editable,
         }));
         // this is for link tooltip
         configureLinkTooltip(ctx);
@@ -84,11 +87,12 @@ const MilkdownEditor = function MilkdownEditor(props: {
       });
     };
 
-    // this is on purpose. Only reload editor when noteId changes
+    // TODO: actually review this
+    // this is on purpose. Only reload editor when noteId or editor status change
     // the default markdown may update, but it can be stale
     // the most latest state is ephemeral, and is found inside the editor itself
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [noteId]);
+  }, [noteId, editable]);
 
   return <Milkdown />;
 };

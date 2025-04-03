@@ -17,6 +17,7 @@ const NoteTitleEditor = function NoteTitleEditor(props: {
   useEffect(() => {
     setTitle(defaultTitle);
 
+    // TODO: actually review this
     // this is on purpose. Only reload editor when noteId changes
     // the default title may update, but it can be stale
     // the most latest state is ephemeral, and is found inside the editor itself

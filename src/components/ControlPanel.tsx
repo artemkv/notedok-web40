@@ -22,6 +22,21 @@ function ControlPanel(props: { noteId: string; dispatch: Dispatch<AppEvent> }) {
     }
   };
 
+  const onEditNote = () => {
+    dispatch({
+      type: EventType.EditNoteRequested,
+    });
+  };
+
+  const noteEditButtonOnClick = (e: React.KeyboardEvent) => {
+    if (e.key === " " || e.key === "Enter") {
+      dispatch({
+        type: EventType.EditNoteRequested,
+      });
+      e.preventDefault();
+    }
+  };
+
   const onDeleteNote = () => {
     dispatch({
       type: EventType.DeleteNoteRequested,
@@ -70,6 +85,15 @@ function ControlPanel(props: { noteId: string; dispatch: Dispatch<AppEvent> }) {
         </a>
       </div>
       <div className="control-panel-right">
+        <a
+          className="control-panel-button"
+          tabIndex={0}
+          onClick={onEditNote}
+          onKeyDown={noteEditButtonOnClick}
+        >
+          {uistrings.EditButtonText}
+        </a>
+
         <a
           className="control-panel-button"
           tabIndex={0}

@@ -12,9 +12,11 @@ import ControlPanel from "./ControlPanel";
 
 function EditorPanel(props: {
   note: Note | undefined;
+  editable: boolean;
   dispatch: Dispatch<AppEvent>;
 }) {
   const note = props.note;
+  const editable = props.editable;
   const dispatch = props.dispatch;
 
   // TODO: make sure to handle all possible note states properly
@@ -60,6 +62,7 @@ function EditorPanel(props: {
           <MilkdownProvider>
             <MilkdownEditor
               noteId={note.id}
+              editable={editable}
               defaultMarkdown={getEffectiveText(note)}
             />
           </MilkdownProvider>

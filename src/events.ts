@@ -22,6 +22,8 @@ export enum EventType {
   NoteTitleUpdated,
   NoteRenamed,
 
+  EditNoteRequested,
+
   NoteSaveTextRequested,
   NoteTextSaved,
 
@@ -85,6 +87,10 @@ export interface NoteRenamedEvent {
   type: EventType.NoteRenamed;
 }
 
+export interface EditNoteRequestedEvent {
+  type: EventType.EditNoteRequested;
+}
+
 export interface NoteSaveTextRequestedEvent {
   type: EventType.NoteSaveTextRequested;
 }
@@ -139,6 +145,7 @@ export type AppEvent =
   | NoteLoadFailedEvent
   | NoteTitleUpdatedEvent
   | NoteRenamedEvent
+  | EditNoteRequestedEvent
   | NoteSaveTextRequestedEvent
   | NoteTextSavedEvent
   | CreateNoteRequestedEvent

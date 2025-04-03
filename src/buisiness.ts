@@ -22,6 +22,7 @@ import {
   AppStateAuthenticated,
   AppStateUnauthenticated,
   AuthenticationStatus,
+  EditorState,
   Note,
   NoteListState,
   NoteState,
@@ -122,6 +123,7 @@ export const handleRetrieveFileListSuccess = (
       notes: event.fileList.map((f, idx) => createNewNoteRef(idx, f)),
       selectedNoteId: "",
       searchText: "",
+      editorState: EditorState.Inactive,
     },
   };
   return JustStateAuthenticated(newState);
@@ -159,6 +161,7 @@ export const handleNoteSelected = (
           ...state.noteList,
           notes: replace(state.noteList.notes, noteLoading),
           selectedNoteId: noteLoading.id,
+          editorState: EditorState.Inactive, // TODO: review at which moment this should happen
         },
       };
       return [newState, LoadNoteText(noteLoading)];
@@ -170,6 +173,7 @@ export const handleNoteSelected = (
       noteList: {
         ...state.noteList,
         selectedNoteId: event.note.id,
+        editorState: EditorState.Inactive, // TODO: review at which moment this should happen
       },
     };
     return JustStateAuthenticated(newState);
@@ -190,6 +194,25 @@ export const handleLoadNoteTextSuccess = (
         noteList: {
           ...state.noteList,
           notes: replace(state.noteList.notes, noteLoaded),
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+export const handleEditNoteRequested = (
+  state: AppStateAuthenticated
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    if (state.noteList.editorState == EditorState.Inactive) {
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          editorState: EditorState.Editing,
         },
       };
       return JustStateAuthenticated(newState);

@@ -72,9 +72,7 @@ function NoteList(props: {
         <div className="note-list-item-status">
           <OrbitProgressIndicator />
         </div>
-      ) : (
-        <></>
-      )}
+      ) : null}
     </div>
   );
 }

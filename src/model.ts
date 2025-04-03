@@ -212,6 +212,13 @@ export type Note =
   | NoteCreatingFromText
   | NoteFailedToCreateFromText;
 
+// Editor
+
+export enum EditorState {
+  Inactive,
+  Editing,
+}
+
 // Note List
 
 export enum NoteListState {
@@ -229,6 +236,7 @@ export interface NoteListRetrieved {
   lastUsedNoteId: number;
   notes: Note[];
   selectedNoteId: string;
+  editorState: EditorState;
 }
 
 export type NoteList = NoteListRetrieving | NoteListRetrieved;
