@@ -1,28 +1,21 @@
 V0.1
 
-- --restore flow--
-- --search--
+- --basic search--
 
-- having note on a change queue will get state as more updates arrive
-- make a solid correct dedup (maybe the prev point can be solved here)
-
+- handle changes
 - collect changes from the editor
-- auto-save every 3 seconds, if there are changes
 
 - actually call backend
 - pass text as utf-8
 - handle all the errors
 
+- correct note item for all note states
 - correct editor state for all note states
 
 - handle .txt
 - switch to text edit
 
 - unit-tests
-
-- multiple updates don't stack up
-- review note list items in every state
-- review editor in every state
 
 - if item already selected, don't re-select it
 
@@ -42,3 +35,4 @@ Later
 - lens icon in search textbox
 - cross in search textbox to clean the search text
 - title field autocompletes by chrome
+- auto-save draft every 3 seconds, if there are changes
