@@ -44,13 +44,16 @@ const useReducer = <S, E>(
   const dispatch = useCallback(
     (event: E) => {
       setState((state) => {
+        // TODO: should it be wrapped in try-catch?
         const [newState, command] = reducer(state, event);
 
+        // TODO: if reducer is called twice before the command gets a chance to be executed, it gets lost
         commandContainerRef.current.pendingCommand = getPendingCommand(command);
         setTimeout(() => {
           const pendingCommand = commandContainerRef.current.pendingCommand;
           if (pendingCommand.hasCommand) {
             commandContainerRef.current.pendingCommand = NoPendingCommand;
+            // TODO: should it be wrapped in try-catch?
             pendingCommand.command.execute(dispatch);
           }
         }, 0);
