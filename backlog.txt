@@ -1,7 +1,5 @@
 V0.1
 
-- --basic search--
-
 - save edits from new note
 
 - actually call backend
@@ -15,9 +13,6 @@ V0.1
 - switch to text edit
 
 - unit-tests
-
-- auto-focus on title when note selected
-- auto-focus on text when edit is clicked
 
 Later
 
@@ -38,3 +33,5 @@ Later
 - cross in search textbox to clean the search text
 - title field autocompletes by chrome
 - auto-save draft every 3 seconds, if there are changes
+- auto-focus on title when note selected?
+- auto-focus on text when edit is clicked? (doesn't seem to be easy or possible)
