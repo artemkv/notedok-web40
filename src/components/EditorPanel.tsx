@@ -49,7 +49,7 @@ function EditorPanel(props: {
   }
 
   const isTitleEditable = () => {
-    if (note.state == NoteState.Loaded) {
+    if (note.state == NoteState.Loaded || note.state == NoteState.New) {
       return true;
     }
     // TODO: show spinner next to the title while saving?

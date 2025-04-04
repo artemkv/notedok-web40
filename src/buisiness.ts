@@ -213,26 +213,6 @@ export const handleLoadNoteTextSuccess = (
   return JustStateAuthenticated(state);
 };
 
-export const handleCreateNoteRequested = (
-  state: AppStateAuthenticated
-): [AppStateAuthenticated, AppCommand] => {
-  if (state.noteList.state == NoteListState.Retrieved) {
-    const newNote = createNewNote(state.noteList.lastUsedNoteId + 1);
-    const newState: AppStateAuthenticated = {
-      ...state,
-      noteList: {
-        ...state.noteList,
-        lastUsedNoteId: state.noteList.lastUsedNoteId + 1,
-        notes: [newNote, ...state.noteList.notes],
-        selectedNoteId: newNote.id,
-      },
-    };
-    return JustStateAuthenticated(newState);
-  }
-
-  return JustStateAuthenticated(state);
-};
-
 export const handleNoteTitleUpdated = (
   state: AppStateAuthenticated,
   event: NoteTitleUpdatedEvent
@@ -368,6 +348,27 @@ export const handleNoteTextSaved = (
       };
       return JustStateAuthenticated(newState);
     }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+export const handleCreateNoteRequested = (
+  state: AppStateAuthenticated
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const newNote = createNewNote(state.noteList.lastUsedNoteId + 1);
+    const newState: AppStateAuthenticated = {
+      ...state,
+      noteList: {
+        ...state.noteList,
+        lastUsedNoteId: state.noteList.lastUsedNoteId + 1,
+        notes: [newNote, ...state.noteList.notes],
+        selectedNoteId: newNote.id,
+        editorState: EditorState.Editing,
+      },
+    };
+    return JustStateAuthenticated(newState);
   }
 
   return JustStateAuthenticated(state);

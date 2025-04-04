@@ -108,6 +108,10 @@ export const Reducer = (
     if (event.type == EventType.NoteRestored) {
       return handleNoteRestored(state, event);
     }
+
+    if (event.type == EventType.RestApiError) {
+      // TODO: is this actually still in use??
+    }
   }
 
   console.error(
