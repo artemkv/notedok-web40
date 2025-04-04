@@ -2,8 +2,7 @@ V0.1
 
 - --basic search--
 
-- handle changes
-- collect changes from the editor
+- save edits from new note
 
 - actually call backend
 - pass text as utf-8
@@ -16,8 +15,6 @@ V0.1
 - switch to text edit
 
 - unit-tests
-
-- if item already selected, don't re-select it
 
 - auto-focus on title when note selected
 - auto-focus on text when edit is clicked

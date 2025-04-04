@@ -162,31 +162,33 @@ export const handleNoteSelected = (
   event: NoteSelectedEvent
 ): [AppStateAuthenticated, AppCommand] => {
   if (state.noteList.state == NoteListState.Retrieved) {
-    // If ref -> trigger load
-    if (event.note.state == NoteState.Ref) {
-      const noteLoading = noteRefToLoading(event.note);
+    if (state.noteList.selectedNoteId !== event.note.id) {
+      // If ref -> trigger load
+      if (event.note.state == NoteState.Ref) {
+        const noteLoading = noteRefToLoading(event.note);
+        const newState: AppStateAuthenticated = {
+          ...state,
+          noteList: {
+            ...state.noteList,
+            notes: replace(state.noteList.notes, noteLoading),
+            selectedNoteId: noteLoading.id,
+            editorState: EditorState.Inactive, // TODO: review at which moment this should happen
+          },
+        };
+        return [newState, LoadNoteText(noteLoading)];
+      }
+
+      // Not ref -> simply update selection
       const newState: AppStateAuthenticated = {
         ...state,
         noteList: {
           ...state.noteList,
-          notes: replace(state.noteList.notes, noteLoading),
-          selectedNoteId: noteLoading.id,
+          selectedNoteId: event.note.id,
           editorState: EditorState.Inactive, // TODO: review at which moment this should happen
         },
       };
-      return [newState, LoadNoteText(noteLoading)];
+      return JustStateAuthenticated(newState);
     }
-
-    // Not ref -> simply update selection
-    const newState: AppStateAuthenticated = {
-      ...state,
-      noteList: {
-        ...state.noteList,
-        selectedNoteId: event.note.id,
-        editorState: EditorState.Inactive, // TODO: review at which moment this should happen
-      },
-    };
-    return JustStateAuthenticated(newState);
   }
 
   return JustStateAuthenticated(state);
