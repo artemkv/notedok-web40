@@ -22,122 +22,49 @@ function ControlPanel(props: {
     onNew();
   };
 
-  const newButtonOnKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === " " || e.key === "Enter") {
-      onNew();
-      e.preventDefault();
-    }
-  };
-
   const editButtonOnClick = () => {
     onEdit();
-  };
-
-  const editButtonOnKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === " " || e.key === "Enter") {
-      onEdit();
-      e.preventDefault();
-    }
   };
 
   const saveButtonOnClick = () => {
     onSave();
   };
 
-  const saveButtonOnKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === " " || e.key === "Enter") {
-      onSave();
-      e.preventDefault();
-    }
-  };
-
   const cancelButtonOnClick = () => {
     onCancel();
-  };
-
-  const cancelButtonOnKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === " " || e.key === "Enter") {
-      onCancel();
-      e.preventDefault();
-    }
   };
 
   const deleteButtonOnClick = () => {
     onDelete();
   };
 
-  const deleteButtonOnKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === " " || e.key === "Enter") {
-      onDelete();
-      e.preventDefault();
-    }
-  };
-
   const restoreButtonOnClick = () => {
     onRestore();
   };
 
-  const restoreButtonOnKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === " " || e.key === "Enter") {
-      onRestore();
-      e.preventDefault();
-    }
-  };
-
-  // TODO: make buttons and extract into a separate component
   return (
     <div className="control-panel">
       <div className="control-panel-left">
-        <a
-          className="control-panel-button"
-          tabIndex={0}
-          onClick={newButtonOnClick}
-          onKeyDown={newButtonOnKeyDown}
-        >
+        <button className="control-panel-button" onClick={newButtonOnClick}>
           {uistrings.NewButtonText}
-        </a>
+        </button>
       </div>
       <div className="control-panel-right">
-        <a
-          className="control-panel-button"
-          tabIndex={0}
-          onClick={editButtonOnClick}
-          onKeyDown={editButtonOnKeyDown}
-        >
+        <button className="control-panel-button" onClick={editButtonOnClick}>
           {uistrings.EditButtonText}
-        </a>
-        <a
-          className="control-panel-button"
-          tabIndex={0}
-          onClick={saveButtonOnClick}
-          onKeyDown={saveButtonOnKeyDown}
-        >
+        </button>
+        <button className="control-panel-button" onClick={saveButtonOnClick}>
           {uistrings.SaveButtonText}
-        </a>
-        <a
-          className="control-panel-button"
-          tabIndex={0}
-          onClick={cancelButtonOnClick}
-          onKeyDown={cancelButtonOnKeyDown}
-        >
+        </button>
+        <button className="control-panel-button" onClick={cancelButtonOnClick}>
           {uistrings.CancelButtonText}
-        </a>
-        <a
-          className="control-panel-button"
-          tabIndex={0}
-          onClick={deleteButtonOnClick}
-          onKeyDown={deleteButtonOnKeyDown}
-        >
+        </button>
+        <button className="control-panel-button" onClick={deleteButtonOnClick}>
           {uistrings.DeleteButtonText}
-        </a>
-        <a
-          className="control-panel-button"
-          tabIndex={0}
-          onClick={restoreButtonOnClick}
-          onKeyDown={restoreButtonOnKeyDown}
-        >
+        </button>
+        <button className="control-panel-button" onClick={restoreButtonOnClick}>
           {uistrings.RestoreButtonText}
-        </a>
+        </button>
       </div>
     </div>
   );

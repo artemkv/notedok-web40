@@ -1,9 +1,14 @@
 .milkdown {
   flex: 1;
+  padding-bottom: 16px;
 }
 
 .markdown-body {
   color: #101720;
+}
+
+.milkdown a {
+  color: #0969DA;
 }
 
 milkdown-link-preview {

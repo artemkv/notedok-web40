@@ -11,3 +11,7 @@
     color: #101720;
     text-overflow: ellipsis;
 }
+
+.note-title::placeholder {
+    color: grey;
+}

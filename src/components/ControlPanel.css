@@ -15,7 +15,10 @@
 
 .control-panel-button {
     font-size: 13px;
-    color: #a9a9a9;
+    color: grey;
+    background-color: white;
+    border: none;
+    outline: none;
     margin-left: 4px;
     margin-right: 16px;
     cursor: pointer;
@@ -23,5 +26,9 @@
 }
 
 .control-panel-button:hover {
+    color: #000000;
+}
+
+.control-panel-button:focus {
     color: #000000;
 }

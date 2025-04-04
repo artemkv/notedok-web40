@@ -4,7 +4,7 @@ const OrbitProgressIndicator = function OrbitProgressIndicator() {
   return (
     <OrbitProgress
       variant="dotted"
-      color="#a9a9a9"
+      color="grey"
       style={{ fontSize: "2px" }}
       text=""
       textColor=""

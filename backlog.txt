@@ -19,6 +19,9 @@ V0.1
 
 - if item already selected, don't re-select it
 
+- auto-focus on title when note selected
+- auto-focus on text when edit is clicked
+
 Later
 
 - extract layout css into a single place
