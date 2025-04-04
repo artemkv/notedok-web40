@@ -94,6 +94,7 @@ V0.1
 
 Technical notes:
 
+- update the model arrows (from errors to normal states)
 - save edits from new note
 
 - actually call backend
