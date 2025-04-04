@@ -213,25 +213,6 @@ export const handleLoadNoteTextSuccess = (
   return JustStateAuthenticated(state);
 };
 
-export const handleEditNoteRequested = (
-  state: AppStateAuthenticated
-): [AppStateAuthenticated, AppCommand] => {
-  if (state.noteList.state == NoteListState.Retrieved) {
-    if (state.noteList.editorState == EditorState.Inactive) {
-      const newState: AppStateAuthenticated = {
-        ...state,
-        noteList: {
-          ...state.noteList,
-          editorState: EditorState.Editing,
-        },
-      };
-      return JustStateAuthenticated(newState);
-    }
-  }
-
-  return JustStateAuthenticated(state);
-};
-
 export const handleCreateNoteRequested = (
   state: AppStateAuthenticated
 ): [AppStateAuthenticated, AppCommand] => {
@@ -293,6 +274,44 @@ export const handleNoteRenamed = (
         noteList: {
           ...state.noteList,
           notes: replace(state.noteList.notes, noteLoaded),
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+export const handleEditNoteRequested = (
+  state: AppStateAuthenticated
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    if (state.noteList.editorState == EditorState.Inactive) {
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          editorState: EditorState.Editing,
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+export const handleCancelNoteEditRequested = (
+  state: AppStateAuthenticated
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    if (state.noteList.editorState == EditorState.Editing) {
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          editorState: EditorState.Inactive,
         },
       };
       return JustStateAuthenticated(newState);

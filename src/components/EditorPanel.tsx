@@ -81,7 +81,11 @@ function EditorPanel(props: {
     }
   };
 
-  const onCancel = () => {};
+  const onCancel = () => {
+    dispatch({
+      type: EventType.CancelNoteEditRequested,
+    });
+  };
 
   const onDelete = () => {
     dispatch({

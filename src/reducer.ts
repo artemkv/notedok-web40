@@ -1,4 +1,5 @@
 import {
+  handleCancelNoteEditRequested,
   handleCreateNoteRequested,
   handleDeleteNoteRequested,
   handleEditNoteRequested,
@@ -60,16 +61,20 @@ export const Reducer = (
       return handleLoadNoteTextSuccess(state, event);
     }
 
-    if (event.type == EventType.EditNoteRequested) {
-      return handleEditNoteRequested(state);
-    }
-
     if (event.type == EventType.NoteTitleUpdated) {
       return handleNoteTitleUpdated(state, event);
     }
 
     if (event.type == EventType.NoteRenamed) {
       return handleNoteRenamed(state, event);
+    }
+
+    if (event.type == EventType.EditNoteRequested) {
+      return handleEditNoteRequested(state);
+    }
+
+    if (event.type == EventType.CancelNoteEditRequested) {
+      return handleCancelNoteEditRequested(state);
     }
 
     if (event.type == EventType.NoteSaveTextRequested) {
