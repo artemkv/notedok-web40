@@ -1,37 +1,136 @@
 V0.1
 
+- --When the page opens, load all the notes (in batches of 1000)--
+- --Show all the notes in the list, title is derived from filename--
+- --If title is empty, show "No title" placeholder--
+- --Search textbox filters the notes immediately as you type--
+- --The filtering is by the title including the full search text, case insensitive--
+- --You can select a note in the list--
+- --When you select a note, the editor loads the note content--
+- --While loading, you see the progress bar--
+- --Once loaded, the editor shows the note title and note text, rendered as markdown--
+- --Title is immediately editable--
+- --Title placeholder for an existing note is "No title"--
+- --Text (markdown) is initially read-only--
+- --After you update title, note is renamed with the new filename derived from the new path--
+- --To update the title, you either submit by pressing enter or just move away from the input--
+- --While renaming, the note is shown (with new title) as pending change in the list (orbit progress indicator)--
+- --While renaming, title becomes read-only--
+- While renaming, only button New is visible
+- --Once renamed, the note goes back to it's default state--
+- --If you press Esc while editing the title, it resets back to previous value--
+- By default, only buttons New, Edit, Delete are visible
+- Text placeholder for an existing note is "No text"
+- --To make text editable, you press Edit--
+- When text becomes editable, only buttons New, Save and Cancel are available
+- --If you press Cancel, the text goes back to read-only; all the edits are lost--
+- Alternatively, you can click Esc
+- --To save edits in the text, you need to click Save--
+- --While saving text, the note is shown as pending change in the list (orbit progress indicator)--
+- --Once clicked save, text becomes read-only--
+- While saving text, only button New is visible
+- --While saving text, title becomes read-only--
+- --Once text is saved, the note goes back to it's default state--
+- --If you select a different note with some changes in title, the title is saved, while you are moving to a different note--
+- The editor buttons' availability depends on that new selected note
+- --If you move to a different note with some changes in text, without saving, the changes are lost--
+- --When New button is clicked, the new note is created in UI--
+- --The new note is shown in the beginning of the list, with placeholder title "New note"--
+- Title placeholder for a new note is "New title"
+- Text placeholder for a new note is "No text"
+- Editing the note works the same as editing an existing note
+- Once changes are saved, the note stays in the beginning of the list
+- When you press Delete button, the note is shown as deleted (strike through) and pending change in the list
+- While deleting, only button New is visible
+- While deleting, title becomes read-only and shown as strike through
+- While deleting, text is shown in a very light grey
+- --You can move to any other note--
+- Once deleted, the note is no longer pending, the title and the text are shown in the same way as when deleting
+- When deleted note is selected, only buttons New and Restore are available
+- When you press Restore button, the note is shown as pending, but still as deleted
+- While restoring, only button New is visible
+- Once restored, the note goes back to it's default state
+
+- If note fails to load, show error and allow to retry. Re-selecting the note again also retries
+
+- If note fails to rename, show error indicator in the list and the error in the editor
+- While in "failed to rename" state, only button New is visible, title and text are read-only
+- If you discard the error, the note moves to the default state, the editor keeps changes
+- You can also retry, in which case note goes to renaming again
+
+- If note fails to save text, show error indicator in the list and the error in the editor
+- While in "failed to save text" state, only button New is visible, title and text are read-only
+- If you discard the error, the note moves to the default state, the editor keeps changes
+- You can also retry, in which case note goes to saving text again
+
+- If note fails to delete, show error indicator in the list and the error in the editor
+- While in "failed to delete" state, only button New is visible, title and text are read-only
+- If you discard the error, the note moves to the default state, as if delete didn't happen
+- You can also retry, in which case note goes to deleting again
+
+- If note fails to restore, show error indicator in the list and the error in the editor
+- While in "failed to restore" state, the note is shown as if deleted in the list and the editor
+- If you discard the error, the note moves back to deleted state
+- You can also retry, in which case note goes to restoring again
+
+- If note fails to create from title, show error indicator in the list and the error in the editor
+- While in "failed to create" state, only button New is visible, title and text are read-only
+- If you discard the error, the note moves to back to new, the editor keeps changes
+- You can also retry, in which case note goes to creating again
+
+- If note fails to create from text, show error indicator in the list and the error in the editor
+- While in "failed to create" state, only button New is visible, title and text are read-only
+- If you discard the error, the note moves to back to new, the editor keeps changes
+- You can also retry, in which case note goes to creating again
+
+- If the note is plain text, it has a small marker ".txt" next to it in the note list (in place of orbit indicator)
+- When orbit indicator is visible, it replaces the marker
+- If the note is plain text, it is converted to markdown and rendered as if it was markdown
+- When you go into editing, instead of markdown editor, you have text area
+- The rest works the same
+
+- The note list is only shown when the browser window is wide enough; otherwise it is hidden
+
+
+Technical notes:
+
 - save edits from new note
 
 - actually call backend
 - pass text as utf-8
 - handle all the errors
 
-- correct note item for all note states
-- correct editor state for all note states
-
-- handle .txt
-- switch to text edit
+- double-check: correct note item for all note states
+- double-check: correct editor state for all note states
 
 - unit-tests
+- todos
 
-Later
 
+Later versions:
+
+- make layout responsive and shown correctly on mobile
 - extract layout css into a single place
 - use ems/rems?
-- some note text doesn't wrap when browser width gets smaller (ai_general_methods)
+- make layout good, so that all the headers are shown where they should be etc.
+- make sure UI is accessible with keyboard
+- switch to text edit for markdown notes
+- some note text doesn't wrap when browser width gets smaller (ai_general_methods). See why
 - "New" could be visible before loading any note
-- text placeholder for md
-- proper layout
 - consider search by multiple tokens from search text
-- bring back autosuggest
+- bring back autosuggest (and consider react-friendly library, but only if it is worth it)
 - editor panel with buttons for formatting
-- mobile layout
-- UI optimization (re-rendering)
-- rename to md command
+- UI optimizations (avoid re-renderings)
+- convert to md command for text files
 - sign out
 - lens icon in search textbox
 - cross in search textbox to clean the search text
-- title field autocompletes by chrome
+- title field autocompletes by chrome, it's annoying
 - auto-save draft every 3 seconds, if there are changes
-- auto-focus on title when note selected?
+- auto-focus on title when note selected? not sure
 - auto-focus on text when edit is clicked? (doesn't seem to be easy or possible)
+- re-order notes when filtering
+- show recent notes in their own section when more than 10 notes visible, ordered by date, latest first
+- show new notes in their own section
+- show note counter somewhere
+
