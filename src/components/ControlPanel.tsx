@@ -1,72 +1,85 @@
 import "./ControlPanel.css";
-import { AppEvent, EventType } from "../events";
-import { Dispatch } from "../hooks/useReducer";
 import uistrings from "../uistrings";
 
-function ControlPanel(props: { noteId: string; dispatch: Dispatch<AppEvent> }) {
-  const noteId = props.noteId;
-  const dispatch = props.dispatch;
+function ControlPanel(props: {
+  onNew: () => void;
+  onEdit: () => void;
+  onSave: () => void;
+  onCancel: () => void;
+  onDelete: () => void;
+  onRestore: () => void;
+}) {
+  const onNew = props.onNew;
+  const onEdit = props.onEdit;
+  const onSave = props.onSave;
+  const onCancel = props.onCancel;
+  const onDelete = props.onDelete;
+  const onRestore = props.onRestore;
 
-  const onCreateNote = () => {
-    dispatch({
-      type: EventType.CreateNoteRequested,
-    });
+  // TODO: control visibility
+
+  const newButtonOnClick = () => {
+    onNew();
   };
 
-  const noteCreateButtonOnClick = (e: React.KeyboardEvent) => {
+  const newButtonOnKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === " " || e.key === "Enter") {
-      dispatch({
-        type: EventType.CreateNoteRequested,
-      });
+      onNew();
       e.preventDefault();
     }
   };
 
-  const onEditNote = () => {
-    dispatch({
-      type: EventType.EditNoteRequested,
-    });
+  const editButtonOnClick = () => {
+    onEdit();
   };
 
-  const noteEditButtonOnClick = (e: React.KeyboardEvent) => {
+  const editButtonOnKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === " " || e.key === "Enter") {
-      dispatch({
-        type: EventType.EditNoteRequested,
-      });
+      onEdit();
       e.preventDefault();
     }
   };
 
-  const onDeleteNote = () => {
-    dispatch({
-      type: EventType.DeleteNoteRequested,
-      noteId,
-    });
+  const saveButtonOnClick = () => {
+    onSave();
   };
 
-  const noteDeleteButtonOnClick = (e: React.KeyboardEvent) => {
+  const saveButtonOnKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === " " || e.key === "Enter") {
-      dispatch({
-        type: EventType.DeleteNoteRequested,
-        noteId,
-      });
+      onSave();
       e.preventDefault();
     }
   };
 
-  const onRestoreNote = () => {
-    dispatch({
-      type: EventType.RestoreNoteRequested,
-      noteId,
-    });
+  const cancelButtonOnClick = () => {
+    onCancel();
   };
 
-  const noteRestoreButtonOnClick = (e: React.KeyboardEvent) => {
+  const cancelButtonOnKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === " " || e.key === "Enter") {
-      dispatch({
-        type: EventType.RestoreNoteRequested,
-        noteId,
-      });
+      onCancel();
+      e.preventDefault();
+    }
+  };
+
+  const deleteButtonOnClick = () => {
+    onDelete();
+  };
+
+  const deleteButtonOnKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === " " || e.key === "Enter") {
+      onDelete();
+      e.preventDefault();
+    }
+  };
+
+  const restoreButtonOnClick = () => {
+    onRestore();
+  };
+
+  const restoreButtonOnKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === " " || e.key === "Enter") {
+      onRestore();
       e.preventDefault();
     }
   };
@@ -78,8 +91,8 @@ function ControlPanel(props: { noteId: string; dispatch: Dispatch<AppEvent> }) {
         <a
           className="control-panel-button"
           tabIndex={0}
-          onClick={onCreateNote}
-          onKeyDown={noteCreateButtonOnClick}
+          onClick={newButtonOnClick}
+          onKeyDown={newButtonOnKeyDown}
         >
           {uistrings.NewButtonText}
         </a>
@@ -88,27 +101,42 @@ function ControlPanel(props: { noteId: string; dispatch: Dispatch<AppEvent> }) {
         <a
           className="control-panel-button"
           tabIndex={0}
-          onClick={onEditNote}
-          onKeyDown={noteEditButtonOnClick}
+          onClick={editButtonOnClick}
+          onKeyDown={editButtonOnKeyDown}
         >
           {uistrings.EditButtonText}
         </a>
-
         <a
           className="control-panel-button"
           tabIndex={0}
-          onClick={onRestoreNote}
-          onKeyDown={noteRestoreButtonOnClick}
+          onClick={saveButtonOnClick}
+          onKeyDown={saveButtonOnKeyDown}
         >
-          {uistrings.RestoreButtonText}
+          {uistrings.SaveButtonText}
         </a>
         <a
           className="control-panel-button"
           tabIndex={0}
-          onClick={onDeleteNote}
-          onKeyDown={noteDeleteButtonOnClick}
+          onClick={cancelButtonOnClick}
+          onKeyDown={cancelButtonOnKeyDown}
+        >
+          {uistrings.CancelButtonText}
+        </a>
+        <a
+          className="control-panel-button"
+          tabIndex={0}
+          onClick={deleteButtonOnClick}
+          onKeyDown={deleteButtonOnKeyDown}
         >
           {uistrings.DeleteButtonText}
+        </a>
+        <a
+          className="control-panel-button"
+          tabIndex={0}
+          onClick={restoreButtonOnClick}
+          onKeyDown={restoreButtonOnKeyDown}
+        >
+          {uistrings.RestoreButtonText}
         </a>
       </div>
     </div>

@@ -6,6 +6,7 @@ import {
   RenameNote,
   RestoreNote,
   RetrieveFileList,
+  SaveNoteText,
 } from "./commands/storage";
 import {
   DeleteNoteRequestedEvent,
@@ -13,7 +14,9 @@ import {
   NoteDeletedEvent,
   NoteRenamedEvent,
   NoteRestoredEvent,
+  NoteSaveTextRequestedEvent,
   NoteSelectedEvent,
+  NoteTextSavedEvent,
   NoteTitleUpdatedEvent,
   RestoreNoteRequestedEvent,
   RetrieveFileListSuccessEvent,
@@ -37,10 +40,12 @@ import {
   noteDeletingToDeleted,
   noteLoadedToDeleting,
   noteLoadedToRenaming,
+  noteLoadedToSavingText,
   noteLoadingToLoaded,
   noteRefToLoading,
   noteRenamingToLoaded,
   noteRestoringToLoaded,
+  noteSavingTextToLoaded,
 } from "./noteLifecycle";
 
 // TODO: make sure to handle all possible note states properly
@@ -283,6 +288,58 @@ export const handleNoteRenamed = (
     // TODO: make sure to handle all possible note states properly
     if (note && note.state == NoteState.Renaming) {
       const noteLoaded = noteRenamingToLoaded(note);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteLoaded),
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+export const handleNoteSaveTextRequested = (
+  state: AppStateAuthenticated,
+  event: NoteSaveTextRequestedEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const note = getNote(state.noteList.notes, event.noteId);
+
+    // TODO: make sure to handle all possible note states properly
+    if (note && note.state == NoteState.Loaded) {
+      if (note.text !== event.newText) {
+        const noteSavingText = noteLoadedToSavingText(note, event.newText);
+        const newState: AppStateAuthenticated = {
+          ...state,
+          noteList: {
+            ...state.noteList,
+            notes: replace(state.noteList.notes, noteSavingText),
+            editorState: EditorState.Inactive,
+          },
+        };
+        return [newState, SaveNoteText(noteSavingText)];
+      }
+      // TODO: in any case, stop editing
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+export const handleNoteTextSaved = (
+  state: AppStateAuthenticated,
+  event: NoteTextSavedEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const note = getNote(state.noteList.notes, event.noteId);
+
+    // TODO: make sure to handle all possible note states properly
+    if (note && note.state == NoteState.SavingText) {
+      const noteLoaded = noteSavingTextToLoaded(note);
       const newState: AppStateAuthenticated = {
         ...state,
         noteList: {

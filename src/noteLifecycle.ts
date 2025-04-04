@@ -84,7 +84,7 @@ export const noteLoadingToLoaded = (
   };
 };
 
-export const noteLoadedToSaving = (
+export const noteLoadedToSavingText = (
   note: NoteLoaded,
   newText: string
 ): NoteSavingText => {
@@ -100,7 +100,7 @@ export const noteLoadedToSaving = (
   };
 };
 
-export const noteSavingToLoaded = (note: NoteSavingText): NoteLoaded => {
+export const noteSavingTextToLoaded = (note: NoteSavingText): NoteLoaded => {
   return {
     state: NoteState.Loaded,
 

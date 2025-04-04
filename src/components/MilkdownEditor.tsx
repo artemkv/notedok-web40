@@ -6,8 +6,11 @@ import {
 import {
   defaultValueCtx,
   Editor,
+  EditorStatus,
+  editorViewCtx,
   editorViewOptionsCtx,
   rootCtx,
+  serializerCtx,
 } from "@milkdown/kit/core";
 import { clipboard } from "@milkdown/kit/plugin/clipboard";
 import { history } from "@milkdown/kit/plugin/history";
@@ -21,16 +24,21 @@ import { useEffect } from "react";
 
 const MilkdownEditor = function MilkdownEditor(props: {
   noteId: string;
-  editable: boolean;
   defaultMarkdown: string;
+  editable: boolean;
+  getMarkdownRef: { getMarkdown: () => string | undefined };
 }) {
   const noteId = props.noteId;
-  const editable = props.editable;
   const defaultMarkdown = props.defaultMarkdown;
+  const editable = props.editable;
+  const getMarkdownRef = props.getMarkdownRef;
 
   // TODO: add toolbar with commands (https://milkdown.dev/docs/guide/commands)
   // TODO: if I need to access it somewhere else, `useInstance()` hook is to the rescue
   // TODO: review plugins (https://milkdown.dev/docs/plugin/using-plugins)
+  // TODO: try to support subscript and superscript
+  // TODO: Spellchecking in code blocks is annoying, however it only happens in editing mode
+  // TODO: ESC should cancel?
 
   useEffect(() => {
     const editor = Editor.make()
@@ -61,6 +69,20 @@ const MilkdownEditor = function MilkdownEditor(props: {
       .use(indent)
       .create();
 
+    editor.then((editor) => {
+      const getMarkdown = () => {
+        if (editor.status == EditorStatus.Created) {
+          return editor.action((ctx) => {
+            const editorView = ctx.get(editorViewCtx);
+            const serializer = ctx.get(serializerCtx);
+            return serializer(editorView.state.doc);
+          });
+        }
+        return undefined;
+      };
+      getMarkdownRef.getMarkdown = getMarkdown;
+    });
+
     /* TODO:
     const editorAndInterval = editor.then((editor) => {
       // function to return the markdown as string
@@ -82,17 +104,12 @@ const MilkdownEditor = function MilkdownEditor(props: {
     // properly destroy
     return () => {
       editor.then((editor) => {
+        getMarkdownRef.getMarkdown = () => undefined;
         // TODO: clearInterval(x.intervalId);
         editor.destroy();
       });
     };
-
-    // TODO: actually review this
-    // this is on purpose. Only reload editor when noteId or editor status change
-    // the default markdown may update, but it can be stale
-    // the most latest state is ephemeral, and is found inside the editor itself
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [noteId, editable]);
+  }, [noteId, editable, getMarkdownRef, defaultMarkdown]);
 
   return <Milkdown />;
 };

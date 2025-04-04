@@ -1,7 +1,7 @@
 import "./ClientArea.css";
 import { AppEvent } from "../events";
 import { Dispatch } from "../hooks/useReducer";
-import { EditorState, NoteListRetrieved } from "../model";
+import { NoteListRetrieved } from "../model";
 import NoteList from "./NoteList";
 import EditorPanel from "./EditorPanel";
 import SearchPanel from "./SearchPanel";
@@ -17,8 +17,6 @@ function ClientArea(props: {
     (x) => x.id === noteList.selectedNoteId
   );
 
-  const isEditable = noteList.editorState == EditorState.Editing;
-
   return (
     <div className="client-area">
       <div className="client-area-left">
@@ -33,7 +31,7 @@ function ClientArea(props: {
       <div className="client-area-right">
         <EditorPanel
           note={selectedNote}
-          editable={isEditable}
+          editorState={noteList.editorState}
           dispatch={dispatch}
         />
       </div>

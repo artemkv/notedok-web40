@@ -49,6 +49,11 @@ export interface RenameNoteCommand extends Command<AppEvent> {
   note: Note;
 }
 
+export interface SaveNoteTextCommand extends Command<AppEvent> {
+  type: CommandType.SaveNoteText;
+  note: Note;
+}
+
 export interface DeleteNoteCommand extends Command<AppEvent> {
   type: CommandType.DeleteNote;
   note: NoteDeleting;
@@ -67,6 +72,7 @@ export type AppCommand =
   | RetrieveFileListCommand
   | LoadNoteTextCommand
   | RenameNoteCommand
+  | SaveNoteTextCommand
   | DeleteNoteCommand
   | RestoreNoteCommand;
 

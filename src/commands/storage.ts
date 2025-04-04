@@ -5,6 +5,7 @@ import {
   RenameNoteCommand,
   RestoreNoteCommand,
   RetrieveFileListCommand,
+  SaveNoteTextCommand,
 } from "../commands";
 import { EventType } from "../events";
 import {
@@ -12,6 +13,7 @@ import {
   NoteLoading,
   NoteRenaming,
   NoteRestoring,
+  NoteSavingText,
 } from "../model";
 import { getFile, getFiles } from "../sessionapi";
 
@@ -110,6 +112,20 @@ export const RenameNote = (note: NoteRenaming): RenameNoteCommand => ({
     setTimeout(() => {
       dispatch({
         type: EventType.NoteRenamed,
+        noteId: note.id,
+      });
+    }, 3000);
+  },
+});
+
+export const SaveNoteText = (note: NoteSavingText): SaveNoteTextCommand => ({
+  type: CommandType.SaveNoteText,
+  note,
+  execute: (dispatch) => {
+    // TODO:
+    setTimeout(() => {
+      dispatch({
+        type: EventType.NoteTextSaved,
         noteId: note.id,
       });
     }, 3000);
