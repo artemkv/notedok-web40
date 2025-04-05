@@ -16,23 +16,23 @@ V0.1
 - --To update the title, you either submit by pressing enter or just move away from the input--
 - --While renaming, the note is shown (with new title) as pending change in the list (orbit progress indicator)--
 - --While renaming, title becomes read-only--
-- While renaming, only button New is visible
+- --While renaming, only button New is visible--
 - --Once renamed, the note goes back to it's default state--
 - --If you press Esc while editing the title, it resets back to previous value--
-- By default, only buttons New, Edit, Delete are visible
+- --By default, only buttons New, Edit, Delete are visible--
 - Text placeholder for an existing note is "No text"
 - --To make text editable, you press Edit--
-- When text becomes editable, only buttons New, Save and Cancel are available
+- --When text becomes editable, only buttons New, Save and Cancel are available--
 - --If you press Cancel, the text goes back to read-only; all the edits are lost--
 - Alternatively, you can click Esc
 - --To save edits in the text, you need to click Save--
 - --While saving text, the note is shown as pending change in the list (orbit progress indicator)--
 - --Once clicked save, text becomes read-only--
-- While saving text, only button New is visible
+- --While saving text, only button New is visible--
 - --While saving text, title becomes read-only--
 - --Once text is saved, the note goes back to it's default state--
 - --If you select a different note with some changes in title, the title is saved, while you are moving to a different note--
-- The editor buttons' availability depends on that new selected note
+- --The editor buttons' availability depends on that new selected note--
 - --If you move to a different note with some changes in text, without saving, the changes are lost--
 - --When New button is clicked, the new note is created in UI--
 - --The new note is shown in the beginning of the list, with placeholder title "New note"--
@@ -41,15 +41,15 @@ V0.1
 - Editing the note works the same as editing an existing note
 - Once changes are saved, the note stays in the beginning of the list
 - When you press Delete button, the note is shown as deleted (strike through) and pending change in the list
-- While deleting, only button New is visible
+- --While deleting, only button New is visible--
 - While deleting, title becomes read-only and shown as strike through
 - While deleting, text is shown in a very light grey
 - --You can move to any other note--
 - Once deleted, the note is no longer pending, the title and the text are shown in the same way as when deleting
-- When deleted note is selected, only buttons New and Restore are available
+- --When deleted note is selected, only buttons New and Restore are available--
 - When you press Restore button, the note is shown as pending, but still as deleted
-- While restoring, only button New is visible
-- Once restored, the note goes back to it's default state
+- --While restoring, only button New is visible--
+- --Once restored, the note goes back to it's default state--
 
 - If note fails to load, show error and allow to retry. Re-selecting the note again also retries
 
@@ -93,6 +93,11 @@ V0.1
 
 
 Technical notes:
+
+- while saving, show some orbit indicator instead of buttons, otherwise it's too empty
+
+- when clicked save, but no changes, nothing happens, but editor is still editable
+- except if you just load note, then edit-save, saves something, I don't know what
 
 - update the model arrows (from errors to normal states)
 - save edits from new note

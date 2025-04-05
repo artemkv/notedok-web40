@@ -132,6 +132,10 @@ export const SaveNoteText = (note: NoteSavingText): SaveNoteTextCommand => ({
   },
 });
 
+// TODO: CreateNewNoteWithTitle
+
+// TODO: CreateNewNoteWithText
+
 export const DeleteNote = (note: NoteDeleting): DeleteNoteCommand => ({
   type: CommandType.DeleteNote,
   note,

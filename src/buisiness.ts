@@ -97,6 +97,27 @@ export const filter = (notes: Note[], searchText: string) => {
   );
 };
 
+export const canEdit = (note: Note) => {
+  if (note.state == NoteState.Loaded || note.state == NoteState.New) {
+    return true;
+  }
+  return false;
+};
+
+export const canDelete = (note: Note) => {
+  if (note.state == NoteState.Loaded || note.state == NoteState.New) {
+    return true;
+  }
+  return false;
+};
+
+export const canRestore = (note: Note) => {
+  if (note.state == NoteState.Deleted) {
+    return true;
+  }
+  return false;
+};
+
 export const JustStateAuthenticated = (
   state: AppStateAuthenticated
 ): [AppStateAuthenticated, AppCommand] => [state, DoNothing];

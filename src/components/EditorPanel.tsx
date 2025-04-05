@@ -6,7 +6,13 @@ import { MilkdownProvider } from "@milkdown/react";
 import MilkdownEditor from "./MilkdownEditor";
 import { Dispatch } from "../hooks/useReducer";
 import { AppEvent, EventType } from "../events";
-import { getEffectiveText, getEffectiveTitle } from "../buisiness";
+import {
+  canDelete,
+  canEdit,
+  canRestore,
+  getEffectiveText,
+  getEffectiveTitle,
+} from "../buisiness";
 import NoteTitleEditor from "./NoteTitleEditor";
 import ControlPanel from "./ControlPanel";
 import { useRef } from "react";
@@ -115,11 +121,17 @@ function EditorPanel(props: {
         <div className="editor-panel-left" />
         <div id="editor" className="editor-panel-inner">
           <ControlPanel
+            showNew={true}
             onNew={onNew}
+            showEdit={canEdit(note) && editorState != EditorState.Editing}
             onEdit={onEdit}
+            showSave={editorState == EditorState.Editing}
             onSave={onSave}
+            showCancel={editorState == EditorState.Editing}
             onCancel={onCancel}
+            showDelete={canDelete(note)}
             onDelete={onDelete}
+            showRestore={canRestore(note)}
             onRestore={onRestore}
           />
           <NoteTitleEditor
