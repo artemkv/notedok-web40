@@ -32,3 +32,8 @@
 .control-panel-button:focus {
     color: #000000;
 }
+
+.control-panel-status {
+    margin-left: 4px;
+    margin-right: 16px;
+}

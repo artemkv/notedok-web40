@@ -107,6 +107,18 @@ function EditorPanel(props: {
     });
   };
 
+  const showControlPanelAsPending = () => {
+    if (
+      note.state == NoteState.Renaming ||
+      note.state == NoteState.SavingText ||
+      note.state == NoteState.Deleting ||
+      note.state == NoteState.Restoring
+    ) {
+      return true;
+    }
+    return false;
+  };
+
   if (
     note.state == NoteState.New ||
     note.state == NoteState.Loaded ||
@@ -133,6 +145,7 @@ function EditorPanel(props: {
             onDelete={onDelete}
             showRestore={canRestore(note)}
             onRestore={onRestore}
+            showProgress={showControlPanelAsPending()}
           />
           <NoteTitleEditor
             noteId={note.id}

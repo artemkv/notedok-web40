@@ -1,5 +1,6 @@
 import "./ControlPanel.css";
 import uistrings from "../uistrings";
+import OrbitProgressIndicator from "./OrbitProgressIndicator";
 
 function ControlPanel(props: {
   showNew: boolean;
@@ -19,6 +20,8 @@ function ControlPanel(props: {
 
   showRestore: boolean;
   onRestore: () => void;
+
+  showProgress: boolean;
 }) {
   const showNew = props.showNew;
   const onNew = props.onNew;
@@ -32,6 +35,7 @@ function ControlPanel(props: {
   const onDelete = props.onDelete;
   const showRestore = props.showRestore;
   const onRestore = props.onRestore;
+  const showProgress = props.showProgress;
 
   const newButtonOnClick = () => {
     onNew();
@@ -101,6 +105,7 @@ function ControlPanel(props: {
             {uistrings.RestoreButtonText}
           </button>
         ) : null}
+        {showProgress ? <OrbitProgressIndicator /> : null}
       </div>
     </div>
   );

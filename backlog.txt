@@ -50,6 +50,7 @@ V0.1
 - When you press Restore button, the note is shown as pending, but still as deleted
 - --While restoring, only button New is visible--
 - --Once restored, the note goes back to it's default state--
+- --When pending sync with backend, show orbit indicator instead of buttons--
 
 - If note fails to load, show error and allow to retry. Re-selecting the note again also retries
 
@@ -93,8 +94,6 @@ V0.1
 
 
 Technical notes:
-
-- while saving, show some orbit indicator instead of buttons, otherwise it's too empty
 
 - when clicked save, but no changes, nothing happens, but editor is still editable
 - except if you just load note, then edit-save, saves something, I don't know what
