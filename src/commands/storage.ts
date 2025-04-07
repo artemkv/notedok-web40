@@ -25,7 +25,7 @@ import {
   NoteSavingText,
 } from "../model";
 import { ApiError } from "../restapi";
-import { getFile, getFiles, renameFile } from "../sessionapi";
+import { getFile, getFiles, putFile, renameFile } from "../sessionapi";
 
 interface FileData {
   fileName: string;
@@ -95,14 +95,13 @@ export const RetrieveFileList = (): RetrieveFileListCommand => ({
 export const LoadNoteText = (note: NoteLoading): LoadNoteTextCommand => ({
   type: CommandType.LoadNoteText,
   note,
-  execute: (dispatch) => {
+  execute: async (dispatch) => {
     try {
-      getFile(note.path).then((text: string) => {
-        dispatch({
-          type: EventType.LoadNoteTextSuccess,
-          note,
-          text,
-        });
+      const text = await getFile(note.path);
+      dispatch({
+        type: EventType.LoadNoteTextSuccess,
+        note,
+        text,
       });
     } catch (err) {
       dispatch({
@@ -167,14 +166,21 @@ export const RenameNote = (note: NoteRenaming): RenameNoteCommand => ({
 export const SaveNoteText = (note: NoteSavingText): SaveNoteTextCommand => ({
   type: CommandType.SaveNoteText,
   note,
-  execute: (dispatch) => {
-    // TODO:
-    setTimeout(() => {
+  execute: async (dispatch) => {
+    try {
+      // Store at the exact path we loaded from
+      await putFile(note.path, note.newText);
       dispatch({
         type: EventType.NoteTextSaved,
         noteId: note.id,
       });
-    }, 3000);
+    } catch (err) {
+      dispatch({
+        type: EventType.FailedToSaveNoteText,
+        noteId: note.id,
+        err: `${err}`,
+      });
+    }
   },
 });
 

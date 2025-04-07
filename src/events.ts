@@ -27,6 +27,7 @@ export enum EventType {
   CancelNoteEditRequested,
   NoteSaveTextRequested,
   NoteTextSaved,
+  FailedToSaveNoteText,
 
   CreateNoteRequested,
   NoteCreated,
@@ -117,6 +118,12 @@ export interface NoteTextSavedEvent {
   noteId: string;
 }
 
+export interface FailedToSaveNoteTextEvent {
+  type: EventType.FailedToSaveNoteText;
+  noteId: string;
+  err: string;
+}
+
 export interface CreateNoteRequestedEvent {
   type: EventType.CreateNoteRequested;
 }
@@ -168,6 +175,7 @@ export type AppEvent =
   | CancelNoteEditRequestedEvent
   | NoteSaveTextRequestedEvent
   | NoteTextSavedEvent
+  | FailedToSaveNoteTextEvent
   | CreateNoteRequestedEvent
   | NoteCreatedEvent
   | DeleteNoteRequestedEvent

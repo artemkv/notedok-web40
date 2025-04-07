@@ -400,7 +400,6 @@ export const handleNoteTextSaved = (
   if (state.noteList.state == NoteListState.Retrieved) {
     const note = getNote(state.noteList.notes, event.noteId);
 
-    // TODO: make sure to handle all possible note states properly
     if (note && note.state == NoteState.SavingText) {
       const noteLoaded = noteSavingTextToLoaded(note);
       const newState: AppStateAuthenticated = {
