@@ -236,20 +236,30 @@ export const CreateNewNoteWithTitle = (
   },
 });
 
+// New notes are created as .md
 export const CreateNewNoteWithText = (
   note: NoteCreatingFromText
 ): CreateNewNoteWithTextCommand => ({
   type: CommandType.CreateNewNoteWithText,
   note,
-  execute: (dispatch) => {
-    // TODO:
-    setTimeout(() => {
+  execute: async (dispatch) => {
+    // Here we know that title is empty, so no need to even try storing it with an original path
+    // Immediately ask for a unique (empty) path
+    const path = generatePathFromTitleMd("", true);
+    try {
+      await putFile(path, note.text);
       dispatch({
         type: EventType.NoteCreated,
         noteId: note.id,
-        path: "TODO",
+        path,
       });
-    }, 3000);
+    } catch (err) {
+      dispatch({
+        type: EventType.FailedToCreateNoteFromText,
+        noteId: note.id,
+        err: `${err}`,
+      });
+    }
   },
 });
 

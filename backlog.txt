@@ -3,6 +3,7 @@ V0.1
 - --When the page opens, load all the notes (in batches of 1000)--
 - --Show all the notes in the list, title is derived from filename--
 - --If title is empty, show "No title" placeholder--
+- Sort notes alphabetically (case-insensitive), notes without title first
 - --Search textbox filters the notes immediately as you type--
 - --The filtering is by the title including the full search text, case insensitive--
 - --You can select a note in the list--
