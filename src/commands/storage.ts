@@ -26,6 +26,7 @@ import {
 } from "../model";
 import { ApiError } from "../restapi";
 import {
+  deleteFile,
   getFile,
   getFiles,
   postFile,
@@ -266,14 +267,20 @@ export const CreateNewNoteWithText = (
 export const DeleteNote = (note: NoteDeleting): DeleteNoteCommand => ({
   type: CommandType.DeleteNote,
   note,
-  execute: (dispatch) => {
-    // TODO:
-    setTimeout(() => {
+  execute: async (dispatch) => {
+    try {
+      await deleteFile(note.path);
       dispatch({
         type: EventType.NoteDeleted,
         noteId: note.id,
       });
-    }, 3000);
+    } catch (err) {
+      dispatch({
+        type: EventType.FailedToDeleteNote,
+        noteId: note.id,
+        err: `${err}`,
+      });
+    }
   },
 });
 

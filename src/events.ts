@@ -36,6 +36,7 @@ export enum EventType {
 
   DeleteNoteRequested,
   NoteDeleted,
+  FailedToDeleteNote,
 
   RestoreNoteRequested,
   NoteRestored,
@@ -158,6 +159,12 @@ export interface NoteDeletedEvent {
   noteId: string;
 }
 
+export interface FailedToDeleteNoteEvent {
+  type: EventType.FailedToDeleteNote;
+  noteId: string;
+  err: string;
+}
+
 export interface RestoreNoteRequestedEvent {
   type: EventType.RestoreNoteRequested;
   noteId: string;
@@ -196,6 +203,7 @@ export type AppEvent =
   | FailedToCreateNoteFromTextEvent
   | DeleteNoteRequestedEvent
   | NoteDeletedEvent
+  | FailedToDeleteNoteEvent
   | RestoreNoteRequestedEvent
   | NoteRestoredEvent
   | RestApiErrorEvent;
