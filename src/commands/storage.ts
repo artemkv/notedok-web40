@@ -25,7 +25,13 @@ import {
   NoteSavingText,
 } from "../model";
 import { ApiError } from "../restapi";
-import { getFile, getFiles, putFile, renameFile } from "../sessionapi";
+import {
+  getFile,
+  getFiles,
+  postFile,
+  putFile,
+  renameFile,
+} from "../sessionapi";
 
 interface FileData {
   fileName: string;
@@ -184,20 +190,49 @@ export const SaveNoteText = (note: NoteSavingText): SaveNoteTextCommand => ({
   },
 });
 
+// New notes are created as .md
 export const CreateNewNoteWithTitle = (
   note: NoteCreatingFromTitle
 ): CreateNewNoteWithTitleCommand => ({
   type: CommandType.CreateNewNoteWithTitle,
   note,
-  execute: (dispatch) => {
-    // TODO:
-    setTimeout(() => {
+  execute: async (dispatch) => {
+    // Title is not empty, ensured by business, so we first try to store with path derived from the title
+    const path = generatePathFromTitleMd(note.title, false);
+    try {
+      // Don't overwrite, in case not unique
+      await postFile(path, "");
       dispatch({
         type: EventType.NoteCreated,
         noteId: note.id,
-        path: "TODO",
+        path,
       });
-    }, 3000);
+    } catch (err) {
+      if ((err as ApiError).statusCode === 409) {
+        // Regenerate path from title, this time enfocing uniqueness
+        const newPath = generatePathFromTitleMd(note.title, true);
+        try {
+          await putFile(newPath, "");
+          dispatch({
+            type: EventType.NoteCreated,
+            noteId: note.id,
+            path: newPath,
+          });
+        } catch (err) {
+          dispatch({
+            type: EventType.FailedToCreateNoteFromTitle,
+            noteId: note.id,
+            err: `${err}`,
+          });
+        }
+      } else {
+        dispatch({
+          type: EventType.FailedToCreateNoteFromTitle,
+          noteId: note.id,
+          err: `${err}`,
+        });
+      }
+    }
   },
 });
 

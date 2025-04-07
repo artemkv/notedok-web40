@@ -444,7 +444,6 @@ export const handleNoteCreated = (
   if (state.noteList.state == NoteListState.Retrieved) {
     const note = getNote(state.noteList.notes, event.noteId);
 
-    // TODO: make sure to handle all possible note states properly
     if (note && note.state == NoteState.CreatingFromTitle) {
       const noteCreated = noteCreatingFromTitleToLoaded(note, event.path);
       const newState: AppStateAuthenticated = {
