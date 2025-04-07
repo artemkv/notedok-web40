@@ -3,12 +3,20 @@
   padding-bottom: 16px;
 }
 
-.markdown-body {
+.markdown-body * {
   color: #101720;
+}
+
+.markdown-body.note-text-deleted * {
+  color: lightgray;
 }
 
 .milkdown a {
   color: #0969DA;
+}
+
+.milkdown .markdown-body.note-text-deleted a {
+  color: #096bda4f;
 }
 
 milkdown-link-preview {

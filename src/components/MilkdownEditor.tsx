@@ -26,11 +26,13 @@ const MilkdownEditor = function MilkdownEditor(props: {
   noteId: string;
   defaultMarkdown: string;
   editable: boolean;
+  deleted: boolean;
   getMarkdownRef: { getMarkdown: () => string | undefined };
 }) {
   const noteId = props.noteId;
   const defaultMarkdown = props.defaultMarkdown;
   const editable = props.editable;
+  const deleted = props.deleted;
   const getMarkdownRef = props.getMarkdownRef;
 
   // TODO: add toolbar with commands (https://milkdown.dev/docs/guide/commands)
@@ -54,7 +56,9 @@ const MilkdownEditor = function MilkdownEditor(props: {
           ...prev,
           attributes: {
             // set the class to apply 'github-markdown-css'
-            class: "markdown-body",
+            class: deleted
+              ? "markdown-body note-text-deleted"
+              : "markdown-body",
           },
           editable: () => editable,
         }));
@@ -109,7 +113,7 @@ const MilkdownEditor = function MilkdownEditor(props: {
         editor.destroy();
       });
     };
-  }, [noteId, editable, getMarkdownRef, defaultMarkdown]);
+  }, [noteId, editable, getMarkdownRef, defaultMarkdown, deleted]);
 
   return <Milkdown />;
 };

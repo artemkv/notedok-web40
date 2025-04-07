@@ -8,12 +8,14 @@ const NoteTitleEditor = function NoteTitleEditor(props: {
   noteId: string;
   defaultTitle: string;
   editable: boolean;
+  deleted: boolean;
   dispatch: Dispatch<AppEvent>;
 }) {
   // We reset to default title when note id changes
   const noteId = props.noteId;
   const defaultTitle = props.defaultTitle;
   const editable = props.editable;
+  const deleted = props.deleted;
   const dispatch = props.dispatch;
 
   // Local editor state
@@ -55,17 +57,23 @@ const NoteTitleEditor = function NoteTitleEditor(props: {
 
   return (
     <form onSubmit={onSubmit}>
-      <input
-        id={`${noteId}_title`}
-        className="note-title"
-        type="text"
-        value={title}
-        onChange={onChange}
-        onBlur={onBlur}
-        onKeyUp={onKeyUp}
-        placeholder={uistrings.NoteTitlePlaceholder}
-        maxLength={50}
-      />
+      {deleted ? (
+        <del>
+          <div className="note-title">{title}</div>
+        </del>
+      ) : (
+        <input
+          id={`${noteId}_title`}
+          className="note-title"
+          type="text"
+          value={title}
+          onChange={onChange}
+          onBlur={onBlur}
+          onKeyUp={onKeyUp}
+          placeholder={uistrings.NoteTitlePlaceholder}
+          maxLength={50}
+        />
+      )}
     </form>
   );
 };

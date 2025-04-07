@@ -40,14 +40,14 @@ V0.1
 - Text placeholder for a new note is "No text"
 - Editing the note works the same as editing an existing note
 - Once changes are saved, the note stays in the beginning of the list
-- When you press Delete button, the note is shown as deleted (strike through) and pending change in the list
+- --When you press Delete button, the note is shown as deleted (strike through) and pending change in the list--
 - --While deleting, only button New is visible--
-- While deleting, title becomes read-only and shown as strike through
-- While deleting, text is shown in a very light grey
+- --While deleting, title becomes read-only and shown as strike through--
+- --While deleting, text is shown in a very light grey--
 - --You can move to any other note--
-- Once deleted, the note is no longer pending, the title and the text are shown in the same way as when deleting
+- --Once deleted, the note is no longer pending, the title and the text are shown in the same way as when deleting--
 - --When deleted note is selected, only buttons New and Restore are available--
-- When you press Restore button, the note is shown as pending, but still as deleted
+- --When you press Restore button, the note is shown as pending, but still as deleted--
 - --While restoring, only button New is visible--
 - --Once restored, the note goes back to it's default state--
 - --When pending sync with backend, show orbit indicator instead of buttons--

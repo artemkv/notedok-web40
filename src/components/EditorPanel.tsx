@@ -119,6 +119,18 @@ function EditorPanel(props: {
     return false;
   };
 
+  const showAsDeleted = () => {
+    if (
+      note.state == NoteState.Deleting ||
+      note.state == NoteState.Deleted ||
+      note.state == NoteState.Restoring ||
+      note.state == NoteState.FailedToRestore
+    ) {
+      return true;
+    }
+    return false;
+  };
+
   if (
     note.state == NoteState.New ||
     note.state == NoteState.Loaded ||
@@ -151,6 +163,7 @@ function EditorPanel(props: {
             noteId={note.id}
             defaultTitle={getEffectiveTitle(note)}
             editable={isTitleEditable()}
+            deleted={showAsDeleted()}
             dispatch={dispatch}
           />
           <MilkdownProvider>
@@ -158,6 +171,7 @@ function EditorPanel(props: {
               noteId={note.id}
               defaultMarkdown={getEffectiveText(note)}
               editable={isTextEditable}
+              deleted={showAsDeleted()}
               getMarkdownRef={getMarkdownRef.current}
             />
           </MilkdownProvider>
