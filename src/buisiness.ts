@@ -293,9 +293,8 @@ export const handleNoteRenamed = (
   if (state.noteList.state == NoteListState.Retrieved) {
     const note = getNote(state.noteList.notes, event.noteId);
 
-    // TODO: make sure to handle all possible note states properly
     if (note && note.state == NoteState.Renaming) {
-      const noteLoaded = noteRenamingToLoaded(note);
+      const noteLoaded = noteRenamingToLoaded(note, event.newPath);
       const newState: AppStateAuthenticated = {
         ...state,
         noteList: {

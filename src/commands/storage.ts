@@ -9,6 +9,11 @@ import {
   RetrieveFileListCommand,
   SaveNoteTextCommand,
 } from "../commands";
+import {
+  generatePathFromTitleMd,
+  generatePathFromTitleText,
+  isMarkdownFile,
+} from "../conversion";
 import { EventType } from "../events";
 import {
   NoteCreatingFromText,
@@ -19,7 +24,8 @@ import {
   NoteRestoring,
   NoteSavingText,
 } from "../model";
-import { getFile, getFiles } from "../sessionapi";
+import { ApiError } from "../restapi";
+import { getFile, getFiles, renameFile } from "../sessionapi";
 
 interface FileData {
   fileName: string;
@@ -108,17 +114,53 @@ export const LoadNoteText = (note: NoteLoading): LoadNoteTextCommand => ({
   },
 });
 
+// Renaming doesn't change the file format (.md is renamed to .md, .txt to .txt)
 export const RenameNote = (note: NoteRenaming): RenameNoteCommand => ({
   type: CommandType.RenameNote,
   note,
-  execute: (dispatch) => {
-    // TODO:
-    setTimeout(() => {
+  execute: async (dispatch) => {
+    const isMarkdown = isMarkdownFile(note.path);
+
+    // First time try with path derived from title
+    // Unless title is empty, in which case we immediately ask for a unique one
+    const newPath = isMarkdown
+      ? generatePathFromTitleMd(note.newTitle, note.newTitle === "")
+      : generatePathFromTitleText(note.newTitle, note.newTitle === "");
+    try {
+      await renameFile(note.path, newPath);
       dispatch({
         type: EventType.NoteRenamed,
         noteId: note.id,
+        newPath,
       });
-    }, 3000);
+    } catch (err) {
+      if ((err as ApiError).statusCode === 409) {
+        // Regenerate path from title, this time focing uniqueness
+        const newPath = isMarkdown
+          ? generatePathFromTitleMd(note.newTitle, true)
+          : generatePathFromTitleText(note.newTitle, true);
+        try {
+          await renameFile(note.path, newPath);
+          dispatch({
+            type: EventType.NoteRenamed,
+            noteId: note.id,
+            newPath,
+          });
+        } catch (err) {
+          dispatch({
+            type: EventType.FailedToRenameNote,
+            noteId: note.id,
+            err: `${err}`,
+          });
+        }
+      } else {
+        dispatch({
+          type: EventType.FailedToRenameNote,
+          noteId: note.id,
+          err: `${err}`,
+        });
+      }
+    }
   },
 });
 

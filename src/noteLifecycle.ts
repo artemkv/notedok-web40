@@ -160,12 +160,15 @@ export const noteLoadedToRenaming = (
   };
 };
 
-export const noteRenamingToLoaded = (note: NoteRenaming): NoteLoaded => {
+export const noteRenamingToLoaded = (
+  note: NoteRenaming,
+  newPath: string
+): NoteLoaded => {
   return {
     state: NoteState.Loaded,
 
     id: note.id,
-    path: note.path,
+    path: newPath,
     title: note.newTitle,
     text: note.text,
   };
