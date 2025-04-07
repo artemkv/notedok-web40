@@ -133,6 +133,8 @@ function EditorPanel(props: {
     return false;
   };
 
+  const isNew = note.state == NoteState.New;
+
   if (
     note.state == NoteState.New ||
     note.state == NoteState.Loaded ||
@@ -165,6 +167,7 @@ function EditorPanel(props: {
           />
           <NoteTitleEditor
             noteId={note.id}
+            isNew={isNew}
             defaultTitle={getEffectiveTitle(note)}
             editable={isTitleEditable()}
             deleted={showAsDeleted()}

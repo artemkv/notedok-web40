@@ -36,7 +36,7 @@ V0.1
 - --If you move to a different note with some changes in text, without saving, the changes are lost--
 - --When New button is clicked, the new note is created in UI--
 - --The new note is shown in the beginning of the list, with placeholder title "New note"--
-- Title placeholder for a new note is "New title"
+- --Title placeholder for a new note is "New title"--
 - Text placeholder for a new note is "No text"
 - --Editing the note works the same as editing an existing note--
 - --Once changes are saved, the note stays in the beginning of the list--

@@ -7,13 +7,14 @@ import { Dispatch } from "../hooks/useReducer";
 const NoteTitleEditor = function NoteTitleEditor(props: {
   noteId: string;
   defaultTitle: string;
+  isNew: boolean;
   editable: boolean;
   deleted: boolean;
   dispatch: Dispatch<AppEvent>;
 }) {
-  // We reset to default title when note id changes
   const noteId = props.noteId;
   const defaultTitle = props.defaultTitle;
+  const isNew = props.isNew;
   const editable = props.editable;
   const deleted = props.deleted;
   const dispatch = props.dispatch;
@@ -70,7 +71,11 @@ const NoteTitleEditor = function NoteTitleEditor(props: {
           onChange={onChange}
           onBlur={onBlur}
           onKeyUp={onKeyUp}
-          placeholder={uistrings.NoteTitlePlaceholder}
+          placeholder={
+            isNew
+              ? uistrings.NewNoteTitlePlaceholder
+              : uistrings.NoteTitlePlaceholder
+          }
           maxLength={50}
         />
       )}
