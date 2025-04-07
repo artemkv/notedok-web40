@@ -95,15 +95,12 @@ Technical notes:
 
 - when clicked save, but no changes, nothing happens, but editor is still editable
 - except if you just load note, then edit-save, saves something, I don't know what
-
 - it's strange that new note has "Save" available (because is editable by default), but then you move away and it disappears (as editor stops being editable)
-
-- update the model arrows (from errors to normal states)
-- save edits from new note
-
-- actually call backend
 - pass text as utf-8
+
+
 - handle all the errors
+- update the model arrows (from errors to normal states)
 
 - double-check: correct note item for all note states
 - double-check: correct editor state for all note states
