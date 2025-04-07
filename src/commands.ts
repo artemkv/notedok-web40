@@ -1,6 +1,14 @@
 import { AppEvent } from "./events";
 import { Command } from "./hooks/useReducer";
-import { Note, NoteDeleting, NoteRestoring } from "./model";
+import {
+  NoteCreatingFromText,
+  NoteCreatingFromTitle,
+  NoteDeleting,
+  NoteLoading,
+  NoteRenaming,
+  NoteRestoring,
+  NoteSavingText,
+} from "./model";
 
 export enum CommandType {
   DoNothing,
@@ -10,7 +18,8 @@ export enum CommandType {
   RetrieveFileList,
   LoadNoteText,
 
-  CreateNote,
+  CreateNewNoteWithTitle,
+  CreateNewNoteWithText,
   RenameNote,
   SaveNoteText,
   DeleteNote,
@@ -41,17 +50,27 @@ export interface RetrieveFileListCommand extends Command<AppEvent> {
 
 export interface LoadNoteTextCommand extends Command<AppEvent> {
   type: CommandType.LoadNoteText;
-  note: Note;
+  note: NoteLoading;
+}
+
+export interface CreateNewNoteWithTitleCommand extends Command<AppEvent> {
+  type: CommandType.CreateNewNoteWithTitle;
+  note: NoteCreatingFromTitle;
+}
+
+export interface CreateNewNoteWithTextCommand extends Command<AppEvent> {
+  type: CommandType.CreateNewNoteWithText;
+  note: NoteCreatingFromText;
 }
 
 export interface RenameNoteCommand extends Command<AppEvent> {
   type: CommandType.RenameNote;
-  note: Note;
+  note: NoteRenaming;
 }
 
 export interface SaveNoteTextCommand extends Command<AppEvent> {
   type: CommandType.SaveNoteText;
-  note: Note;
+  note: NoteSavingText;
 }
 
 export interface DeleteNoteCommand extends Command<AppEvent> {
@@ -71,6 +90,8 @@ export type AppCommand =
   | ScheduleIdTokenRefreshCommand
   | RetrieveFileListCommand
   | LoadNoteTextCommand
+  | CreateNewNoteWithTitleCommand
+  | CreateNewNoteWithTextCommand
   | RenameNoteCommand
   | SaveNoteTextCommand
   | DeleteNoteCommand

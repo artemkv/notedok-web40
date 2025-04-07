@@ -1,6 +1,8 @@
 import { AppCommand, DoMany, DoNothing } from "./commands";
 import { ScheduleIdTokenRefresh, StartUserSession } from "./commands/auth";
 import {
+  CreateNewNoteWithText,
+  CreateNewNoteWithTitle,
   DeleteNote,
   LoadNoteText,
   RenameNote,
@@ -11,6 +13,7 @@ import {
 import {
   DeleteNoteRequestedEvent,
   LoadNoteTextSuccessEvent,
+  NoteCreatedEvent,
   NoteDeletedEvent,
   NoteRenamedEvent,
   NoteRestoredEvent,
@@ -36,12 +39,16 @@ import {
 import {
   createNewNote,
   createNewNoteRef,
+  noteCreatingFromTextToLoaded,
+  noteCreatingFromTitleToLoaded,
   noteDeletedToRestoring,
   noteDeletingToDeleted,
   noteLoadedToDeleting,
   noteLoadedToRenaming,
   noteLoadedToSavingText,
   noteLoadingToLoaded,
+  noteNewToCreatingFromText,
+  noteNewToCreatingFromTitle,
   noteRefToLoading,
   noteRenamingToLoaded,
   noteRestoringToLoaded,
@@ -257,6 +264,23 @@ export const handleNoteTitleUpdated = (
         return [newState, RenameNote(noteRenaming)];
       }
     }
+
+    if (note && note.state == NoteState.New) {
+      if (event.newTitle != "") {
+        const noteCreatingFromTitle = noteNewToCreatingFromTitle(
+          note,
+          event.newTitle
+        );
+        const newState: AppStateAuthenticated = {
+          ...state,
+          noteList: {
+            ...state.noteList,
+            notes: replace(state.noteList.notes, noteCreatingFromTitle),
+          },
+        };
+        return [newState, CreateNewNoteWithTitle(noteCreatingFromTitle)];
+      }
+    }
   }
 
   return JustStateAuthenticated(state);
@@ -347,6 +371,24 @@ export const handleNoteSaveTextRequested = (
       }
       // TODO: in any case, stop editing
     }
+
+    if (note && note.state == NoteState.New) {
+      if (event.newText != "") {
+        const noteCreatingFromText = noteNewToCreatingFromText(
+          note,
+          event.newText
+        );
+        const newState: AppStateAuthenticated = {
+          ...state,
+          noteList: {
+            ...state.noteList,
+            notes: replace(state.noteList.notes, noteCreatingFromText),
+            editorState: EditorState.Inactive,
+          },
+        };
+        return [newState, CreateNewNoteWithText(noteCreatingFromText)];
+      }
+    }
   }
 
   return JustStateAuthenticated(state);
@@ -397,7 +439,6 @@ export const handleCreateNoteRequested = (
   return JustStateAuthenticated(state);
 };
 
-/* TODO:
 export const handleNoteCreated = (
   state: AppStateAuthenticated,
   event: NoteCreatedEvent
@@ -406,8 +447,20 @@ export const handleNoteCreated = (
     const note = getNote(state.noteList.notes, event.noteId);
 
     // TODO: make sure to handle all possible note states properly
-    if (note && note.state == NoteState.Creating) {
-      const noteCreated = noteCreatingToLoaded(note, event.path);
+    if (note && note.state == NoteState.CreatingFromTitle) {
+      const noteCreated = noteCreatingFromTitleToLoaded(note, event.path);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteCreated),
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+
+    if (note && note.state == NoteState.CreatingFromText) {
+      const noteCreated = noteCreatingFromTextToLoaded(note, event.path);
       const newState: AppStateAuthenticated = {
         ...state,
         noteList: {
@@ -421,7 +474,6 @@ export const handleNoteCreated = (
 
   return JustStateAuthenticated(state);
 };
-*/
 
 export const handleDeleteNoteRequested = (
   state: AppStateAuthenticated,

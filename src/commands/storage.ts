@@ -1,5 +1,7 @@
 import {
   CommandType,
+  CreateNewNoteWithTextCommand,
+  CreateNewNoteWithTitleCommand,
   DeleteNoteCommand,
   LoadNoteTextCommand,
   RenameNoteCommand,
@@ -9,6 +11,8 @@ import {
 } from "../commands";
 import { EventType } from "../events";
 import {
+  NoteCreatingFromText,
+  NoteCreatingFromTitle,
   NoteDeleting,
   NoteLoading,
   NoteRenaming,
@@ -132,9 +136,39 @@ export const SaveNoteText = (note: NoteSavingText): SaveNoteTextCommand => ({
   },
 });
 
-// TODO: CreateNewNoteWithTitle
+export const CreateNewNoteWithTitle = (
+  note: NoteCreatingFromTitle
+): CreateNewNoteWithTitleCommand => ({
+  type: CommandType.CreateNewNoteWithTitle,
+  note,
+  execute: (dispatch) => {
+    // TODO:
+    setTimeout(() => {
+      dispatch({
+        type: EventType.NoteCreated,
+        noteId: note.id,
+        path: "TODO",
+      });
+    }, 3000);
+  },
+});
 
-// TODO: CreateNewNoteWithText
+export const CreateNewNoteWithText = (
+  note: NoteCreatingFromText
+): CreateNewNoteWithTextCommand => ({
+  type: CommandType.CreateNewNoteWithText,
+  note,
+  execute: (dispatch) => {
+    // TODO:
+    setTimeout(() => {
+      dispatch({
+        type: EventType.NoteCreated,
+        noteId: note.id,
+        path: "TODO",
+      });
+    }, 3000);
+  },
+});
 
 export const DeleteNote = (note: NoteDeleting): DeleteNoteCommand => ({
   type: CommandType.DeleteNote,

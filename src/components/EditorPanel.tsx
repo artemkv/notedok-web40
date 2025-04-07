@@ -109,6 +109,8 @@ function EditorPanel(props: {
 
   const showControlPanelAsPending = () => {
     if (
+      note.state == NoteState.CreatingFromTitle ||
+      note.state == NoteState.CreatingFromText ||
       note.state == NoteState.Renaming ||
       note.state == NoteState.SavingText ||
       note.state == NoteState.Deleting ||
@@ -134,6 +136,8 @@ function EditorPanel(props: {
   if (
     note.state == NoteState.New ||
     note.state == NoteState.Loaded ||
+    note.state == NoteState.CreatingFromTitle ||
+    note.state == NoteState.CreatingFromText ||
     note.state == NoteState.Renaming ||
     note.state == NoteState.SavingText ||
     note.state == NoteState.Deleting ||

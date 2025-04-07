@@ -38,8 +38,8 @@ V0.1
 - --The new note is shown in the beginning of the list, with placeholder title "New note"--
 - Title placeholder for a new note is "New title"
 - Text placeholder for a new note is "No text"
-- Editing the note works the same as editing an existing note
-- Once changes are saved, the note stays in the beginning of the list
+- --Editing the note works the same as editing an existing note--
+- --Once changes are saved, the note stays in the beginning of the list--
 - --When you press Delete button, the note is shown as deleted (strike through) and pending change in the list--
 - --While deleting, only button New is visible--
 - --While deleting, title becomes read-only and shown as strike through--
@@ -97,6 +97,8 @@ Technical notes:
 
 - when clicked save, but no changes, nothing happens, but editor is still editable
 - except if you just load note, then edit-save, saves something, I don't know what
+
+- it's strange that new note has "Save" available (because is editable by default), but then you move away and it disappears (as editor stops being editable)
 
 - update the model arrows (from errors to normal states)
 - save edits from new note

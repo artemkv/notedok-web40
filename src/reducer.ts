@@ -4,6 +4,7 @@ import {
   handleDeleteNoteRequested,
   handleEditNoteRequested,
   handleLoadNoteTextSuccess,
+  handleNoteCreated,
   handleNoteDeleted,
   handleNoteRenamed,
   handleNoteRestored,
@@ -89,9 +90,9 @@ export const Reducer = (
       return handleCreateNoteRequested(state);
     }
 
-    /* TODO: if (event.type == EventType.NoteCreated) {
+    if (event.type == EventType.NoteCreated) {
       return handleNoteCreated(state, event);
-    }*/
+    }
 
     if (event.type == EventType.DeleteNoteRequested) {
       return handleDeleteNoteRequested(state, event);
