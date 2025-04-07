@@ -17,6 +17,7 @@ import {
   NoteDeletedEvent,
   NoteRenamedEvent,
   NoteRestoredEvent,
+  NoteRestoredOnNewPathEvent,
   NoteSaveTextRequestedEvent,
   NoteSelectedEvent,
   NoteTextSavedEvent,
@@ -52,6 +53,7 @@ import {
   noteRefToLoading,
   noteRenamingToLoaded,
   noteRestoringToLoaded,
+  noteRestoringToLoadedWithNewPath,
   noteSavingTextToLoaded,
 } from "./noteLifecycle";
 
@@ -550,9 +552,31 @@ export const handleNoteRestored = (
   if (state.noteList.state == NoteListState.Retrieved) {
     const note = getNote(state.noteList.notes, event.noteId);
 
-    // TODO: make sure to handle all possible note states properly
     if (note && note.state == NoteState.Restoring) {
       const noteLoaded = noteRestoringToLoaded(note);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteLoaded),
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+export const handleNoteRestoredOnNewPath = (
+  state: AppStateAuthenticated,
+  event: NoteRestoredOnNewPathEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const note = getNote(state.noteList.notes, event.noteId);
+
+    if (note && note.state == NoteState.Restoring) {
+      const noteLoaded = noteRestoringToLoadedWithNewPath(note, event.path);
       const newState: AppStateAuthenticated = {
         ...state,
         noteList: {

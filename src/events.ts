@@ -40,6 +40,8 @@ export enum EventType {
 
   RestoreNoteRequested,
   NoteRestored,
+  NoteRestoredOnNewPath,
+  FailedToRestoreNote,
 
   RestApiError,
 }
@@ -175,6 +177,18 @@ export interface NoteRestoredEvent {
   noteId: string;
 }
 
+export interface NoteRestoredOnNewPathEvent {
+  type: EventType.NoteRestoredOnNewPath;
+  noteId: string;
+  path: string;
+}
+
+export interface FailedToRestoreNoteEvent {
+  type: EventType.FailedToRestoreNote;
+  noteId: string;
+  err: string;
+}
+
 export interface RestApiErrorEvent {
   type: EventType.RestApiError;
   err: string;
@@ -206,4 +220,6 @@ export type AppEvent =
   | FailedToDeleteNoteEvent
   | RestoreNoteRequestedEvent
   | NoteRestoredEvent
+  | NoteRestoredOnNewPathEvent
+  | FailedToRestoreNoteEvent
   | RestApiErrorEvent;

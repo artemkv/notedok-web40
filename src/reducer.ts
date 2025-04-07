@@ -8,6 +8,7 @@ import {
   handleNoteDeleted,
   handleNoteRenamed,
   handleNoteRestored,
+  handleNoteRestoredOnNewPath,
   handleNoteSaveTextRequested,
   handleNoteSelected,
   handleNoteTextSaved,
@@ -110,8 +111,12 @@ export const Reducer = (
       return handleNoteRestored(state, event);
     }
 
+    if (event.type == EventType.NoteRestoredOnNewPath) {
+      return handleNoteRestoredOnNewPath(state, event);
+    }
+
     if (event.type == EventType.RestApiError) {
-      // TODO: is this actually still in use??
+      // TODO:
     }
   }
 

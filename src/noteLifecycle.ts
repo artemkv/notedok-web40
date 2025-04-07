@@ -293,6 +293,20 @@ export const noteRestoringToLoaded = (note: NoteRestoring): NoteLoaded => {
   };
 };
 
+export const noteRestoringToLoadedWithNewPath = (
+  note: NoteRestoring,
+  newPath: string
+): NoteLoaded => {
+  return {
+    state: NoteState.Loaded,
+
+    id: note.id,
+    path: newPath,
+    title: note.title,
+    text: note.text,
+  };
+};
+
 export const noteRestoringToFailedToRestore = (
   note: NoteRestoring,
   err: string

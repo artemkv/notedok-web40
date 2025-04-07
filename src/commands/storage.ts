@@ -284,16 +284,48 @@ export const DeleteNote = (note: NoteDeleting): DeleteNoteCommand => ({
   },
 });
 
+// Notes are restored in the same format (.md as .md, .txt as .txt)
 export const RestoreNote = (note: NoteRestoring): RestoreNoteCommand => ({
   type: CommandType.RestoreNote,
   note,
-  execute: (dispatch) => {
-    // TODO:
-    setTimeout(() => {
+  execute: async (dispatch) => {
+    try {
+      // Try to restore with exactly the same path as before, don't overwrite
+      await postFile(note.path, note.text);
       dispatch({
         type: EventType.NoteRestored,
         noteId: note.id,
       });
-    }, 3000);
+    } catch (err) {
+      if ((err as ApiError).statusCode === 409) {
+        const isMarkdown = isMarkdownFile(note.path);
+
+        // The path that suddenly is taken (almost unrealistic)
+        // Regenerate path from title, this time enfocing uniqueness
+        const newPath = isMarkdown
+          ? generatePathFromTitleMd(note.title, true)
+          : generatePathFromTitleText(note.title, true);
+        try {
+          await putFile(newPath, note.text);
+          dispatch({
+            type: EventType.NoteRestoredOnNewPath,
+            noteId: note.id,
+            path: newPath,
+          });
+        } catch (err) {
+          dispatch({
+            type: EventType.FailedToRestoreNote,
+            noteId: note.id,
+            err: `${err}`,
+          });
+        }
+      } else {
+        dispatch({
+          type: EventType.FailedToRestoreNote,
+          noteId: note.id,
+          err: `${err}`,
+        });
+      }
+    }
   },
 });
