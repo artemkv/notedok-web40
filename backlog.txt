@@ -20,11 +20,9 @@ V0.1
 - --Once renamed, the note goes back to it's default state--
 - --If you press Esc while editing the title, it resets back to previous value--
 - --By default, only buttons New, Edit, Delete are visible--
-- Text placeholder for an existing note is "No text"
 - --To make text editable, you press Edit--
 - --When text becomes editable, only buttons New, Save and Cancel are available--
 - --If you press Cancel, the text goes back to read-only; all the edits are lost--
-- Alternatively, you can click Esc
 - --To save edits in the text, you need to click Save--
 - --While saving text, the note is shown as pending change in the list (orbit progress indicator)--
 - --Once clicked save, text becomes read-only--
@@ -37,7 +35,6 @@ V0.1
 - --When New button is clicked, the new note is created in UI--
 - --The new note is shown in the beginning of the list, with placeholder title "New note"--
 - --Title placeholder for a new note is "New title"--
-- Text placeholder for a new note is "No text"
 - --Editing the note works the same as editing an existing note--
 - --Once changes are saved, the note stays in the beginning of the list--
 - --When you press Delete button, the note is shown as deleted (strike through) and pending change in the list--
@@ -112,6 +109,12 @@ Technical notes:
 
 - unit-tests
 - todos
+
+
+Not sure if possible:
+
+- Text placeholder for an existing and new note is "No text"
+- You can cancel md editing by clicking `Esc`
 
 
 Later versions:
