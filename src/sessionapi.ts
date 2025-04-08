@@ -92,13 +92,13 @@ export const getFile = (filename: string) => {
   });
 };
 
-export const postFile = (filename: string, text: string) => {
+export const postFile = (filename: string, text: Uint8Array) => {
   return callApi(() => {
     return api.postFile(getSession(), filename, text);
   });
 };
 
-export const putFile = (filename: string, text: string) => {
+export const putFile = (filename: string, text: Uint8Array) => {
   return callApi(() => {
     return api.putFile(getSession(), filename, text);
   });

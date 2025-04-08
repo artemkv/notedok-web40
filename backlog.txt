@@ -96,8 +96,9 @@ Technical notes:
 - when clicked save, but no changes, nothing happens, but editor is still editable
 - except if you just load note, then edit-save, saves something, I don't know what
 - it's strange that new note has "Save" available (because is editable by default), but then you move away and it disappears (as editor stops being editable)
-- pass text as utf-8
 
+- Support .txt files (plain text editor)
+- MD rendering sometimes fails, need to catch it and allow switching to text
 
 - handle all the errors
 - update the model arrows (from errors to normal states)

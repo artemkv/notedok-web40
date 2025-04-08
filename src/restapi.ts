@@ -67,7 +67,7 @@ function get(endpoint: string, session?: string) {
 
 function post(
   endpoint: string,
-  content: string,
+  content: Uint8Array | string,
   contentType: string,
   session?: string
 ) {
@@ -89,7 +89,7 @@ function post(
 
 function put(
   endpoint: string,
-  content: string,
+  content: Uint8Array | string,
   contentType: string,
   session?: string
 ) {
@@ -157,7 +157,7 @@ export const getFile = async (session: string, filename: string) => {
 export const postFile = async (
   session: string,
   filename: string,
-  content: string
+  content: Uint8Array
 ) => {
   const response = await post(
     `/files/${encodeURIComponent(filename)}`,
@@ -172,7 +172,7 @@ export const postFile = async (
 export const putFile = async (
   session: string,
   filename: string,
-  content: string
+  content: Uint8Array
 ) => {
   const response = await put(
     `/files/${encodeURIComponent(filename)}`,

@@ -62,6 +62,11 @@ const mapToFiles = (fileData: FileData[]): FileDataWithDate[] => {
 
 const PAGE_SIZE = 1000;
 
+const encode = (text: string) => {
+  const textEncoder = new TextEncoder(); // always utf-8
+  return textEncoder.encode(text); // returns a Uint8Array (which is TypedArray)
+};
+
 export const RetrieveFileList = (): RetrieveFileListCommand => ({
   type: CommandType.RetrieveFileList,
   execute: async (dispatch) => {
@@ -176,7 +181,7 @@ export const SaveNoteText = (note: NoteSavingText): SaveNoteTextCommand => ({
   execute: async (dispatch) => {
     try {
       // Store at the exact path we loaded from
-      await putFile(note.path, note.newText);
+      await putFile(note.path, encode(note.newText));
       dispatch({
         type: EventType.NoteTextSaved,
         noteId: note.id,
@@ -202,7 +207,7 @@ export const CreateNewNoteWithTitle = (
     const path = generatePathFromTitleMd(note.title, false);
     try {
       // Don't overwrite, in case not unique
-      await postFile(path, "");
+      await postFile(path, encode(""));
       dispatch({
         type: EventType.NoteCreated,
         noteId: note.id,
@@ -213,7 +218,7 @@ export const CreateNewNoteWithTitle = (
         // Regenerate path from title, this time enfocing uniqueness
         const newPath = generatePathFromTitleMd(note.title, true);
         try {
-          await putFile(newPath, "");
+          await putFile(newPath, encode(""));
           dispatch({
             type: EventType.NoteCreated,
             noteId: note.id,
@@ -248,7 +253,7 @@ export const CreateNewNoteWithText = (
     // Immediately ask for a unique (empty) path
     const path = generatePathFromTitleMd("", true);
     try {
-      await putFile(path, note.text);
+      await putFile(path, encode(note.text));
       dispatch({
         type: EventType.NoteCreated,
         noteId: note.id,
