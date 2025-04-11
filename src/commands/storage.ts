@@ -296,7 +296,7 @@ export const RestoreNote = (note: NoteRestoring): RestoreNoteCommand => ({
   execute: async (dispatch) => {
     try {
       // Try to restore with exactly the same path as before, don't overwrite
-      await postFile(note.path, note.text);
+      await postFile(note.path, encode(note.text));
       dispatch({
         type: EventType.NoteRestored,
         noteId: note.id,
@@ -311,7 +311,7 @@ export const RestoreNote = (note: NoteRestoring): RestoreNoteCommand => ({
           ? generatePathFromTitleMd(note.title, true)
           : generatePathFromTitleText(note.title, true);
         try {
-          await putFile(newPath, note.text);
+          await putFile(newPath, encode(note.text));
           dispatch({
             type: EventType.NoteRestoredOnNewPath,
             noteId: note.id,
