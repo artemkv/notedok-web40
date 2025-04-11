@@ -70,7 +70,7 @@ function NoteList(props: {
       note.state == NoteState.FailedToCreateFromTitle ||
       note.state == NoteState.FailedToCreateFromText
     ) {
-      return false;
+      return true;
     }
     return isMarkdownFile(note.path);
   };
