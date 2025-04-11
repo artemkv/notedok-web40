@@ -1,4 +1,6 @@
 import "./SearchPanel.css";
+import SearchIcon from "../assets/search.svg";
+import CloseIcon from "../assets/close.svg";
 import { AppEvent, EventType } from "../events";
 import { Dispatch } from "../hooks/useReducer";
 import uistrings from "../uistrings";
@@ -26,17 +28,32 @@ function SearchPanel(props: {
     }
   };
 
+  const onCloseClick = () => {
+    dispatch({
+      type: EventType.SearchTextUpdated,
+      searchText: "",
+    });
+  };
+
   return (
     <div className="search-panel">
-      <input
-        id="search_textbox"
-        type="text"
-        value={searchText}
-        onChange={onChange}
-        onKeyUp={onKeyUp}
-        className="search-textbox"
-        placeholder={uistrings.SearchTextBoxPlaceholder}
-      />
+      <div className="search-panel-input-container">
+        <img src={SearchIcon} />
+        <input
+          id="search_textbox"
+          type="text"
+          value={searchText}
+          onChange={onChange}
+          onKeyUp={onKeyUp}
+          className="search-textbox"
+          placeholder={uistrings.SearchTextBoxPlaceholder}
+        />
+        <img
+          className="search-panel-icon-close"
+          src={CloseIcon}
+          onClick={onCloseClick}
+        />
+      </div>
     </div>
   );
 }
