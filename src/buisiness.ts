@@ -549,6 +549,17 @@ export const handleDeleteNoteRequested = (
       };
       return [newState, DeleteNote(noteDeleting)];
     }
+
+    if (note && note.state == NoteState.New) {
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: state.noteList.notes.filter((x) => x.id != note.id),
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
   }
 
   return JustStateAuthenticated(state);

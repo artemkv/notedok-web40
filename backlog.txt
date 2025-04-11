@@ -4,6 +4,7 @@ V0.1
 - --Show all the notes in the list, title is derived from filename--
 - --If title is empty, show "No title" placeholder--
 - --Sort notes alphabetically (case-insensitive), notes without title first--
+- --Show note counter on top of the note list--
 - --Search textbox filters the notes immediately as you type--
 - --The filtering is by the title including the full search text, case insensitive--
 - --You can select a note in the list--
@@ -147,5 +148,4 @@ Later versions:
 - re-order notes when filtering
 - show recent notes in their own section when more than 10 notes visible, ordered by date, latest first
 - show new notes in their own section
-- show note counter somewhere
 
