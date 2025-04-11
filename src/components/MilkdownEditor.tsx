@@ -9,6 +9,7 @@ import {
   EditorStatus,
   editorViewCtx,
   editorViewOptionsCtx,
+  remarkStringifyOptionsCtx,
   rootCtx,
   serializerCtx,
 } from "@milkdown/kit/core";
@@ -46,7 +47,7 @@ const MilkdownEditor = function MilkdownEditor(props: {
   // TODO: try to support subscript and superscript
   // TODO: Spellchecking in code blocks is annoying, however it only happens in editing mode
   // TODO: ESC should cancel? Cannot find the way to handle this event
-  // TODO: markdown is transformed even w/o changes ('-' is replaced by '*', empty editor inserts '<br />\n')
+  // TODO: empty editor inserts '<br />\n' that I have to remove later; sometimes non-empty editor does this too
 
   useEffect(() => {
     setError("");
@@ -57,6 +58,10 @@ const MilkdownEditor = function MilkdownEditor(props: {
         ctx.set(rootCtx, "#editor");
         // pass the initial value
         ctx.set(defaultValueCtx, defaultMarkdown);
+        // control serialization
+        ctx.set(remarkStringifyOptionsCtx, {
+          bullet: "-",
+        });
         // when editing is enabled, the editor eats clicks, so using linkTooltipPlugin
         ctx.set(linkAttr.key, () => ({ target: "_blank" }));
         // update editor attributes
