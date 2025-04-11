@@ -136,7 +136,7 @@ Later versions:
 - bring back autosuggest (and consider react-friendly library, but only if it is worth it)
 - editor panel with buttons for formatting
 - UI optimizations (avoid re-renderings)
-- convert to md command for text files
+- convert to md command for text files (rename + reformat)
 - sign out
 - lens icon in search textbox
 - cross in search textbox to clean the search text
