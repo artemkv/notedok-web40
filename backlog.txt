@@ -148,4 +148,5 @@ Later versions:
 - re-order notes when filtering
 - show recent notes in their own section when more than 10 notes visible, ordered by date, latest first
 - show new notes in their own section
-
+- maybe tags could be in blue in the note list titles?
+- otherwise, maybe parts of the text that match the search could be in blue
