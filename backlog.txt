@@ -6,7 +6,7 @@ V0.1
 - --Sort notes alphabetically (case-insensitive), notes without title first--
 - --Show note counter on top of the note list--
 - --Search textbox filters the notes immediately as you type--
-- --The filtering is by the title including the full search text, case insensitive--
+- --The filtering is by the title, case insensitive; should include every token from the search text--
 - --You can select a note in the list--
 - --When you select a note, the editor loads the note content--
 - --While loading, you see the progress bar--
@@ -133,7 +133,6 @@ Later versions:
 - switch to text edit for markdown notes
 - some note text doesn't wrap when browser width gets smaller (ai_general_methods). See why
 - "New" could be visible before loading any note
-- consider search by multiple tokens from search text
 - bring back autosuggest (and consider react-friendly library, but only if it is worth it)
 - editor panel with buttons for formatting
 - UI optimizations (avoid re-renderings)
