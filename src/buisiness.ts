@@ -133,7 +133,7 @@ export const filter = (notes: Note[], searchText: string) => {
   );
   */
 
-  const searchTextLowerCase = searchText.toLocaleLowerCase();
+  const searchTextLowerCase = searchText.toLowerCase();
   return notes.filter((x) =>
     getEffectiveTitle(x).toLowerCase().includes(searchTextLowerCase)
   );
