@@ -38,21 +38,17 @@ function EditorPanel(props: {
     return <div className="editor-panel"></div>;
   }
 
-  // TODO: remove Ref
   if (note.state == NoteState.Ref) {
     return (
       <div className="editor-panel">
-        Ref
         <ProgressIndicator />
       </div>
     );
   }
 
-  // TODO: remove Loading
   if (note.state == NoteState.Loading) {
     return (
       <div className="editor-panel">
-        Loading
         <ProgressIndicator />
       </div>
     );
@@ -160,6 +156,7 @@ function EditorPanel(props: {
   const isNew = note.state == NoteState.New;
 
   const markdownEditor = () => {
+    // We are in fallback mode
     if (editorState == EditorState.EditingAsPlainText) {
       return (
         <PlainTextEditor
@@ -184,6 +181,7 @@ function EditorPanel(props: {
     );
   };
 
+  // Eventually will go away, when I convert all my notes to md
   const plainTextEditor = () => {
     if (editorState == EditorState.EditingAsPlainText) {
       return (

@@ -105,8 +105,6 @@ Technical notes:
 - --except if you just load note, then edit-save, saves something, I don't know what--
 - --MD editor re-formats the MD you pass to it. This breaks for new note and sometimes existing note--
 - --MD rendering sometimes fails, need to catch it and allow switching to text--
-- if ever MD returns 'undefined', it goes into the business logic, and might be saved
-- for that reason, I think I should lift the plain text editor up
 
 - handle all the errors
 - update the model arrows (from errors to normal states)

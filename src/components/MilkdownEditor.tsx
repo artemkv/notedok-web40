@@ -41,12 +41,12 @@ const MilkdownEditor = function MilkdownEditor(props: {
   const [error, setError] = useState<string>("");
 
   // TODO: add toolbar with commands (https://milkdown.dev/docs/guide/commands)
-  // TODO: if I need to access it somewhere else, `useInstance()` hook is to the rescue
+  // TODO: if I need to access it somewhere else, `useInstance()` hook is to the rescue - didn't work
   // TODO: review plugins (https://milkdown.dev/docs/plugin/using-plugins)
   // TODO: try to support subscript and superscript
   // TODO: Spellchecking in code blocks is annoying, however it only happens in editing mode
-  // TODO: ESC should cancel?
-  // TODO: markdown is transformed even w/o changes ('-' is replaced by '*', empty )
+  // TODO: ESC should cancel? Cannot find the way to handle this event
+  // TODO: markdown is transformed even w/o changes ('-' is replaced by '*', empty editor inserts '<br />\n')
 
   useEffect(() => {
     setError("");
@@ -127,7 +127,8 @@ const MilkdownEditor = function MilkdownEditor(props: {
           editor.destroy();
         })
         .catch(() => {
-          // This should already be handled (see above)
+          getMarkdownRef.getMarkdown = () => undefined;
+          // TODO: clearInterval(x.intervalId);
         });
     };
   }, [noteId, editable, getMarkdownRef, defaultMarkdown, deleted, onError]);
