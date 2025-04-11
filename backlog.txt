@@ -106,6 +106,7 @@ Technical notes:
 - --except if you just load note, then edit-save, saves something, I don't know what--
 - --MD editor re-formats the MD you pass to it. This breaks for new note and sometimes existing note--
 - --MD rendering sometimes fails, need to catch it and allow switching to text--
+- --UI optimizations (avoid re-renderings)--
 
 - handle all the errors
 - update the model arrows (from errors to normal states)
@@ -135,7 +136,6 @@ Later versions:
 - "New" could be visible before loading any note
 - bring back autosuggest (and consider react-friendly library, but only if it is worth it)
 - editor panel with buttons for formatting
-- UI optimizations (avoid re-renderings)
 - convert to md command for text files (rename + reformat)
 - sign out
 - lens icon in search textbox
