@@ -16,9 +16,14 @@ function NoteList(props: {
   const selectedNoteId = props.selectedNoteId;
   const dispatch = props.dispatch;
 
+  const filteredNotes = filter(notes, searchText);
+
   return (
     <div className="note-list">
-      {filter(notes, searchText).map((note) => (
+      <div className="note-list-counter">
+        {filteredNotes.length}/{notes.length}
+      </div>
+      {filteredNotes.map((note) => (
         <NoteListItem
           key={note.id}
           note={note}
