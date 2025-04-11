@@ -77,3 +77,16 @@ h6 {
     overflow-x: auto;
     background: #fbfbfb;
 }
+
+.note-text a {
+    color: #0969DA;
+}
+
+.note-text-deleted,
+.note-text-deleted * {
+    color: lightgray;
+}
+
+.note-text-deleted a {
+    color: #096bda4f;
+}

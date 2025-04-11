@@ -176,7 +176,9 @@ function EditorPanel(props: {
 
     return (
       <div
-        className="note-text"
+        className={
+          showAsDeleted() ? "note-text note-text-deleted" : "note-text"
+        }
         dangerouslySetInnerHTML={{
           __html: renderNoteTextHtml(htmlEscape(getEffectiveText(note))),
         }}
