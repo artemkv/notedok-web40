@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import uistrings from "../uistrings";
 import "./NoteTitleEditor.css";
 import { AppEvent, EventType } from "../events";
 import { Dispatch } from "../hooks/useReducer";
 
-const NoteTitleEditor = function NoteTitleEditor(props: {
+const NoteTitleEditor = memo(function NoteTitleEditor(props: {
   noteId: string;
   defaultTitle: string;
   isNew: boolean;
@@ -81,6 +81,6 @@ const NoteTitleEditor = function NoteTitleEditor(props: {
       )}
     </form>
   );
-};
+});
 
 export default NoteTitleEditor;

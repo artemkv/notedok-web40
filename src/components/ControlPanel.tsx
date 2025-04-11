@@ -1,8 +1,9 @@
 import "./ControlPanel.css";
 import uistrings from "../uistrings";
 import OrbitProgressIndicator from "./OrbitProgressIndicator";
+import { memo } from "react";
 
-function ControlPanel(props: {
+const ControlPanel = memo(function ControlPanel(props: {
   showNew: boolean;
   onNew: () => void;
 
@@ -109,6 +110,6 @@ function ControlPanel(props: {
       </div>
     </div>
   );
-}
+});
 
 export default ControlPanel;

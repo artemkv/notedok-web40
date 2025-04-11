@@ -1,6 +1,7 @@
+import { memo } from "react";
 import "./ProgressIndicator.css";
 
-function ProgressIndicator() {
+const ProgressIndicator = memo(function ProgressIndicator() {
   return (
     <div className="spinner">
       <div className="spinner-container container1">
@@ -23,6 +24,6 @@ function ProgressIndicator() {
       </div>
     </div>
   );
-}
+});
 
 export default ProgressIndicator;

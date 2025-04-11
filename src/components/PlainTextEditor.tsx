@@ -1,7 +1,7 @@
 import "./PlainTextEditor.css";
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 
-function PlainTextEditor(props: {
+const PlainTextEditor = memo(function PlainTextEditor(props: {
   noteId: string;
   defaultText: string;
   getTextRef: { getText: () => string | undefined };
@@ -52,6 +52,6 @@ function PlainTextEditor(props: {
       ></textarea>
     </div>
   );
-}
+});
 
 export default PlainTextEditor;

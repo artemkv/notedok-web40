@@ -5,8 +5,9 @@ import { Note, NoteState } from "../model";
 import OrbitProgressIndicator from "./OrbitProgressIndicator";
 import { getEffectiveTitle, isMarkdownNote } from "../buisiness";
 import uistrings from "../uistrings";
+import { memo } from "react";
 
-function NoteList(props: {
+const NoteListItem = memo(function NoteListItem(props: {
   note: Note;
   isSelected: boolean;
   dispatch: Dispatch<AppEvent>;
@@ -77,6 +78,6 @@ function NoteList(props: {
       ) : null}
     </div>
   );
-}
+});
 
-export default NoteList;
+export default NoteListItem;

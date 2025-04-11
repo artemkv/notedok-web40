@@ -16,11 +16,11 @@ import {
 } from "../buisiness";
 import NoteTitleEditor from "./NoteTitleEditor";
 import ControlPanel from "./ControlPanel";
-import { useRef } from "react";
+import { memo, useRef } from "react";
 import { htmlEscape, renderNoteTextHtml } from "../ui";
 import PlainTextEditor from "./PlainTextEditor";
 
-function EditorPanel(props: {
+const EditorPanel = memo(function EditorPanel(props: {
   note: Note | undefined;
   editorState: EditorState;
   dispatch: Dispatch<AppEvent>;
@@ -251,6 +251,6 @@ function EditorPanel(props: {
   }
 
   return <div className="editor-panel"></div>;
-}
+});
 
 export default EditorPanel;

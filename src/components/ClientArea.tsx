@@ -5,6 +5,7 @@ import { NoteListRetrieved } from "../model";
 import NoteList from "./NoteList";
 import EditorPanel from "./EditorPanel";
 import SearchPanel from "./SearchPanel";
+import { filter } from "../buisiness";
 
 function ClientArea(props: {
   noteList: NoteListRetrieved;
@@ -23,7 +24,7 @@ function ClientArea(props: {
         <SearchPanel searchText={noteList.searchText} dispatch={dispatch} />
         <NoteList
           notes={noteList.notes}
-          searchText={noteList.searchText}
+          filteredNotes={filter(noteList.notes, noteList.searchText)}
           selectedNoteId={noteList.selectedNoteId}
           dispatch={dispatch}
         />

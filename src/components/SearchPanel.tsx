@@ -4,8 +4,9 @@ import CloseIcon from "../assets/close.svg";
 import { AppEvent, EventType } from "../events";
 import { Dispatch } from "../hooks/useReducer";
 import uistrings from "../uistrings";
+import { memo } from "react";
 
-function SearchPanel(props: {
+const SearchPanel = memo(function SearchPanel(props: {
   searchText: string;
   dispatch: Dispatch<AppEvent>;
 }) {
@@ -56,6 +57,6 @@ function SearchPanel(props: {
       </div>
     </div>
   );
-}
+});
 
 export default SearchPanel;

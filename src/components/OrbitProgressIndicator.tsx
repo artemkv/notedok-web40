@@ -1,6 +1,7 @@
+import { memo } from "react";
 import { OrbitProgress } from "react-loading-indicators";
 
-const OrbitProgressIndicator = function OrbitProgressIndicator() {
+const OrbitProgressIndicator = memo(function OrbitProgressIndicator() {
   return (
     <OrbitProgress
       variant="dotted"
@@ -10,6 +11,6 @@ const OrbitProgressIndicator = function OrbitProgressIndicator() {
       textColor=""
     />
   );
-};
+});
 
 export default OrbitProgressIndicator;

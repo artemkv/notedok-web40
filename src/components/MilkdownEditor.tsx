@@ -19,11 +19,11 @@ import { indent } from "@milkdown/kit/plugin/indent";
 import { commonmark, linkAttr } from "@milkdown/kit/preset/commonmark";
 import { gfm } from "@milkdown/kit/preset/gfm";
 import { Milkdown } from "@milkdown/react";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
 // TODO: const SAVE_DRAFT_INTERVAL = 3000;
 
-const MilkdownEditor = function MilkdownEditor(props: {
+const MilkdownEditor = memo(function MilkdownEditor(props: {
   noteId: string;
   defaultMarkdown: string;
   editable: boolean;
@@ -143,6 +143,6 @@ const MilkdownEditor = function MilkdownEditor(props: {
   ) : (
     <Milkdown />
   );
-};
+});
 
 export default MilkdownEditor;

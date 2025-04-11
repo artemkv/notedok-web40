@@ -117,8 +117,13 @@ export const isMarkdownNote = (note: Note) => {
 };
 
 export const filter = (notes: Note[], searchText: string) => {
-  // TODO: this is ridiculously slow
-  /*const containsAll = (text: string, tokens: string[]) => {
+  if (notes.length == 0) {
+    return notes;
+  }
+
+  const tokens = searchText.split(" ");
+
+  const containsAll = (text: string, tokens: string[]) => {
     for (let i = 0; i < tokens.length; i++) {
       const token = tokens[i];
       if (!text.includes(token)) {
@@ -130,12 +135,6 @@ export const filter = (notes: Note[], searchText: string) => {
 
   return notes.filter((x) =>
     containsAll(getEffectiveTitle(x).toLowerCase(), tokens)
-  );
-  */
-
-  const searchTextLowerCase = searchText.toLowerCase();
-  return notes.filter((x) =>
-    getEffectiveTitle(x).toLowerCase().includes(searchTextLowerCase)
   );
 };
 

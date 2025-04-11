@@ -3,20 +3,18 @@ import { AppEvent } from "../events";
 import { Dispatch } from "../hooks/useReducer";
 import { Note } from "../model";
 import NoteListItem from "./NoteListItem";
-import { filter } from "../buisiness";
+import { memo } from "react";
 
-function NoteList(props: {
+const NoteList = memo(function NoteList(props: {
   notes: Note[];
-  searchText: string;
+  filteredNotes: Note[];
   selectedNoteId: string;
   dispatch: Dispatch<AppEvent>;
 }) {
   const notes = props.notes;
-  const searchText = props.searchText;
+  const filteredNotes = props.filteredNotes;
   const selectedNoteId = props.selectedNoteId;
   const dispatch = props.dispatch;
-
-  const filteredNotes = filter(notes, searchText);
 
   return (
     <div className="note-list">
@@ -33,6 +31,6 @@ function NoteList(props: {
       ))}
     </div>
   );
-}
+});
 
 export default NoteList;
