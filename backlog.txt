@@ -88,7 +88,7 @@ V0.1
 
 - --If the note is plain text, it has a small marker ".txt" next to it in the note list (in place of orbit indicator)--
 - --When orbit indicator is visible, it replaces the marker--
-- If the note is plain text, it is converted to markdown and rendered as if it was markdown
+- --If the note is plain text, it is converted to HTML and rendered as in the legacy version--
 - When you go into editing, instead of markdown editor, you have text area
 - The rest works the same
 

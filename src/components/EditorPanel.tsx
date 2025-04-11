@@ -16,6 +16,8 @@ import {
 import NoteTitleEditor from "./NoteTitleEditor";
 import ControlPanel from "./ControlPanel";
 import { useRef } from "react";
+import { isMarkdownFile } from "../conversion";
+import { htmlEscape, renderNoteTextHtml } from "../ui";
 
 function EditorPanel(props: {
   note: Note | undefined;
@@ -62,7 +64,7 @@ function EditorPanel(props: {
     return false;
   };
 
-  const isTextEditable = editorState == EditorState.Editing;
+  const isTextEditorActivated = editorState == EditorState.Editing;
 
   const onNew = () => {
     dispatch({
@@ -77,13 +79,16 @@ function EditorPanel(props: {
   };
 
   const onSave = () => {
-    const md = getMarkdownRef.current.getMarkdown();
-    if (md != undefined) {
-      dispatch({
-        type: EventType.NoteSaveTextRequested,
-        noteId: note.id,
-        newText: md,
-      });
+    // TODO: handle text
+    if (isMarkdown(note)) {
+      const md = getMarkdownRef.current.getMarkdown();
+      if (md != undefined) {
+        dispatch({
+          type: EventType.NoteSaveTextRequested,
+          noteId: note.id,
+          newText: md,
+        });
+      }
     }
   };
 
@@ -135,6 +140,30 @@ function EditorPanel(props: {
 
   const isNew = note.state == NoteState.New;
 
+  const isMarkdown = (note: Note) => {
+    if (
+      note.state == NoteState.New ||
+      note.state == NoteState.CreatingFromTitle ||
+      note.state == NoteState.CreatingFromText ||
+      note.state == NoteState.FailedToCreateFromTitle ||
+      note.state == NoteState.FailedToCreateFromText
+    ) {
+      return false;
+    }
+    return isMarkdownFile(note.path);
+  };
+
+  const plainTextEditor = () => {
+    return (
+      <div
+        className="note-text"
+        dangerouslySetInnerHTML={{
+          __html: renderNoteTextHtml(htmlEscape(getEffectiveText(note))),
+        }}
+      ></div>
+    );
+  };
+
   if (
     note.state == NoteState.New ||
     note.state == NoteState.Loaded ||
@@ -173,15 +202,19 @@ function EditorPanel(props: {
             deleted={showAsDeleted()}
             dispatch={dispatch}
           />
-          <MilkdownProvider>
-            <MilkdownEditor
-              noteId={note.id}
-              defaultMarkdown={getEffectiveText(note)}
-              editable={isTextEditable}
-              deleted={showAsDeleted()}
-              getMarkdownRef={getMarkdownRef.current}
-            />
-          </MilkdownProvider>
+          {isMarkdown(note) ? (
+            <MilkdownProvider>
+              <MilkdownEditor
+                noteId={note.id}
+                defaultMarkdown={getEffectiveText(note)}
+                editable={isTextEditorActivated}
+                deleted={showAsDeleted()}
+                getMarkdownRef={getMarkdownRef.current}
+              />
+            </MilkdownProvider>
+          ) : (
+            plainTextEditor()
+          )}
         </div>
         <div className="editor-panel-right" />
       </div>
