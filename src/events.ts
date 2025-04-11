@@ -24,6 +24,7 @@ export enum EventType {
   FailedToRenameNote,
 
   EditNoteRequested,
+  FailedToInitializeMarkdownEditor,
   CancelNoteEditRequested,
   NoteSaveTextRequested,
   NoteTextSaved,
@@ -106,6 +107,11 @@ export interface FailedToRenameNoteEvent {
 
 export interface EditNoteRequestedEvent {
   type: EventType.EditNoteRequested;
+  note: Note;
+}
+
+export interface FailedToInitializeMarkdownEditorEvent {
+  type: EventType.FailedToInitializeMarkdownEditor;
 }
 
 export interface CancelNoteEditRequestedEvent {
@@ -207,6 +213,7 @@ export type AppEvent =
   | NoteRenamedEvent
   | FailedToRenameNoteEvent
   | EditNoteRequestedEvent
+  | FailedToInitializeMarkdownEditorEvent
   | CancelNoteEditRequestedEvent
   | NoteSaveTextRequestedEvent
   | NoteTextSavedEvent

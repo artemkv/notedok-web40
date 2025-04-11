@@ -13,6 +13,7 @@ V0.1
 - --Title is immediately editable--
 - --Title placeholder for an existing note is "No title"--
 - --Text (markdown) is initially read-only--
+- --If editor fails to initialize, it shows error instead of text--
 - --After you update title, note is renamed with the new filename derived from the new path--
 - --To update the title, you either submit by pressing enter or just move away from the input--
 - --While renaming, the note is shown (with new title) as pending change in the list (orbit progress indicator)--
@@ -22,6 +23,7 @@ V0.1
 - --If you press Esc while editing the title, it resets back to previous value--
 - --By default, only buttons New, Edit, Delete are visible--
 - --To make text editable, you press Edit--
+- --If editor fails to initialize, it switches to the plain text mode--
 - --When text becomes editable, only buttons New, Save and Cancel are available--
 - --If you press Cancel, the text goes back to read-only; all the edits are lost--
 - --To save edits in the text, you need to click Save--
@@ -101,11 +103,10 @@ Technical notes:
 - --when clicked save, but no changes, nothing happens, but editor is still editable--
 - --it's strange that new note has "Save" available (because is editable by default), but then you move away and it disappears (as editor stops being editable)--
 - --except if you just load note, then edit-save, saves something, I don't know what--
-- MD editor re-formats the MD you pass to it
-- !!! if clicked Save too fast, the note loses all of the text
-
-- Support .txt files (plain text editor)
-- MD rendering sometimes fails, need to catch it and allow switching to text
+- --MD editor re-formats the MD you pass to it. This breaks for new note and sometimes existing note--
+- --MD rendering sometimes fails, need to catch it and allow switching to text--
+- if ever MD returns 'undefined', it goes into the business logic, and might be saved
+- for that reason, I think I should lift the plain text editor up
 
 - handle all the errors
 - update the model arrows (from errors to normal states)

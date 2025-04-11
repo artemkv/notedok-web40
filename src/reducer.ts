@@ -3,6 +3,7 @@ import {
   handleCreateNoteRequested,
   handleDeleteNoteRequested,
   handleEditNoteRequested,
+  handleFailedToInitializeMarkdownEditor,
   handleLoadNoteTextSuccess,
   handleNoteCreated,
   handleNoteDeleted,
@@ -72,7 +73,11 @@ export const Reducer = (
     }
 
     if (event.type == EventType.EditNoteRequested) {
-      return handleEditNoteRequested(state);
+      return handleEditNoteRequested(state, event);
+    }
+
+    if (event.type == EventType.FailedToInitializeMarkdownEditor) {
+      return handleFailedToInitializeMarkdownEditor(state);
     }
 
     if (event.type == EventType.CancelNoteEditRequested) {

@@ -10,8 +10,10 @@ import {
   RetrieveFileList,
   SaveNoteText,
 } from "./commands/storage";
+import { isMarkdownFile } from "./conversion";
 import {
   DeleteNoteRequestedEvent,
+  EditNoteRequestedEvent,
   LoadNoteTextSuccessEvent,
   NoteCreatedEvent,
   NoteDeletedEvent,
@@ -27,6 +29,7 @@ import {
   SearchTextUpdatedEvent,
   UserAuthenticatedEvent,
 } from "./events";
+import { sanitizeMilkdownWeirdStuff } from "./mdformatting";
 import {
   AppState,
   AppStateAuthenticated,
@@ -98,6 +101,19 @@ export const getEffectiveText = (note: Note) => {
     return note.newText;
   }
   return note.text;
+};
+
+export const isMarkdownNote = (note: Note) => {
+  if (
+    note.state == NoteState.New ||
+    note.state == NoteState.CreatingFromTitle ||
+    note.state == NoteState.CreatingFromText ||
+    note.state == NoteState.FailedToCreateFromTitle ||
+    note.state == NoteState.FailedToCreateFromText
+  ) {
+    return true;
+  }
+  return isMarkdownFile(note.path);
 };
 
 export const filter = (notes: Note[], searchText: string) => {
@@ -312,7 +328,8 @@ export const handleNoteRenamed = (
 };
 
 export const handleEditNoteRequested = (
-  state: AppStateAuthenticated
+  state: AppStateAuthenticated,
+  event: EditNoteRequestedEvent
 ): [AppStateAuthenticated, AppCommand] => {
   if (state.noteList.state == NoteListState.Retrieved) {
     if (state.noteList.editorState == EditorState.Inactive) {
@@ -320,7 +337,28 @@ export const handleEditNoteRequested = (
         ...state,
         noteList: {
           ...state.noteList,
-          editorState: EditorState.Editing,
+          editorState: isMarkdownNote(event.note)
+            ? EditorState.EditingAsMarkdown
+            : EditorState.EditingAsPlainText,
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+export const handleFailedToInitializeMarkdownEditor = (
+  state: AppStateAuthenticated
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    if (state.noteList.editorState == EditorState.EditingAsMarkdown) {
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          editorState: EditorState.EditingAsPlainText,
         },
       };
       return JustStateAuthenticated(newState);
@@ -334,7 +372,10 @@ export const handleCancelNoteEditRequested = (
   state: AppStateAuthenticated
 ): [AppStateAuthenticated, AppCommand] => {
   if (state.noteList.state == NoteListState.Retrieved) {
-    if (state.noteList.editorState == EditorState.Editing) {
+    if (
+      state.noteList.editorState == EditorState.EditingAsMarkdown ||
+      state.noteList.editorState == EditorState.EditingAsPlainText
+    ) {
       const newState: AppStateAuthenticated = {
         ...state,
         noteList: {
@@ -355,11 +396,12 @@ export const handleNoteSaveTextRequested = (
 ): [AppStateAuthenticated, AppCommand] => {
   if (state.noteList.state == NoteListState.Retrieved) {
     const note = getNote(state.noteList.notes, event.noteId);
+    const newText = sanitizeMilkdownWeirdStuff(event.newText);
 
     // TODO: make sure to handle all possible note states properly
     if (note && note.state == NoteState.Loaded) {
-      if (note.text !== event.newText) {
-        const noteSavingText = noteLoadedToSavingText(note, event.newText);
+      if (note.text !== newText) {
+        const noteSavingText = noteLoadedToSavingText(note, newText);
         const newState: AppStateAuthenticated = {
           ...state,
           noteList: {
@@ -382,11 +424,8 @@ export const handleNoteSaveTextRequested = (
     }
 
     if (note && note.state == NoteState.New) {
-      if (event.newText != "") {
-        const noteCreatingFromText = noteNewToCreatingFromText(
-          note,
-          event.newText
-        );
+      if (newText != "") {
+        const noteCreatingFromText = noteNewToCreatingFromText(note, newText);
         const newState: AppStateAuthenticated = {
           ...state,
           noteList: {

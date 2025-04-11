@@ -216,7 +216,8 @@ export type Note =
 
 export enum EditorState {
   Inactive,
-  Editing,
+  EditingAsMarkdown,
+  EditingAsPlainText,
 }
 
 // Note List

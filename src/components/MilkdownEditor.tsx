@@ -18,7 +18,7 @@ import { indent } from "@milkdown/kit/plugin/indent";
 import { commonmark, linkAttr } from "@milkdown/kit/preset/commonmark";
 import { gfm } from "@milkdown/kit/preset/gfm";
 import { Milkdown } from "@milkdown/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // TODO: const SAVE_DRAFT_INTERVAL = 3000;
 
@@ -28,6 +28,7 @@ const MilkdownEditor = function MilkdownEditor(props: {
   editable: boolean;
   deleted: boolean;
   getMarkdownRef: { getMarkdown: () => string | undefined };
+  onError: (err: string) => void;
 }) {
   const noteId = props.noteId;
   const defaultMarkdown = props.defaultMarkdown;
@@ -35,6 +36,9 @@ const MilkdownEditor = function MilkdownEditor(props: {
   const deleted = props.deleted;
   // The documented solution to get the md from another component didn't work
   const getMarkdownRef = props.getMarkdownRef;
+  const onError = props.onError;
+
+  const [error, setError] = useState<string>("");
 
   // TODO: add toolbar with commands (https://milkdown.dev/docs/guide/commands)
   // TODO: if I need to access it somewhere else, `useInstance()` hook is to the rescue
@@ -42,8 +46,11 @@ const MilkdownEditor = function MilkdownEditor(props: {
   // TODO: try to support subscript and superscript
   // TODO: Spellchecking in code blocks is annoying, however it only happens in editing mode
   // TODO: ESC should cancel?
+  // TODO: markdown is transformed even w/o changes ('-' is replaced by '*', empty )
 
   useEffect(() => {
+    setError("");
+
     const editor = Editor.make()
       .config((ctx) => {
         // attach to #editor
@@ -74,19 +81,24 @@ const MilkdownEditor = function MilkdownEditor(props: {
       .use(indent)
       .create();
 
-    editor.then((editor) => {
-      const getMarkdown = () => {
-        if (editor.status == EditorStatus.Created) {
-          return editor.action((ctx) => {
-            const editorView = ctx.get(editorViewCtx);
-            const serializer = ctx.get(serializerCtx);
-            return serializer(editorView.state.doc);
-          });
-        }
-        return undefined;
-      };
-      getMarkdownRef.getMarkdown = getMarkdown;
-    });
+    editor
+      .then((editor) => {
+        const getMarkdown = () => {
+          if (editor.status == EditorStatus.Created) {
+            return editor.action((ctx) => {
+              const editorView = ctx.get(editorViewCtx);
+              const serializer = ctx.get(serializerCtx);
+              return serializer(editorView.state.doc);
+            });
+          }
+          return undefined;
+        };
+        getMarkdownRef.getMarkdown = getMarkdown;
+      })
+      .catch((err) => {
+        setError(() => err.toString());
+        onError(err.toString());
+      });
 
     /* TODO:
     const editorAndInterval = editor.then((editor) => {
@@ -108,15 +120,23 @@ const MilkdownEditor = function MilkdownEditor(props: {
 
     // properly destroy
     return () => {
-      editor.then((editor) => {
-        getMarkdownRef.getMarkdown = () => undefined;
-        // TODO: clearInterval(x.intervalId);
-        editor.destroy();
-      });
+      editor
+        .then((editor) => {
+          getMarkdownRef.getMarkdown = () => undefined;
+          // TODO: clearInterval(x.intervalId);
+          editor.destroy();
+        })
+        .catch(() => {
+          // This should already be handled (see above)
+        });
     };
-  }, [noteId, editable, getMarkdownRef, defaultMarkdown, deleted]);
+  }, [noteId, editable, getMarkdownRef, defaultMarkdown, deleted, onError]);
 
-  return <Milkdown />;
+  return error ? (
+    <div className="milkdown-error-state">{error}</div>
+  ) : (
+    <Milkdown />
+  );
 };
 
 export default MilkdownEditor;

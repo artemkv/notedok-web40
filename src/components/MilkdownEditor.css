@@ -3,6 +3,10 @@
   padding-bottom: 16px;
 }
 
+.milkdown-error-state {
+  color: red;
+}
+
 .markdown-body * {
   color: #101720;
 }
