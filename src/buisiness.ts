@@ -369,8 +369,16 @@ export const handleNoteSaveTextRequested = (
           },
         };
         return [newState, SaveNoteText(noteSavingText)];
+      } else {
+        const newState: AppStateAuthenticated = {
+          ...state,
+          noteList: {
+            ...state.noteList,
+            editorState: EditorState.Inactive,
+          },
+        };
+        return JustStateAuthenticated(newState);
       }
-      // TODO: in any case, stop editing
     }
 
     if (note && note.state == NoteState.New) {
@@ -388,6 +396,15 @@ export const handleNoteSaveTextRequested = (
           },
         };
         return [newState, CreateNewNoteWithText(noteCreatingFromText)];
+      } else {
+        const newState: AppStateAuthenticated = {
+          ...state,
+          noteList: {
+            ...state.noteList,
+            editorState: EditorState.Inactive,
+          },
+        };
+        return JustStateAuthenticated(newState);
       }
     }
   }
@@ -430,7 +447,7 @@ export const handleCreateNoteRequested = (
         lastUsedNoteId: state.noteList.lastUsedNoteId + 1,
         notes: [newNote, ...state.noteList.notes],
         selectedNoteId: newNote.id,
-        editorState: EditorState.Editing,
+        editorState: EditorState.Inactive,
       },
     };
     return JustStateAuthenticated(newState);

@@ -50,6 +50,13 @@ V0.1
 - --Once restored, the note goes back to it's default state--
 - --When pending sync with backend, show orbit indicator instead of buttons--
 
+- --If the note is plain text, it has a small marker ".txt" next to it in the note list (in place of orbit indicator)--
+- --When orbit indicator is visible, it replaces the marker--
+- --If the note is plain text, it is converted to HTML and rendered as in the legacy version--
+- --When you go into editing, instead of markdown editor, you have text area--
+- --The rest works the same--
+- --Show plain text note visually as deleted when appropriate--
+
 ---
 
 - If note fails to load, show error and allow to retry. Re-selecting the note again also retries
@@ -86,21 +93,16 @@ V0.1
 
 ---
 
-- --If the note is plain text, it has a small marker ".txt" next to it in the note list (in place of orbit indicator)--
-- --When orbit indicator is visible, it replaces the marker--
-- --If the note is plain text, it is converted to HTML and rendered as in the legacy version--
-- --When you go into editing, instead of markdown editor, you have text area--
-- --The rest works the same--
-- --Show plain text note visually as deleted when appropriate--
-
 - The note list is only shown when the browser window is wide enough; otherwise it is hidden
 
 
 Technical notes:
 
-- when clicked save, but no changes, nothing happens, but editor is still editable
-- except if you just load note, then edit-save, saves something, I don't know what
-- it's strange that new note has "Save" available (because is editable by default), but then you move away and it disappears (as editor stops being editable)
+- --when clicked save, but no changes, nothing happens, but editor is still editable--
+- --it's strange that new note has "Save" available (because is editable by default), but then you move away and it disappears (as editor stops being editable)--
+- --except if you just load note, then edit-save, saves something, I don't know what--
+- MD editor re-formats the MD you pass to it
+- !!! if clicked Save too fast, the note loses all of the text
 
 - Support .txt files (plain text editor)
 - MD rendering sometimes fails, need to catch it and allow switching to text
