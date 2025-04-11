@@ -1,5 +1,6 @@
 // TODO: port the unit tests
 
+// TODO: convert "_." to "." in the beginning of the file
 export const decodePathFileSystemFriendly = (path: string): string => {
   path = path.replace(/\(sl\)/g, "/");
   path = path.replace(/\(qst\)/g, "?");
