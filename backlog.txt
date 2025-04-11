@@ -3,7 +3,7 @@ V0.1
 - --When the page opens, load all the notes (in batches of 1000)--
 - --Show all the notes in the list, title is derived from filename--
 - --If title is empty, show "No title" placeholder--
-- Sort notes alphabetically (case-insensitive), notes without title first
+- --Sort notes alphabetically (case-insensitive), notes without title first--
 - --Search textbox filters the notes immediately as you type--
 - --The filtering is by the title including the full search text, case insensitive--
 - --You can select a note in the list--
@@ -50,6 +50,8 @@ V0.1
 - --Once restored, the note goes back to it's default state--
 - --When pending sync with backend, show orbit indicator instead of buttons--
 
+---
+
 - If note fails to load, show error and allow to retry. Re-selecting the note again also retries
 
 - If note fails to rename, show error indicator in the list and the error in the editor
@@ -82,8 +84,10 @@ V0.1
 - If you discard the error, the note moves to back to new, the editor keeps changes
 - You can also retry, in which case note goes to creating again
 
-- If the note is plain text, it has a small marker ".txt" next to it in the note list (in place of orbit indicator)
-- When orbit indicator is visible, it replaces the marker
+---
+
+- --If the note is plain text, it has a small marker ".txt" next to it in the note list (in place of orbit indicator)--
+- --When orbit indicator is visible, it replaces the marker--
 - If the note is plain text, it is converted to markdown and rendered as if it was markdown
 - When you go into editing, instead of markdown editor, you have text area
 - The rest works the same
