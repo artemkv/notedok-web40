@@ -18,6 +18,7 @@ import ControlPanel from "./ControlPanel";
 import { useRef } from "react";
 import { isMarkdownFile } from "../conversion";
 import { htmlEscape, renderNoteTextHtml } from "../ui";
+import PlainTextEditor from "./PlainTextEditor";
 
 function EditorPanel(props: {
   note: Note | undefined;
@@ -29,6 +30,7 @@ function EditorPanel(props: {
   const dispatch = props.dispatch;
 
   const getMarkdownRef = useRef({ getMarkdown: () => undefined });
+  const getTextRef = useRef({ getText: () => undefined });
 
   // TODO: make sure to handle all possible note states properly
 
@@ -79,7 +81,6 @@ function EditorPanel(props: {
   };
 
   const onSave = () => {
-    // TODO: handle text
     if (isMarkdown(note)) {
       const md = getMarkdownRef.current.getMarkdown();
       if (md != undefined) {
@@ -87,6 +88,15 @@ function EditorPanel(props: {
           type: EventType.NoteSaveTextRequested,
           noteId: note.id,
           newText: md,
+        });
+      }
+    } else {
+      const text = getTextRef.current.getText();
+      if (text != undefined) {
+        dispatch({
+          type: EventType.NoteSaveTextRequested,
+          noteId: note.id,
+          newText: text,
         });
       }
     }
@@ -154,6 +164,16 @@ function EditorPanel(props: {
   };
 
   const plainTextEditor = () => {
+    if (isTextEditorActivated) {
+      return (
+        <PlainTextEditor
+          noteId={note.id}
+          defaultText={getEffectiveText(note)}
+          getTextRef={getTextRef.current}
+        />
+      );
+    }
+
     return (
       <div
         className="note-text"

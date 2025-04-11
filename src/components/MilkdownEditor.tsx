@@ -33,6 +33,7 @@ const MilkdownEditor = function MilkdownEditor(props: {
   const defaultMarkdown = props.defaultMarkdown;
   const editable = props.editable;
   const deleted = props.deleted;
+  // The documented solution to get the md from another component didn't work
   const getMarkdownRef = props.getMarkdownRef;
 
   // TODO: add toolbar with commands (https://milkdown.dev/docs/guide/commands)

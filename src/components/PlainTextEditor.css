@@ -1,0 +1,19 @@
+div.note-text-editable-container {
+  margin: 0px;
+  padding: 0px;
+  border: none;
+  width: 100%;
+  outline: none;
+  color: #101720;
+  flex-grow: 1;
+}
+
+textarea.note-text-editable {
+  font-size: 16px;
+  padding: 4px 8px 2px 8px;
+  white-space: pre-wrap;
+  width: 100%;
+  outline: none;
+  height: 100%;
+  resize: none;
+}
