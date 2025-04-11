@@ -3,9 +3,8 @@ import { AppEvent, EventType } from "../events";
 import { Dispatch } from "../hooks/useReducer";
 import { Note, NoteState } from "../model";
 import OrbitProgressIndicator from "./OrbitProgressIndicator";
-import { getEffectiveTitle } from "../buisiness";
+import { getEffectiveTitle, isMarkdownNote } from "../buisiness";
 import uistrings from "../uistrings";
-import { isMarkdownFile } from "../conversion";
 
 function NoteList(props: {
   note: Note;
@@ -62,19 +61,6 @@ function NoteList(props: {
     className += " note-list-item-deleted";
   }
 
-  const isMarkdown = (note: Note) => {
-    if (
-      note.state == NoteState.New ||
-      note.state == NoteState.CreatingFromTitle ||
-      note.state == NoteState.CreatingFromText ||
-      note.state == NoteState.FailedToCreateFromTitle ||
-      note.state == NoteState.FailedToCreateFromText
-    ) {
-      return true;
-    }
-    return isMarkdownFile(note.path);
-  };
-
   return (
     <div className="note-list-item-container" id={note.id}>
       <div className={className} onClick={() => onNoteSelected(note)}>
@@ -86,7 +72,7 @@ function NoteList(props: {
         <div className="note-list-item-status">
           <OrbitProgressIndicator />
         </div>
-      ) : !isMarkdown(note) ? (
+      ) : !isMarkdownNote(note) ? (
         <div className="note-format-indicator">.txt</div>
       ) : null}
     </div>
