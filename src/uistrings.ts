@@ -13,6 +13,7 @@ const uistrings = {
   CancelButtonText: "Cancel",
   RestoreButtonText: "Restore",
   SearchTextBoxPlaceholder: "Search in titles",
+  ConvertToMarkdownButtonText: "→.md",
 };
 
 export default uistrings;

@@ -25,7 +25,8 @@ const NoteListItem = memo(function NoteListItem(props: {
       note.state == NoteState.SavingText ||
       note.state == NoteState.Renaming ||
       note.state == NoteState.Deleting ||
-      note.state == NoteState.Restoring
+      note.state == NoteState.Restoring ||
+      note.state == NoteState.ConvertingToMarkdown
     ) {
       return true;
     }

@@ -7,6 +7,7 @@ import MilkdownEditor from "./MilkdownEditor";
 import { Dispatch } from "../hooks/useReducer";
 import { AppEvent, EventType } from "../events";
 import {
+  canConvertToMarkdown,
   canDelete,
   canEdit,
   canRestore,
@@ -54,6 +55,14 @@ const EditorPanel = memo(function EditorPanel(props: {
     );
   }
 
+  if (note.state == NoteState.ConvertingToMarkdown) {
+    return (
+      <div className="editor-panel">
+        <ProgressIndicator />
+      </div>
+    );
+  }
+
   const isTitleEditable = () => {
     if (note.state == NoteState.Loaded || note.state == NoteState.New) {
       return true;
@@ -65,6 +74,13 @@ const EditorPanel = memo(function EditorPanel(props: {
   const onNew = () => {
     dispatch({
       type: EventType.CreateNoteRequested,
+    });
+  };
+
+  const onConvertToMarkdown = () => {
+    dispatch({
+      type: EventType.ConvertToMarkdownRequested,
+      noteId: note.id,
     });
   };
 
@@ -223,6 +239,10 @@ const EditorPanel = memo(function EditorPanel(props: {
           <ControlPanel
             showNew={true}
             onNew={onNew}
+            showConvertToMarkdown={
+              canConvertToMarkdown(note) && editorState == EditorState.Inactive
+            }
+            onConvertToMarkdown={onConvertToMarkdown}
             showEdit={canEdit(note) && editorState == EditorState.Inactive}
             onEdit={onEdit}
             showSave={editorState != EditorState.Inactive}

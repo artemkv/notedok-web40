@@ -44,6 +44,10 @@ export enum EventType {
   NoteRestoredOnNewPath,
   FailedToRestoreNote,
 
+  ConvertToMarkdownRequested,
+  NoteConvertedToMarkdown,
+  NoteFailedToConvertToMarkdown,
+
   RestApiError,
 }
 
@@ -200,6 +204,23 @@ export interface RestApiErrorEvent {
   err: string;
 }
 
+export interface ConvertToMarkdownRequestedEvent {
+  type: EventType.ConvertToMarkdownRequested;
+  noteId: string;
+}
+
+export interface NoteConvertedToMarkdownEvent {
+  type: EventType.NoteConvertedToMarkdown;
+  noteId: string;
+  newPath: string;
+}
+
+export interface NoteFailedToConvertToMarkdownEvent {
+  type: EventType.NoteFailedToConvertToMarkdown;
+  noteId: string;
+  err: string;
+}
+
 export type AppEvent =
   | NeverEvent
   | UserAuthenticatedEvent
@@ -229,4 +250,7 @@ export type AppEvent =
   | NoteRestoredEvent
   | NoteRestoredOnNewPathEvent
   | FailedToRestoreNoteEvent
-  | RestApiErrorEvent;
+  | RestApiErrorEvent
+  | ConvertToMarkdownRequestedEvent
+  | NoteConvertedToMarkdownEvent
+  | NoteFailedToConvertToMarkdownEvent;

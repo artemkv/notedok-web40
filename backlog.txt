@@ -109,7 +109,6 @@ Technical notes:
 - --UI optimizations (avoid re-renderings)--
 
 - handle all the errors
-- update the model arrows (from errors to normal states)
 
 - double-check: correct note item for all note states
 - double-check: correct editor state for all note states

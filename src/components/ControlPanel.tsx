@@ -7,6 +7,9 @@ const ControlPanel = memo(function ControlPanel(props: {
   showNew: boolean;
   onNew: () => void;
 
+  showConvertToMarkdown: boolean;
+  onConvertToMarkdown: () => void;
+
   showEdit: boolean;
   onEdit: () => void;
 
@@ -26,6 +29,8 @@ const ControlPanel = memo(function ControlPanel(props: {
 }) {
   const showNew = props.showNew;
   const onNew = props.onNew;
+  const showConvertToMarkdown = props.showConvertToMarkdown;
+  const onConvertToMarkdown = props.onConvertToMarkdown;
   const showEdit = props.showEdit;
   const onEdit = props.onEdit;
   const showSave = props.showSave;
@@ -40,6 +45,10 @@ const ControlPanel = memo(function ControlPanel(props: {
 
   const newButtonOnClick = () => {
     onNew();
+  };
+
+  const convertToMarkdownButtonOnClick = () => {
+    onConvertToMarkdown();
   };
 
   const editButtonOnClick = () => {
@@ -72,6 +81,14 @@ const ControlPanel = memo(function ControlPanel(props: {
         ) : null}
       </div>
       <div className="control-panel-right">
+        {showConvertToMarkdown ? (
+          <button
+            className="control-panel-button"
+            onClick={convertToMarkdownButtonOnClick}
+          >
+            {uistrings.ConvertToMarkdownButtonText}
+          </button>
+        ) : null}
         {showEdit ? (
           <button className="control-panel-button" onClick={editButtonOnClick}>
             {uistrings.EditButtonText}

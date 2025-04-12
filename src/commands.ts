@@ -1,6 +1,7 @@
 import { AppEvent } from "./events";
 import { Command } from "./hooks/useReducer";
 import {
+  NoteConvertingToMarkdown,
   NoteCreatingFromText,
   NoteCreatingFromTitle,
   NoteDeleting,
@@ -24,6 +25,8 @@ export enum CommandType {
   SaveNoteText,
   DeleteNote,
   RestoreNote,
+
+  ConvertToMarkdown,
 }
 
 export interface DoNothingCommand extends Command<AppEvent> {
@@ -83,6 +86,11 @@ export interface RestoreNoteCommand extends Command<AppEvent> {
   note: NoteRestoring;
 }
 
+export interface ConvertToMarkdownCommand extends Command<AppEvent> {
+  type: CommandType.ConvertToMarkdown;
+  note: NoteConvertingToMarkdown;
+}
+
 export type AppCommand =
   | DoNothingCommand
   | DoManyCommand
@@ -95,7 +103,8 @@ export type AppCommand =
   | RenameNoteCommand
   | SaveNoteTextCommand
   | DeleteNoteCommand
-  | RestoreNoteCommand;
+  | RestoreNoteCommand
+  | ConvertToMarkdownCommand;
 
 export const DoNothing: DoNothingCommand = {
   type: CommandType.DoNothing,

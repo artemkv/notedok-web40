@@ -1,9 +1,11 @@
 import { getTitleFromPath } from "./conversion";
 import {
+  NoteConvertingToMarkdown,
   NoteCreatingFromText,
   NoteCreatingFromTitle,
   NoteDeleted,
   NoteDeleting,
+  NoteFailedToConvertToMarkdown,
   NoteFailedToCreateFromText,
   NoteFailedToCreateFromTitle,
   NoteFailedToDelete,
@@ -442,6 +444,49 @@ export const noteFailedToCreateFromTextToCreatingFromText = (
     state: NoteState.CreatingFromText,
 
     id: note.id,
+    text: note.text,
+  };
+};
+
+export const noteLoadedToConvertingToMarkdown = (
+  note: NoteLoaded
+): NoteConvertingToMarkdown => {
+  return {
+    state: NoteState.ConvertingToMarkdown,
+
+    id: note.id,
+    path: note.path,
+    title: note.title,
+    text: note.text,
+  };
+};
+
+export const noteConvertingToMarkdownToFailedToConvertToMarkdown = (
+  note: NoteConvertingToMarkdown,
+  err: string
+): NoteFailedToConvertToMarkdown => {
+  return {
+    state: NoteState.FailedToConvertToMarkdown,
+
+    id: note.id,
+    path: note.path,
+    title: note.title,
+    text: note.text,
+
+    err,
+  };
+};
+
+export const noteConvertingToMarkdownToLoaded = (
+  note: NoteConvertingToMarkdown,
+  newPath: string
+): NoteLoaded => {
+  return {
+    state: NoteState.Loaded,
+
+    id: note.id,
+    path: newPath,
+    title: getTitleFromPath(newPath),
     text: note.text,
   };
 };

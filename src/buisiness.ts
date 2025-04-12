@@ -1,6 +1,7 @@
 import { AppCommand, DoMany, DoNothing } from "./commands";
 import { ScheduleIdTokenRefresh, StartUserSession } from "./commands/auth";
 import {
+  ConvertToMarkdown,
   CreateNewNoteWithText,
   CreateNewNoteWithTitle,
   DeleteNote,
@@ -12,9 +13,11 @@ import {
 } from "./commands/storage";
 import { isMarkdownFile } from "./conversion";
 import {
+  ConvertToMarkdownRequestedEvent,
   DeleteNoteRequestedEvent,
   EditNoteRequestedEvent,
   LoadNoteTextSuccessEvent,
+  NoteConvertedToMarkdownEvent,
   NoteCreatedEvent,
   NoteDeletedEvent,
   NoteRenamedEvent,
@@ -43,10 +46,12 @@ import {
 import {
   createNewNote,
   createNewNoteRef,
+  noteConvertingToMarkdownToLoaded,
   noteCreatingFromTextToLoaded,
   noteCreatingFromTitleToLoaded,
   noteDeletedToRestoring,
   noteDeletingToDeleted,
+  noteLoadedToConvertingToMarkdown,
   noteLoadedToDeleting,
   noteLoadedToRenaming,
   noteLoadedToSavingText,
@@ -154,6 +159,13 @@ export const canDelete = (note: Note) => {
 
 export const canRestore = (note: Note) => {
   if (note.state == NoteState.Deleted) {
+    return true;
+  }
+  return false;
+};
+
+export const canConvertToMarkdown = (note: Note) => {
+  if (note.state == NoteState.Loaded && !isMarkdownNote(note)) {
     return true;
   }
   return false;
@@ -660,6 +672,52 @@ export const handleNoteRestoredOnNewPath = (
 
     if (note && note.state == NoteState.Restoring) {
       const noteLoaded = noteRestoringToLoadedWithNewPath(note, event.path);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteLoaded),
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+export const handleConvertToMarkdownRequested = (
+  state: AppStateAuthenticated,
+  event: ConvertToMarkdownRequestedEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const note = getNote(state.noteList.notes, event.noteId);
+
+    if (note && note.state == NoteState.Loaded && !isMarkdownNote(note)) {
+      const noteConvertingToMarkdown = noteLoadedToConvertingToMarkdown(note);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteConvertingToMarkdown),
+        },
+      };
+      return [newState, ConvertToMarkdown(noteConvertingToMarkdown)];
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+export const handleNoteConvertedToMarkdown = (
+  state: AppStateAuthenticated,
+  event: NoteConvertedToMarkdownEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const note = getNote(state.noteList.notes, event.noteId);
+
+    if (note && note.state == NoteState.ConvertingToMarkdown) {
+      const noteLoaded = noteConvertingToMarkdownToLoaded(note, event.newPath);
       const newState: AppStateAuthenticated = {
         ...state,
         noteList: {

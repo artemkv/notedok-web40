@@ -1,10 +1,12 @@
 import {
   handleCancelNoteEditRequested,
+  handleConvertToMarkdownRequested,
   handleCreateNoteRequested,
   handleDeleteNoteRequested,
   handleEditNoteRequested,
   handleFailedToInitializeMarkdownEditor,
   handleLoadNoteTextSuccess,
+  handleNoteConvertedToMarkdown,
   handleNoteCreated,
   handleNoteDeleted,
   handleNoteRenamed,
@@ -118,6 +120,14 @@ export const Reducer = (
 
     if (event.type == EventType.NoteRestoredOnNewPath) {
       return handleNoteRestoredOnNewPath(state, event);
+    }
+
+    if (event.type == EventType.ConvertToMarkdownRequested) {
+      return handleConvertToMarkdownRequested(state, event);
+    }
+
+    if (event.type == EventType.NoteConvertedToMarkdown) {
+      return handleNoteConvertedToMarkdown(state, event);
     }
 
     if (event.type == EventType.RestApiError) {

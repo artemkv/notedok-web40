@@ -1,5 +1,6 @@
 import {
   CommandType,
+  ConvertToMarkdownCommand,
   CreateNewNoteWithTextCommand,
   CreateNewNoteWithTitleCommand,
   DeleteNoteCommand,
@@ -16,6 +17,7 @@ import {
 } from "../conversion";
 import { EventType } from "../events";
 import {
+  NoteConvertingToMarkdown,
   NoteCreatingFromText,
   NoteCreatingFromTitle,
   NoteDeleting,
@@ -332,5 +334,20 @@ export const RestoreNote = (note: NoteRestoring): RestoreNoteCommand => ({
         });
       }
     }
+  },
+});
+
+export const ConvertToMarkdown = (
+  note: NoteConvertingToMarkdown
+): ConvertToMarkdownCommand => ({
+  type: CommandType.ConvertToMarkdown,
+  note,
+  execute: async (dispatch) => {
+    // TODO:
+    dispatch({
+      type: EventType.NoteConvertedToMarkdown,
+      noteId: note.id,
+      newPath: note.path,
+    });
   },
 });
