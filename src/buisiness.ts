@@ -736,6 +736,44 @@ export const handleNoteConvertedToMarkdown = (
   return JustStateAuthenticated(state);
 };
 
+export const handleSwitchEditorToMarkdownRequested = (
+  state: AppStateAuthenticated
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    if (state.noteList.editorState == EditorState.EditingAsPlainText) {
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          editorState: EditorState.EditingAsMarkdown,
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+export const handleSwitchEditorToTextRequested = (
+  state: AppStateAuthenticated
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    if (state.noteList.editorState == EditorState.EditingAsMarkdown) {
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          editorState: EditorState.EditingAsPlainText,
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
 const replace = (notes: Note[], note: Note): Note[] => {
   return notes.map((n) => {
     if (n.id == note.id) {

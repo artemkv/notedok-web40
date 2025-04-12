@@ -1,0 +1,29 @@
+.format-switch {
+  font-size: 13px;
+  margin-left: 4px;
+  margin-right: 16px;
+  color: #101720;
+}
+
+.format-switch-button {
+  margin: 0px 4px;
+  color: grey;
+  background-color: white;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.format-switch-text {
+  margin: 0px 4px;
+  color: #101720;
+}
+
+.format-switch-button:hover {
+  color: #101720;
+}
+
+.format-switch-button:focus {
+  color: #101720;
+}

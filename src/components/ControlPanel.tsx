@@ -2,6 +2,7 @@ import "./ControlPanel.css";
 import uistrings from "../uistrings";
 import OrbitProgressIndicator from "./OrbitProgressIndicator";
 import { memo } from "react";
+import FormatSwitch from "./FormatSwitch";
 
 const ControlPanel = memo(function ControlPanel(props: {
   showNew: boolean;
@@ -26,6 +27,10 @@ const ControlPanel = memo(function ControlPanel(props: {
   onRestore: () => void;
 
   showProgress: boolean;
+
+  showFormatSwitch: boolean;
+  isFormatMarkdown: boolean;
+  onFormatSwitch: (isMarkdown: boolean) => void;
 }) {
   const showNew = props.showNew;
   const onNew = props.onNew;
@@ -42,6 +47,9 @@ const ControlPanel = memo(function ControlPanel(props: {
   const showRestore = props.showRestore;
   const onRestore = props.onRestore;
   const showProgress = props.showProgress;
+  const showFormatSwitch = props.showFormatSwitch;
+  const isFormatMarkdown = props.isFormatMarkdown;
+  const onFormatSwitch = props.onFormatSwitch;
 
   const newButtonOnClick = () => {
     onNew();
@@ -93,6 +101,12 @@ const ControlPanel = memo(function ControlPanel(props: {
           <button className="control-panel-button" onClick={editButtonOnClick}>
             {uistrings.EditButtonText}
           </button>
+        ) : null}
+        {showFormatSwitch ? (
+          <FormatSwitch
+            isMarkdown={isFormatMarkdown}
+            onFormatSwitch={onFormatSwitch}
+          />
         ) : null}
         {showSave ? (
           <button className="control-panel-button" onClick={saveButtonOnClick}>

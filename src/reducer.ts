@@ -19,6 +19,8 @@ import {
   handleRestoreNoteRequested,
   handleRetrieveFileListSuccess,
   handleSearchTextUpdated,
+  handleSwitchEditorToMarkdownRequested,
+  handleSwitchEditorToTextRequested,
   handleUserAuthenticated,
   handleUserSessionCreated,
 } from "./buisiness";
@@ -128,6 +130,14 @@ export const Reducer = (
 
     if (event.type == EventType.NoteConvertedToMarkdown) {
       return handleNoteConvertedToMarkdown(state, event);
+    }
+
+    if (event.type == EventType.SwitchEditorToMarkdownRequested) {
+      return handleSwitchEditorToMarkdownRequested(state);
+    }
+
+    if (event.type == EventType.SwitchEditorToTextRequested) {
+      return handleSwitchEditorToTextRequested(state);
     }
 
     if (event.type == EventType.RestApiError) {

@@ -14,6 +14,8 @@ const uistrings = {
   RestoreButtonText: "Restore",
   SearchTextBoxPlaceholder: "Search in titles",
   ConvertToMarkdownButtonText: "→.md",
+  AsTextButtonText: "Text",
+  AsMarkdownButtonText: "Markdown",
 };
 
 export default uistrings;

@@ -48,6 +48,9 @@ export enum EventType {
   NoteConvertedToMarkdown,
   NoteFailedToConvertToMarkdown,
 
+  SwitchEditorToMarkdownRequested,
+  SwitchEditorToTextRequested,
+
   RestApiError,
 }
 
@@ -222,6 +225,14 @@ export interface NoteFailedToConvertToMarkdownEvent {
   err: string;
 }
 
+export interface SwitchEditorToMarkdownRequestedEvent {
+  type: EventType.SwitchEditorToMarkdownRequested;
+}
+
+export interface SwitchEditorToTextRequestedEvent {
+  type: EventType.SwitchEditorToTextRequested;
+}
+
 export type AppEvent =
   | NeverEvent
   | UserAuthenticatedEvent
@@ -254,4 +265,6 @@ export type AppEvent =
   | RestApiErrorEvent
   | ConvertToMarkdownRequestedEvent
   | NoteConvertedToMarkdownEvent
-  | NoteFailedToConvertToMarkdownEvent;
+  | NoteFailedToConvertToMarkdownEvent
+  | SwitchEditorToMarkdownRequestedEvent
+  | SwitchEditorToTextRequestedEvent;

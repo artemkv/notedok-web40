@@ -169,6 +169,18 @@ const EditorPanel = memo(function EditorPanel(props: {
     return false;
   };
 
+  const onFormatSwitch = (isMarkdown: boolean) => {
+    if (isMarkdown) {
+      dispatch({
+        type: EventType.SwitchEditorToMarkdownRequested,
+      });
+    } else {
+      dispatch({
+        type: EventType.SwitchEditorToTextRequested,
+      });
+    }
+  };
+
   const isNew = note.state == NoteState.New;
 
   const markdownEditor = () => {
@@ -242,6 +254,7 @@ const EditorPanel = memo(function EditorPanel(props: {
             showConvertToMarkdown={
               canConvertToMarkdown(note) && editorState == EditorState.Inactive
             }
+            onFormatSwitch={onFormatSwitch}
             onConvertToMarkdown={onConvertToMarkdown}
             showEdit={canEdit(note) && editorState == EditorState.Inactive}
             onEdit={onEdit}
@@ -254,6 +267,10 @@ const EditorPanel = memo(function EditorPanel(props: {
             showRestore={canRestore(note)}
             onRestore={onRestore}
             showProgress={showControlPanelAsPending()}
+            showFormatSwitch={
+              isMarkdownNote(note) && editorState != EditorState.Inactive
+            }
+            isFormatMarkdown={editorState == EditorState.EditingAsMarkdown}
           />
           <NoteTitleEditor
             noteId={note.id}
