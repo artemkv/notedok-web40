@@ -717,7 +717,11 @@ export const handleNoteConvertedToMarkdown = (
     const note = getNote(state.noteList.notes, event.noteId);
 
     if (note && note.state == NoteState.ConvertingToMarkdown) {
-      const noteLoaded = noteConvertingToMarkdownToLoaded(note, event.newPath);
+      const noteLoaded = noteConvertingToMarkdownToLoaded(
+        note,
+        event.newPath,
+        event.newText
+      );
       const newState: AppStateAuthenticated = {
         ...state,
         noteList: {

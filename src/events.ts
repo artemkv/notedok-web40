@@ -213,6 +213,7 @@ export interface NoteConvertedToMarkdownEvent {
   type: EventType.NoteConvertedToMarkdown;
   noteId: string;
   newPath: string;
+  newText: string;
 }
 
 export interface NoteFailedToConvertToMarkdownEvent {

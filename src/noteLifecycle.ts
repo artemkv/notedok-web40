@@ -479,7 +479,8 @@ export const noteConvertingToMarkdownToFailedToConvertToMarkdown = (
 
 export const noteConvertingToMarkdownToLoaded = (
   note: NoteConvertingToMarkdown,
-  newPath: string
+  newPath: string,
+  newText: string
 ): NoteLoaded => {
   return {
     state: NoteState.Loaded,
@@ -487,6 +488,6 @@ export const noteConvertingToMarkdownToLoaded = (
     id: note.id,
     path: newPath,
     title: getTitleFromPath(newPath),
-    text: note.text,
+    text: newText,
   };
 };

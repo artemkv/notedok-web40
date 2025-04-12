@@ -178,3 +178,14 @@ test("headers 2", () => {
 
   expect(formattedText).toBe(expectedText);
 });
+
+test("full document", () => {
+  const text =
+    '!! Using lists in Android (ListView) - Tutorial\nhttp://www.vogella.com/tutorials/AndroidListView/article.html\n\n!! Open details view\n{code}\nIntent intent = new Intent(CurrentActivity.this, NextActivity.class);\n// intent.getExtras().putLong("id", item.getId());\n// intent.putExtra("key", value);\nstartActivity(intent);\n{code}\n\nExtras are retrieved on the other side via:\n{code}\n@Override\nprotected void onCreate(Bundle savedInstanceState) {\n    Intent intent = getIntent();\n    String value = intent.getStringExtra("key");\n}\n{code}\n\nDon\'t forget to add your new activity in the AndroidManifest.xml:\n{code}\n<activity android:label="@string/app_name" android:name="NextActivity"/>\n{code}';
+  const expectedText =
+    '## Using lists in Android (ListView) - Tutorial\nhttp://www.vogella.com/tutorials/AndroidListView/article.html\n\n## Open details view\n```\nIntent intent = new Intent(CurrentActivity.this, NextActivity.class);\n// intent.getExtras().putLong("id", item.getId());\n// intent.putExtra("key", value);\nstartActivity(intent);\n```\n\nExtras are retrieved on the other side via:\n```\n@Override\nprotected void onCreate(Bundle savedInstanceState) {\n    Intent intent = getIntent();\n    String value = intent.getStringExtra("key");\n}\n```\n\nDon\'t forget to add your new activity in the AndroidManifest.xml:\n```\n<activity android:label="@string/app_name" android:name="NextActivity"/>\n```\n';
+
+  const formattedText = wiki2md(text);
+
+  expect(formattedText).toBe(expectedText);
+});

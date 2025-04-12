@@ -346,12 +346,13 @@ export const ConvertToMarkdown = (
   execute: async (dispatch) => {
     try {
       const newPath = await convertFileName(note);
-      await convertContent(note, newPath);
+      const newText = await convertContent(note, newPath);
 
       dispatch({
         type: EventType.NoteConvertedToMarkdown,
         noteId: note.id,
         newPath,
+        newText,
       });
     } catch (err) {
       dispatch({
@@ -386,4 +387,5 @@ const convertContent = async (
 ) => {
   const md = wiki2md(note.text);
   await putFile(newPath, encode(md));
+  return md;
 };
