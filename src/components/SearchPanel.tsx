@@ -49,11 +49,13 @@ const SearchPanel = memo(function SearchPanel(props: {
           className="search-textbox"
           placeholder={uistrings.SearchTextBoxPlaceholder}
         />
-        <img
-          className="search-panel-icon-close"
-          src={CloseIcon}
-          onClick={onCloseClick}
-        />
+        {searchText.length > 0 ? (
+          <img
+            className="search-panel-icon-close"
+            src={CloseIcon}
+            onClick={onCloseClick}
+          />
+        ) : null}
       </div>
     </div>
   );
