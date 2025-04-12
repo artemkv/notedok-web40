@@ -35,6 +35,7 @@ import {
   putFile,
   renameFile,
 } from "../sessionapi";
+import { wiki2md } from "../wikitomd";
 
 interface FileData {
   fileName: string;
@@ -343,11 +344,46 @@ export const ConvertToMarkdown = (
   type: CommandType.ConvertToMarkdown,
   note,
   execute: async (dispatch) => {
-    // TODO:
-    dispatch({
-      type: EventType.NoteConvertedToMarkdown,
-      noteId: note.id,
-      newPath: note.path,
-    });
+    try {
+      const newPath = await convertFileName(note);
+      await convertContent(note, newPath);
+
+      dispatch({
+        type: EventType.NoteConvertedToMarkdown,
+        noteId: note.id,
+        newPath,
+      });
+    } catch (err) {
+      dispatch({
+        type: EventType.NoteFailedToConvertToMarkdown,
+        noteId: note.id,
+        err: `${err}`,
+      });
+    }
   },
 });
+
+const convertFileName = async (note: NoteConvertingToMarkdown) => {
+  const newPath = generatePathFromTitleMd(note.title, note.title === "");
+  try {
+    await renameFile(note.path, newPath);
+    return newPath;
+  } catch (err) {
+    if ((err as ApiError).statusCode === 409) {
+      // Regenerate path from title, this time focing uniqueness
+      const newPath = generatePathFromTitleMd(note.title, true);
+      await renameFile(note.path, newPath);
+      return newPath;
+    } else {
+      throw err;
+    }
+  }
+};
+
+const convertContent = async (
+  note: NoteConvertingToMarkdown,
+  newPath: string
+) => {
+  const md = wiki2md(note.text);
+  await putFile(newPath, encode(md));
+};
