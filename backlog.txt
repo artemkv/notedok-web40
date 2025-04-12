@@ -2,6 +2,7 @@ V0.1
 
 - --When the page opens, load all the notes (in batches of 1000)--
 - --Show all the notes in the list, title is derived from filename--
+- --The note list is only shown when the browser window is wide enough; otherwise it is hidden--
 - --If title is empty, show "No title" placeholder--
 - --Sort notes alphabetically (case-insensitive), notes without title first--
 - --Show note counter on top of the note list--
@@ -96,8 +97,6 @@ V0.1
 
 ---
 
-- The note list is only shown when the browser window is wide enough; otherwise it is hidden
-
 
 Technical notes:
 
@@ -125,20 +124,21 @@ Not sure if possible:
 
 Later versions:
 
+- --switch to text edit for markdown notes--
+- --convert to md command for text files (rename + reformat)--
+- --lens icon in search textbox--
+- --cross in search textbox to clean the search text--
+
 - make layout responsive and shown correctly on mobile
 - extract layout css into a single place
 - use ems/rems?
 - make layout good, so that all the headers are shown where they should be etc.
 - make sure UI is accessible with keyboard
-- switch to text edit for markdown notes
 - some note text doesn't wrap when browser width gets smaller (ai_general_methods). See why
 - "New" could be visible before loading any note
 - bring back autosuggest (and consider react-friendly library, but only if it is worth it)
 - editor panel with buttons for formatting
-- convert to md command for text files (rename + reformat)
 - sign out
-- lens icon in search textbox
-- cross in search textbox to clean the search text
 - title field autocompletes by chrome, it's annoying
 - auto-save draft every 3 seconds, if there are changes
 - auto-focus on title when note selected? not sure
