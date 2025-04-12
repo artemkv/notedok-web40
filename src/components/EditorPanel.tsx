@@ -1,6 +1,6 @@
 import "./EditorPanel.css";
 import "github-markdown-css";
-import { EditorState, Note, NoteState } from "../model";
+import { Editor, EditorState, Note, NoteState } from "../model";
 import ProgressIndicator from "./ProgressIndicator";
 import { MilkdownProvider } from "@milkdown/react";
 import MilkdownEditor from "./MilkdownEditor";
@@ -23,11 +23,11 @@ import PlainTextEditor from "./PlainTextEditor";
 
 const EditorPanel = memo(function EditorPanel(props: {
   note: Note | undefined;
-  editorState: EditorState;
+  editor: Editor;
   dispatch: Dispatch<AppEvent>;
 }) {
   const note = props.note;
-  const editorState = props.editorState;
+  const editor = props.editor;
   const dispatch = props.dispatch;
 
   const getMarkdownRef = useRef({ getMarkdown: () => undefined });
@@ -92,7 +92,7 @@ const EditorPanel = memo(function EditorPanel(props: {
   };
 
   const onSave = () => {
-    if (editorState == EditorState.EditingAsMarkdown) {
+    if (editor.state == EditorState.EditingAsMarkdown) {
       const md = getMarkdownRef.current.getMarkdown();
       if (md != undefined) {
         dispatch({
@@ -103,7 +103,7 @@ const EditorPanel = memo(function EditorPanel(props: {
       }
     }
 
-    if (editorState == EditorState.EditingAsPlainText) {
+    if (editor.state == EditorState.EditingAsPlainText) {
       const text = getTextRef.current.getText();
       if (text != undefined) {
         dispatch({
@@ -136,7 +136,7 @@ const EditorPanel = memo(function EditorPanel(props: {
   };
 
   const onMdEditorError = () => {
-    if (editorState == EditorState.EditingAsMarkdown) {
+    if (editor.state == EditorState.EditingAsMarkdown) {
       dispatch({
         type: EventType.FailedToInitializeMarkdownEditor,
       });
@@ -170,26 +170,46 @@ const EditorPanel = memo(function EditorPanel(props: {
   };
 
   const onFormatSwitch = (isMarkdown: boolean) => {
-    if (isMarkdown) {
-      dispatch({
-        type: EventType.SwitchEditorToMarkdownRequested,
-      });
-    } else {
-      dispatch({
-        type: EventType.SwitchEditorToTextRequested,
-      });
+    if (editor.state == EditorState.EditingAsMarkdown && !isMarkdown) {
+      const md = getMarkdownRef.current.getMarkdown();
+      if (md != undefined) {
+        dispatch({
+          type: EventType.SwitchEditorToTextRequested,
+          text: md,
+        });
+        return;
+      }
+    }
+
+    if (editor.state == EditorState.EditingAsPlainText && isMarkdown) {
+      const text = getTextRef.current.getText();
+      if (text != undefined) {
+        dispatch({
+          type: EventType.SwitchEditorToMarkdownRequested,
+          text,
+        });
+        return;
+      }
     }
   };
 
   const isNew = note.state == NoteState.New;
 
+  const editorDefaultText = () => {
+    if (editor.state == EditorState.Inactive) {
+      return getEffectiveText(note);
+    }
+
+    return editor.defaultText ?? getEffectiveText(note);
+  };
+
   const markdownEditor = () => {
     // We are in fallback mode
-    if (editorState == EditorState.EditingAsPlainText) {
+    if (editor.state == EditorState.EditingAsPlainText) {
       return (
         <PlainTextEditor
           noteId={note.id}
-          defaultText={getEffectiveText(note)}
+          defaultText={editorDefaultText()}
           getTextRef={getTextRef.current}
         />
       );
@@ -199,8 +219,8 @@ const EditorPanel = memo(function EditorPanel(props: {
       <MilkdownProvider>
         <MilkdownEditor
           noteId={note.id}
-          defaultMarkdown={getEffectiveText(note)}
-          editable={editorState == EditorState.EditingAsMarkdown}
+          defaultMarkdown={editorDefaultText()}
+          editable={editor.state == EditorState.EditingAsMarkdown}
           deleted={showAsDeleted()}
           getMarkdownRef={getMarkdownRef.current}
           onError={onMdEditorError}
@@ -211,11 +231,11 @@ const EditorPanel = memo(function EditorPanel(props: {
 
   // Eventually will go away, when I convert all my notes to md
   const plainTextEditor = () => {
-    if (editorState == EditorState.EditingAsPlainText) {
+    if (editor.state == EditorState.EditingAsPlainText) {
       return (
         <PlainTextEditor
           noteId={note.id}
-          defaultText={getEffectiveText(note)}
+          defaultText={editorDefaultText()}
           getTextRef={getTextRef.current}
         />
       );
@@ -227,7 +247,7 @@ const EditorPanel = memo(function EditorPanel(props: {
           showAsDeleted() ? "note-text note-text-deleted" : "note-text"
         }
         dangerouslySetInnerHTML={{
-          __html: renderNoteTextHtml(htmlEscape(getEffectiveText(note))),
+          __html: renderNoteTextHtml(htmlEscape(editorDefaultText())),
         }}
       ></div>
     );
@@ -252,15 +272,15 @@ const EditorPanel = memo(function EditorPanel(props: {
             showNew={true}
             onNew={onNew}
             showConvertToMarkdown={
-              canConvertToMarkdown(note) && editorState == EditorState.Inactive
+              canConvertToMarkdown(note) && editor.state == EditorState.Inactive
             }
             onFormatSwitch={onFormatSwitch}
             onConvertToMarkdown={onConvertToMarkdown}
-            showEdit={canEdit(note) && editorState == EditorState.Inactive}
+            showEdit={canEdit(note) && editor.state == EditorState.Inactive}
             onEdit={onEdit}
-            showSave={editorState != EditorState.Inactive}
+            showSave={editor.state != EditorState.Inactive}
             onSave={onSave}
-            showCancel={editorState != EditorState.Inactive}
+            showCancel={editor.state != EditorState.Inactive}
             onCancel={onCancel}
             showDelete={canDelete(note)}
             onDelete={onDelete}
@@ -268,9 +288,9 @@ const EditorPanel = memo(function EditorPanel(props: {
             onRestore={onRestore}
             showProgress={showControlPanelAsPending()}
             showFormatSwitch={
-              isMarkdownNote(note) && editorState != EditorState.Inactive
+              isMarkdownNote(note) && editor.state != EditorState.Inactive
             }
-            isFormatMarkdown={editorState == EditorState.EditingAsMarkdown}
+            isFormatMarkdown={editor.state == EditorState.EditingAsMarkdown}
           />
           <NoteTitleEditor
             noteId={note.id}

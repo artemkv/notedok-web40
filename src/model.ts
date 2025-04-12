@@ -243,6 +243,25 @@ export enum EditorState {
   EditingAsPlainText,
 }
 
+export interface EditorInactive {
+  state: EditorState.Inactive;
+}
+
+export interface EditorEditingAsMarkdown {
+  state: EditorState.EditingAsMarkdown;
+  defaultText?: string;
+}
+
+export interface EditorEditingAsPlainText {
+  state: EditorState.EditingAsPlainText;
+  defaultText?: string;
+}
+
+export type Editor =
+  | EditorInactive
+  | EditorEditingAsMarkdown
+  | EditorEditingAsPlainText;
+
 // Note List
 
 export enum NoteListState {
@@ -260,7 +279,7 @@ export interface NoteListRetrieved {
   lastUsedNoteId: number;
   notes: Note[];
   selectedNoteId: string;
-  editorState: EditorState;
+  editor: Editor;
 }
 
 export type NoteList = NoteListRetrieving | NoteListRetrieved;

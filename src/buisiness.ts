@@ -30,6 +30,8 @@ import {
   RestoreNoteRequestedEvent,
   RetrieveFileListSuccessEvent,
   SearchTextUpdatedEvent,
+  SwitchEditorToMarkdownRequestedEvent,
+  SwitchEditorToTextRequestedEvent,
   UserAuthenticatedEvent,
 } from "./events";
 import { sanitizeMilkdownWeirdStuff } from "./mdformatting";
@@ -207,7 +209,7 @@ export const handleRetrieveFileListSuccess = (
       notes: event.fileList.map((f, idx) => createNewNoteRef(idx, f)),
       selectedNoteId: "",
       searchText: "",
-      editorState: EditorState.Inactive,
+      editor: { state: EditorState.Inactive },
     },
   };
   return JustStateAuthenticated(newState);
@@ -246,7 +248,7 @@ export const handleNoteSelected = (
             ...state.noteList,
             notes: replace(state.noteList.notes, noteLoading),
             selectedNoteId: noteLoading.id,
-            editorState: EditorState.Inactive, // TODO: review at which moment this should happen
+            editor: { state: EditorState.Inactive }, // TODO: review at which moment this should happen
           },
         };
         return [newState, LoadNoteText(noteLoading)];
@@ -258,7 +260,7 @@ export const handleNoteSelected = (
         noteList: {
           ...state.noteList,
           selectedNoteId: event.note.id,
-          editorState: EditorState.Inactive, // TODO: review at which moment this should happen
+          editor: { state: EditorState.Inactive }, // TODO: review at which moment this should happen
         },
       };
       return JustStateAuthenticated(newState);
@@ -360,14 +362,14 @@ export const handleEditNoteRequested = (
   event: EditNoteRequestedEvent
 ): [AppStateAuthenticated, AppCommand] => {
   if (state.noteList.state == NoteListState.Retrieved) {
-    if (state.noteList.editorState == EditorState.Inactive) {
+    if (state.noteList.editor.state == EditorState.Inactive) {
       const newState: AppStateAuthenticated = {
         ...state,
         noteList: {
           ...state.noteList,
-          editorState: isMarkdownNote(event.note)
-            ? EditorState.EditingAsMarkdown
-            : EditorState.EditingAsPlainText,
+          editor: isMarkdownNote(event.note)
+            ? { state: EditorState.EditingAsMarkdown }
+            : { state: EditorState.EditingAsPlainText },
         },
       };
       return JustStateAuthenticated(newState);
@@ -381,12 +383,12 @@ export const handleFailedToInitializeMarkdownEditor = (
   state: AppStateAuthenticated
 ): [AppStateAuthenticated, AppCommand] => {
   if (state.noteList.state == NoteListState.Retrieved) {
-    if (state.noteList.editorState == EditorState.EditingAsMarkdown) {
+    if (state.noteList.editor.state == EditorState.EditingAsMarkdown) {
       const newState: AppStateAuthenticated = {
         ...state,
         noteList: {
           ...state.noteList,
-          editorState: EditorState.EditingAsPlainText,
+          editor: { state: EditorState.EditingAsPlainText },
         },
       };
       return JustStateAuthenticated(newState);
@@ -401,14 +403,14 @@ export const handleCancelNoteEditRequested = (
 ): [AppStateAuthenticated, AppCommand] => {
   if (state.noteList.state == NoteListState.Retrieved) {
     if (
-      state.noteList.editorState == EditorState.EditingAsMarkdown ||
-      state.noteList.editorState == EditorState.EditingAsPlainText
+      state.noteList.editor.state == EditorState.EditingAsMarkdown ||
+      state.noteList.editor.state == EditorState.EditingAsPlainText
     ) {
       const newState: AppStateAuthenticated = {
         ...state,
         noteList: {
           ...state.noteList,
-          editorState: EditorState.Inactive,
+          editor: { state: EditorState.Inactive },
         },
       };
       return JustStateAuthenticated(newState);
@@ -435,7 +437,7 @@ export const handleNoteSaveTextRequested = (
           noteList: {
             ...state.noteList,
             notes: replace(state.noteList.notes, noteSavingText),
-            editorState: EditorState.Inactive,
+            editor: { state: EditorState.Inactive },
           },
         };
         return [newState, SaveNoteText(noteSavingText)];
@@ -444,7 +446,7 @@ export const handleNoteSaveTextRequested = (
           ...state,
           noteList: {
             ...state.noteList,
-            editorState: EditorState.Inactive,
+            editor: { state: EditorState.Inactive },
           },
         };
         return JustStateAuthenticated(newState);
@@ -459,7 +461,7 @@ export const handleNoteSaveTextRequested = (
           noteList: {
             ...state.noteList,
             notes: replace(state.noteList.notes, noteCreatingFromText),
-            editorState: EditorState.Inactive,
+            editor: { state: EditorState.Inactive },
           },
         };
         return [newState, CreateNewNoteWithText(noteCreatingFromText)];
@@ -468,7 +470,7 @@ export const handleNoteSaveTextRequested = (
           ...state,
           noteList: {
             ...state.noteList,
-            editorState: EditorState.Inactive,
+            editor: { state: EditorState.Inactive },
           },
         };
         return JustStateAuthenticated(newState);
@@ -514,7 +516,7 @@ export const handleCreateNoteRequested = (
         lastUsedNoteId: state.noteList.lastUsedNoteId + 1,
         notes: [newNote, ...state.noteList.notes],
         selectedNoteId: newNote.id,
-        editorState: EditorState.Inactive,
+        editor: { state: EditorState.Inactive },
       },
     };
     return JustStateAuthenticated(newState);
@@ -737,15 +739,19 @@ export const handleNoteConvertedToMarkdown = (
 };
 
 export const handleSwitchEditorToMarkdownRequested = (
-  state: AppStateAuthenticated
+  state: AppStateAuthenticated,
+  event: SwitchEditorToMarkdownRequestedEvent
 ): [AppStateAuthenticated, AppCommand] => {
   if (state.noteList.state == NoteListState.Retrieved) {
-    if (state.noteList.editorState == EditorState.EditingAsPlainText) {
+    if (state.noteList.editor.state == EditorState.EditingAsPlainText) {
       const newState: AppStateAuthenticated = {
         ...state,
         noteList: {
           ...state.noteList,
-          editorState: EditorState.EditingAsMarkdown,
+          editor: {
+            state: EditorState.EditingAsMarkdown,
+            defaultText: event.text,
+          },
         },
       };
       return JustStateAuthenticated(newState);
@@ -756,15 +762,19 @@ export const handleSwitchEditorToMarkdownRequested = (
 };
 
 export const handleSwitchEditorToTextRequested = (
-  state: AppStateAuthenticated
+  state: AppStateAuthenticated,
+  event: SwitchEditorToTextRequestedEvent
 ): [AppStateAuthenticated, AppCommand] => {
   if (state.noteList.state == NoteListState.Retrieved) {
-    if (state.noteList.editorState == EditorState.EditingAsMarkdown) {
+    if (state.noteList.editor.state == EditorState.EditingAsMarkdown) {
       const newState: AppStateAuthenticated = {
         ...state,
         noteList: {
           ...state.noteList,
-          editorState: EditorState.EditingAsPlainText,
+          editor: {
+            state: EditorState.EditingAsPlainText,
+            defaultText: event.text,
+          },
         },
       };
       return JustStateAuthenticated(newState);

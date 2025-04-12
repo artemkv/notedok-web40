@@ -133,11 +133,11 @@ export const Reducer = (
     }
 
     if (event.type == EventType.SwitchEditorToMarkdownRequested) {
-      return handleSwitchEditorToMarkdownRequested(state);
+      return handleSwitchEditorToMarkdownRequested(state, event);
     }
 
     if (event.type == EventType.SwitchEditorToTextRequested) {
-      return handleSwitchEditorToTextRequested(state);
+      return handleSwitchEditorToTextRequested(state, event);
     }
 
     if (event.type == EventType.RestApiError) {

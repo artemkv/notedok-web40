@@ -227,10 +227,12 @@ export interface NoteFailedToConvertToMarkdownEvent {
 
 export interface SwitchEditorToMarkdownRequestedEvent {
   type: EventType.SwitchEditorToMarkdownRequested;
+  text: string;
 }
 
 export interface SwitchEditorToTextRequestedEvent {
   type: EventType.SwitchEditorToTextRequested;
+  text: string;
 }
 
 export type AppEvent =

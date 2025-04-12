@@ -32,7 +32,7 @@ function ClientArea(props: {
       <div className="client-area-right">
         <EditorPanel
           note={selectedNote}
-          editorState={noteList.editorState}
+          editor={noteList.editor}
           dispatch={dispatch}
         />
       </div>
