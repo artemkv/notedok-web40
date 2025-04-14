@@ -23,8 +23,6 @@ import {
   NoteState,
 } from "./model";
 
-// TODO: maybe some arrows from error states back to loaded are missing
-
 export const createNewNoteRef = (id: number, path: string): NoteRef => {
   return {
     state: NoteState.Ref,
@@ -83,66 +81,6 @@ export const noteLoadingToLoaded = (
     path: note.path,
     title: note.title,
     text,
-  };
-};
-
-export const noteLoadedToSavingText = (
-  note: NoteLoaded,
-  newText: string
-): NoteSavingText => {
-  return {
-    state: NoteState.SavingText,
-
-    id: note.id,
-    path: note.path,
-    title: note.title,
-    text: note.text,
-
-    newText,
-  };
-};
-
-export const noteSavingTextToLoaded = (note: NoteSavingText): NoteLoaded => {
-  return {
-    state: NoteState.Loaded,
-
-    id: note.id,
-    path: note.path,
-    title: note.title,
-    text: note.newText,
-  };
-};
-
-export const noteSavingTextToFailedToSaveText = (
-  note: NoteSavingText,
-  err: string
-): NoteFailedToSaveText => {
-  return {
-    state: NoteState.FailedToSaveText,
-
-    id: note.id,
-    path: note.path,
-    title: note.title,
-    text: note.text,
-
-    newText: note.newText,
-
-    err,
-  };
-};
-
-export const noteFailedToSaveTextToSavingText = (
-  note: NoteFailedToSaveText
-): NoteSavingText => {
-  return {
-    state: NoteState.SavingText,
-
-    id: note.id,
-    path: note.path,
-    title: note.title,
-    text: note.text,
-
-    newText: note.newText,
   };
 };
 
@@ -206,6 +144,92 @@ export const noteFailedToRenameToRenaming = (
     text: note.text,
 
     newTitle: note.newTitle,
+  };
+};
+
+export const noteFailedToRenameToLoaded = (
+  note: NoteFailedToRename
+): NoteLoaded => {
+  return {
+    state: NoteState.Loaded,
+
+    id: note.id,
+    path: note.path,
+    title: note.title,
+    text: note.text,
+  };
+};
+
+export const noteLoadedToSavingText = (
+  note: NoteLoaded,
+  newText: string
+): NoteSavingText => {
+  return {
+    state: NoteState.SavingText,
+
+    id: note.id,
+    path: note.path,
+    title: note.title,
+    text: note.text,
+
+    newText,
+  };
+};
+
+export const noteSavingTextToLoaded = (note: NoteSavingText): NoteLoaded => {
+  return {
+    state: NoteState.Loaded,
+
+    id: note.id,
+    path: note.path,
+    title: note.title,
+    text: note.newText,
+  };
+};
+
+export const noteSavingTextToFailedToSaveText = (
+  note: NoteSavingText,
+  err: string
+): NoteFailedToSaveText => {
+  return {
+    state: NoteState.FailedToSaveText,
+
+    id: note.id,
+    path: note.path,
+    title: note.title,
+    text: note.text,
+
+    newText: note.newText,
+
+    err,
+  };
+};
+
+export const noteFailedToSaveTextToSavingText = (
+  note: NoteFailedToSaveText
+): NoteSavingText => {
+  return {
+    state: NoteState.SavingText,
+
+    id: note.id,
+    path: note.path,
+    title: note.title,
+    text: note.text,
+
+    newText: note.newText,
+  };
+};
+
+export const noteFailedToSaveTextToLoaded = (
+  note: NoteFailedToSaveText
+): NoteLoaded => {
+  return {
+    state: NoteState.Loaded,
+
+    id: note.id,
+    path: note.path,
+    title: note.title,
+    text: note.text,
   };
 };
 
@@ -338,6 +362,19 @@ export const noteFailedToRestoreToRestoring = (
   };
 };
 
+export const noteFailedToRestoreToDeleted = (
+  note: NoteFailedToRestore
+): NoteDeleted => {
+  return {
+    state: NoteState.Deleted,
+
+    id: note.id,
+    path: note.path,
+    title: note.title,
+    text: note.text,
+  };
+};
+
 export const createNewNote = (id: number): NoteNew => {
   return {
     state: NoteState.New,
@@ -397,6 +434,16 @@ export const noteFailedToCreateFromTitleToCreatingFromTitle = (
   };
 };
 
+export const noteFailedToCreateFromTitleToNew = (
+  note: NoteFailedToCreateFromTitle
+): NoteNew => {
+  return {
+    state: NoteState.New,
+
+    id: note.id,
+  };
+};
+
 export const noteNewToCreatingFromText = (
   note: NoteNew,
   text: string
@@ -448,6 +495,16 @@ export const noteFailedToCreateFromTextToCreatingFromText = (
   };
 };
 
+export const noteFailedToCreateFromTextToNew = (
+  note: NoteFailedToCreateFromText
+): NoteNew => {
+  return {
+    state: NoteState.New,
+
+    id: note.id,
+  };
+};
+
 export const noteLoadedToConvertingToMarkdown = (
   note: NoteLoaded
 ): NoteConvertingToMarkdown => {
@@ -489,5 +546,31 @@ export const noteConvertingToMarkdownToLoaded = (
     path: newPath,
     title: getTitleFromPath(newPath),
     text: newText,
+  };
+};
+
+export const noteFailedToConvertToMarkdownToConvertingToMarkdown = (
+  note: NoteFailedToConvertToMarkdown
+): NoteConvertingToMarkdown => {
+  return {
+    state: NoteState.ConvertingToMarkdown,
+
+    id: note.id,
+    path: note.path,
+    title: note.title,
+    text: note.text,
+  };
+};
+
+export const noteFailedToConvertToMarkdownToLoaded = (
+  note: NoteFailedToConvertToMarkdown
+): NoteLoaded => {
+  return {
+    state: NoteState.Loaded,
+
+    id: note.id,
+    path: note.path,
+    title: note.title,
+    text: note.text,
   };
 };

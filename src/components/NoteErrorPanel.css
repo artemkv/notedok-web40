@@ -1,0 +1,52 @@
+.note-error-panel {
+    font-family: "Segoe UI", arial, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    margin: 32px 0px 16px 0px;
+    padding: 0px;
+    width: 100%;
+    border: none;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.note-error-panel-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.note-error-panel .error-message {
+    margin: 0px;
+    color: red;
+    flex-grow: 1;
+}
+
+.error-panel-close-button {
+    background-color: white;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.note-error-retry-button {
+    width: fit-content;
+    font-size: 13px;
+    color: grey;
+    background-color: white;
+    border: none;
+    outline: none;
+    margin: 16px 0px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.error-retry-button:hover {
+    color: #101720;
+}
+
+.error-retry-button:focus {
+    color: #101720;
+}

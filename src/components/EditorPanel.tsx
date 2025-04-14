@@ -21,6 +21,7 @@ import { memo, useRef } from "react";
 import { htmlEscape, renderNoteTextHtml } from "../ui";
 import PlainTextEditor from "./PlainTextEditor";
 import ErrorLoadingNote from "./ErrorLoadingNote";
+import NoteErrorPanel from "./NoteErrorPanel";
 
 const EditorPanel = memo(function EditorPanel(props: {
   note: Note | undefined;
@@ -264,13 +265,35 @@ const EditorPanel = memo(function EditorPanel(props: {
     note.state == NoteState.New ||
     note.state == NoteState.Loaded ||
     note.state == NoteState.CreatingFromTitle ||
+    note.state == NoteState.FailedToCreateFromTitle ||
     note.state == NoteState.CreatingFromText ||
+    note.state == NoteState.FailedToCreateFromText ||
     note.state == NoteState.Renaming ||
+    note.state == NoteState.FailedToRename ||
     note.state == NoteState.SavingText ||
+    note.state == NoteState.FailedToSaveText ||
     note.state == NoteState.Deleting ||
+    note.state == NoteState.FailedToDelete ||
     note.state == NoteState.Deleted ||
-    note.state == NoteState.Restoring
+    note.state == NoteState.Restoring ||
+    note.state == NoteState.FailedToRestore ||
+    note.state == NoteState.FailedToConvertToMarkdown
   ) {
+    const [hasError, error] = (() => {
+      if (
+        note.state == NoteState.FailedToCreateFromTitle ||
+        note.state == NoteState.FailedToCreateFromText ||
+        note.state == NoteState.FailedToRename ||
+        note.state == NoteState.FailedToSaveText ||
+        note.state == NoteState.FailedToDelete ||
+        note.state == NoteState.FailedToRestore ||
+        note.state == NoteState.FailedToConvertToMarkdown
+      ) {
+        return [true, note.err];
+      }
+      return [false, ""];
+    })();
+
     return (
       <div className="editor-panel">
         <div className="editor-panel-left" />
@@ -299,6 +322,13 @@ const EditorPanel = memo(function EditorPanel(props: {
             }
             isFormatMarkdown={editor.state == EditorState.EditingAsMarkdown}
           />
+          {hasError ? (
+            <NoteErrorPanel
+              noteId={note.id}
+              err={error}
+              dispatch={dispatch}
+            ></NoteErrorPanel>
+          ) : null}
           <NoteTitleEditor
             noteId={note.id}
             isNew={isNew}

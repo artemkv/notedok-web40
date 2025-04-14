@@ -15,13 +15,21 @@ import { isMarkdownFile } from "./conversion";
 import {
   ConvertToMarkdownRequestedEvent,
   DeleteNoteRequestedEvent,
+  DiscardNoteErrorRequestedEvent,
   EditNoteRequestedEvent,
+  FailedToCreateNoteFromTextEvent,
+  FailedToCreateNoteFromTitleEvent,
+  FailedToDeleteNoteEvent,
   FailedToLoadNoteEvent,
+  FailedToRenameNoteEvent,
+  FailedToRestoreNoteEvent,
   FailedToRetrieveFileListEvent,
+  FailedToSaveNoteTextEvent,
   LoadNoteTextSuccessEvent,
   NoteConvertedToMarkdownEvent,
   NoteCreatedEvent,
   NoteDeletedEvent,
+  NoteFailedToConvertToMarkdownEvent,
   NoteRenamedEvent,
   NoteRestoredEvent,
   NoteRestoredOnNewPathEvent,
@@ -32,6 +40,7 @@ import {
   RestoreNoteRequestedEvent,
   RetrieveFileListSuccessEvent,
   RetryLoadingNoteRequestedEvent,
+  RetryNoteErrorRequestedEvent,
   SearchTextUpdatedEvent,
   SwitchEditorToMarkdownRequestedEvent,
   SwitchEditorToTextRequestedEvent,
@@ -51,12 +60,30 @@ import {
 import {
   createNewNote,
   createNewNoteRef,
+  noteConvertingToMarkdownToFailedToConvertToMarkdown,
   noteConvertingToMarkdownToLoaded,
+  noteCreatingFromTextToFailedToCreateFromText,
   noteCreatingFromTextToLoaded,
+  noteCreatingFromTitleToFailedToCreateFromTitle,
   noteCreatingFromTitleToLoaded,
   noteDeletedToRestoring,
   noteDeletingToDeleted,
+  noteDeletingToFailedToDelete,
+  noteFailedToConvertToMarkdownToConvertingToMarkdown,
+  noteFailedToConvertToMarkdownToLoaded,
+  noteFailedToCreateFromTextToCreatingFromText,
+  noteFailedToCreateFromTextToNew,
+  noteFailedToCreateFromTitleToCreatingFromTitle,
+  noteFailedToCreateFromTitleToNew,
+  noteFailedToDeleteToDeleting,
+  noteFailedToDeleteToLoaded,
   noteFailedToLoadToLoading,
+  noteFailedToRenameToLoaded,
+  noteFailedToRenameToRenaming,
+  noteFailedToRestoreToDeleted,
+  noteFailedToRestoreToRestoring,
+  noteFailedToSaveTextToLoaded,
+  noteFailedToSaveTextToSavingText,
   noteLoadedToConvertingToMarkdown,
   noteLoadedToDeleting,
   noteLoadedToRenaming,
@@ -66,9 +93,12 @@ import {
   noteNewToCreatingFromText,
   noteNewToCreatingFromTitle,
   noteRefToLoading,
+  noteRenamingToFailedToRename,
   noteRenamingToLoaded,
+  noteRestoringToFailedToRestore,
   noteRestoringToLoaded,
   noteRestoringToLoadedWithNewPath,
+  noteSavingTextToFailedToSaveText,
   noteSavingTextToLoaded,
 } from "./noteLifecycle";
 
@@ -433,6 +463,29 @@ export const handleNoteRenamed = (
   return JustStateAuthenticated(state);
 };
 
+export const handleFailedToRenameNote = (
+  state: AppStateAuthenticated,
+  event: FailedToRenameNoteEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const note = getNote(state.noteList.notes, event.noteId);
+
+    if (note && note.state == NoteState.Renaming) {
+      const noteFailedToRename = noteRenamingToFailedToRename(note, event.err);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteFailedToRename),
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
 export const handleEditNoteRequested = (
   state: AppStateAuthenticated,
   event: EditNoteRequestedEvent
@@ -580,6 +633,32 @@ export const handleNoteTextSaved = (
   return JustStateAuthenticated(state);
 };
 
+export const handleFailedToSaveNoteText = (
+  state: AppStateAuthenticated,
+  event: FailedToSaveNoteTextEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const note = getNote(state.noteList.notes, event.noteId);
+
+    if (note && note.state == NoteState.SavingText) {
+      const noteFailedToSaveText = noteSavingTextToFailedToSaveText(
+        note,
+        event.err
+      );
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteFailedToSaveText),
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
 export const handleCreateNoteRequested = (
   state: AppStateAuthenticated
 ): [AppStateAuthenticated, AppCommand] => {
@@ -627,6 +706,54 @@ export const handleNoteCreated = (
         noteList: {
           ...state.noteList,
           notes: replace(state.noteList.notes, noteCreated),
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+export const handleFailedToCreateNoteFromTitle = (
+  state: AppStateAuthenticated,
+  event: FailedToCreateNoteFromTitleEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const note = getNote(state.noteList.notes, event.noteId);
+
+    if (note && note.state == NoteState.CreatingFromTitle) {
+      const noteFailedToCreateFromTitle =
+        noteCreatingFromTitleToFailedToCreateFromTitle(note, event.err);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteFailedToCreateFromTitle),
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+export const handleFailedToCreateNoteFromText = (
+  state: AppStateAuthenticated,
+  event: FailedToCreateNoteFromTextEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const note = getNote(state.noteList.notes, event.noteId);
+
+    if (note && note.state == NoteState.CreatingFromText) {
+      const noteFailedToCreateFromText =
+        noteCreatingFromTextToFailedToCreateFromText(note, event.err);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteFailedToCreateFromText),
         },
       };
       return JustStateAuthenticated(newState);
@@ -694,6 +821,29 @@ export const handleNoteDeleted = (
   return JustStateAuthenticated(state);
 };
 
+export const handleFailedToDeleteNote = (
+  state: AppStateAuthenticated,
+  event: FailedToDeleteNoteEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const note = getNote(state.noteList.notes, event.noteId);
+
+    if (note && note.state == NoteState.Deleting) {
+      const noteFailedToDelete = noteDeletingToFailedToDelete(note, event.err);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteFailedToDelete),
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
 export const handleRestoreNoteRequested = (
   state: AppStateAuthenticated,
   event: RestoreNoteRequestedEvent
@@ -732,6 +882,32 @@ export const handleNoteRestored = (
         noteList: {
           ...state.noteList,
           notes: replace(state.noteList.notes, noteLoaded),
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+export const handleFailedToRestoreNote = (
+  state: AppStateAuthenticated,
+  event: FailedToRestoreNoteEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const note = getNote(state.noteList.notes, event.noteId);
+
+    if (note && note.state == NoteState.Restoring) {
+      const noteFailedToRestore = noteRestoringToFailedToRestore(
+        note,
+        event.err
+      );
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteFailedToRestore),
         },
       };
       return JustStateAuthenticated(newState);
@@ -814,6 +990,30 @@ export const handleNoteConvertedToMarkdown = (
   return JustStateAuthenticated(state);
 };
 
+export const handleNoteFailedToConvertToMarkdown = (
+  state: AppStateAuthenticated,
+  event: NoteFailedToConvertToMarkdownEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const note = getNote(state.noteList.notes, event.noteId);
+
+    if (note && note.state == NoteState.ConvertingToMarkdown) {
+      const noteFailedToConvertToMarkdown =
+        noteConvertingToMarkdownToFailedToConvertToMarkdown(note, event.err);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteFailedToConvertToMarkdown),
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
 export const handleSwitchEditorToMarkdownRequested = (
   state: AppStateAuthenticated,
   event: SwitchEditorToMarkdownRequestedEvent
@@ -851,6 +1051,187 @@ export const handleSwitchEditorToTextRequested = (
             state: EditorState.EditingAsPlainText,
             defaultText: event.text,
           },
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+export const handleRetryNoteErrorRequested = (
+  state: AppStateAuthenticated,
+  event: RetryNoteErrorRequestedEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const note = getNote(state.noteList.notes, event.noteId);
+
+    if (note && note.state == NoteState.FailedToRename) {
+      const noteRenaming = noteFailedToRenameToRenaming(note);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteRenaming),
+        },
+      };
+      return [newState, RenameNote(noteRenaming)];
+    }
+    if (note && note.state == NoteState.FailedToSaveText) {
+      const noteSavingText = noteFailedToSaveTextToSavingText(note);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteSavingText),
+        },
+      };
+      return [newState, SaveNoteText(noteSavingText)];
+    }
+    if (note && note.state == NoteState.FailedToDelete) {
+      const noteDeleting = noteFailedToDeleteToDeleting(note);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteDeleting),
+        },
+      };
+      return [newState, DeleteNote(noteDeleting)];
+    }
+    if (note && note.state == NoteState.FailedToRestore) {
+      const noteRestoring = noteFailedToRestoreToRestoring(note);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteRestoring),
+        },
+      };
+      return [newState, RestoreNote(noteRestoring)];
+    }
+    if (note && note.state == NoteState.FailedToCreateFromTitle) {
+      const noteCreatingFromTitle =
+        noteFailedToCreateFromTitleToCreatingFromTitle(note);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteCreatingFromTitle),
+        },
+      };
+      return [newState, CreateNewNoteWithTitle(noteCreatingFromTitle)];
+    }
+    if (note && note.state == NoteState.FailedToCreateFromText) {
+      const noteCreatingFromText =
+        noteFailedToCreateFromTextToCreatingFromText(note);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteCreatingFromText),
+        },
+      };
+      return [newState, CreateNewNoteWithText(noteCreatingFromText)];
+    }
+    if (note && note.state == NoteState.FailedToConvertToMarkdown) {
+      const noteConvertingToMarkdown =
+        noteFailedToConvertToMarkdownToConvertingToMarkdown(note);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteConvertingToMarkdown),
+        },
+      };
+      return [newState, ConvertToMarkdown(noteConvertingToMarkdown)];
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+export const handleNoteDiscardNoteErrorRequested = (
+  state: AppStateAuthenticated,
+  event: DiscardNoteErrorRequestedEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const note = getNote(state.noteList.notes, event.noteId);
+
+    if (note && note.state == NoteState.FailedToRename) {
+      const noteLoaded = noteFailedToRenameToLoaded(note);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteLoaded),
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+    if (note && note.state == NoteState.FailedToSaveText) {
+      const noteLoaded = noteFailedToSaveTextToLoaded(note);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteLoaded),
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+    if (note && note.state == NoteState.FailedToDelete) {
+      const noteLoaded = noteFailedToDeleteToLoaded(note);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteLoaded),
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+    if (note && note.state == NoteState.FailedToRestore) {
+      const noteDeleted = noteFailedToRestoreToDeleted(note);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteDeleted),
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+    if (note && note.state == NoteState.FailedToCreateFromTitle) {
+      const noteNew = noteFailedToCreateFromTitleToNew(note);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteNew),
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+    if (note && note.state == NoteState.FailedToCreateFromText) {
+      const noteNew = noteFailedToCreateFromTextToNew(note);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteNew),
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+    if (note && note.state == NoteState.FailedToConvertToMarkdown) {
+      const noteLoaded = noteFailedToConvertToMarkdownToLoaded(note);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteLoaded),
         },
       };
       return JustStateAuthenticated(newState);

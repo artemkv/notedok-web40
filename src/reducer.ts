@@ -4,13 +4,21 @@ import {
   handleCreateNoteRequested,
   handleDeleteNoteRequested,
   handleEditNoteRequested,
+  handleFailedToCreateNoteFromText,
+  handleFailedToCreateNoteFromTitle,
+  handleFailedToDeleteNote,
   handleFailedToInitializeMarkdownEditor,
   handleFailedToLoadNote,
+  handleFailedToRenameNote,
+  handleFailedToRestoreNote,
   handleFailedToRetrieveFileList,
+  handleFailedToSaveNoteText,
   handleLoadNoteTextSuccess,
   handleNoteConvertedToMarkdown,
   handleNoteCreated,
   handleNoteDeleted,
+  handleNoteDiscardNoteErrorRequested,
+  handleNoteFailedToConvertToMarkdown,
   handleNoteRenamed,
   handleNoteRestored,
   handleNoteRestoredOnNewPath,
@@ -21,6 +29,7 @@ import {
   handleRestoreNoteRequested,
   handleRetrieveFileListSuccess,
   handleRetryLoadingNoteRequested,
+  handleRetryNoteErrorRequested,
   handleSearchTextUpdated,
   handleSwitchEditorToMarkdownRequested,
   handleSwitchEditorToTextRequested,
@@ -83,19 +92,19 @@ export const Reducer = (
     if (event.type == EventType.NoteTitleUpdated) {
       return handleNoteTitleUpdated(state, event);
     }
-
     if (event.type == EventType.NoteRenamed) {
       return handleNoteRenamed(state, event);
+    }
+    if (event.type == EventType.FailedToRenameNote) {
+      return handleFailedToRenameNote(state, event);
     }
 
     if (event.type == EventType.EditNoteRequested) {
       return handleEditNoteRequested(state, event);
     }
-
     if (event.type == EventType.FailedToInitializeMarkdownEditor) {
       return handleFailedToInitializeMarkdownEditor(state);
     }
-
     if (event.type == EventType.CancelNoteEditRequested) {
       return handleCancelNoteEditRequested(state);
     }
@@ -103,53 +112,71 @@ export const Reducer = (
     if (event.type == EventType.NoteSaveTextRequested) {
       return handleNoteSaveTextRequested(state, event);
     }
-
     if (event.type == EventType.NoteTextSaved) {
       return handleNoteTextSaved(state, event);
+    }
+    if (event.type == EventType.FailedToSaveNoteText) {
+      return handleFailedToSaveNoteText(state, event);
     }
 
     if (event.type == EventType.CreateNoteRequested) {
       return handleCreateNoteRequested(state);
     }
-
     if (event.type == EventType.NoteCreated) {
       return handleNoteCreated(state, event);
+    }
+    if (event.type == EventType.FailedToCreateNoteFromTitle) {
+      return handleFailedToCreateNoteFromTitle(state, event);
+    }
+    if (event.type == EventType.FailedToCreateNoteFromText) {
+      return handleFailedToCreateNoteFromText(state, event);
     }
 
     if (event.type == EventType.DeleteNoteRequested) {
       return handleDeleteNoteRequested(state, event);
     }
-
     if (event.type == EventType.NoteDeleted) {
       return handleNoteDeleted(state, event);
+    }
+    if (event.type == EventType.FailedToDeleteNote) {
+      return handleFailedToDeleteNote(state, event);
     }
 
     if (event.type == EventType.RestoreNoteRequested) {
       return handleRestoreNoteRequested(state, event);
     }
-
     if (event.type == EventType.NoteRestored) {
       return handleNoteRestored(state, event);
     }
-
     if (event.type == EventType.NoteRestoredOnNewPath) {
       return handleNoteRestoredOnNewPath(state, event);
+    }
+    if (event.type == EventType.FailedToRestoreNote) {
+      return handleFailedToRestoreNote(state, event);
     }
 
     if (event.type == EventType.ConvertToMarkdownRequested) {
       return handleConvertToMarkdownRequested(state, event);
     }
-
     if (event.type == EventType.NoteConvertedToMarkdown) {
       return handleNoteConvertedToMarkdown(state, event);
+    }
+    if (event.type == EventType.NoteFailedToConvertToMarkdown) {
+      return handleNoteFailedToConvertToMarkdown(state, event);
     }
 
     if (event.type == EventType.SwitchEditorToMarkdownRequested) {
       return handleSwitchEditorToMarkdownRequested(state, event);
     }
-
     if (event.type == EventType.SwitchEditorToTextRequested) {
       return handleSwitchEditorToTextRequested(state, event);
+    }
+
+    if (event.type == EventType.RetryNoteErrorRequested) {
+      return handleRetryNoteErrorRequested(state, event);
+    }
+    if (event.type == EventType.DiscardNoteErrorRequested) {
+      return handleNoteDiscardNoteErrorRequested(state, event);
     }
   }
 

@@ -50,6 +50,9 @@ export enum EventType {
 
   SwitchEditorToMarkdownRequested,
   SwitchEditorToTextRequested,
+
+  RetryNoteErrorRequested,
+  DiscardNoteErrorRequested,
 }
 
 export interface NeverEvent {
@@ -238,6 +241,16 @@ export interface SwitchEditorToTextRequestedEvent {
   text: string;
 }
 
+export interface RetryNoteErrorRequestedEvent {
+  type: EventType.RetryNoteErrorRequested;
+  noteId: string;
+}
+
+export interface DiscardNoteErrorRequestedEvent {
+  type: EventType.DiscardNoteErrorRequested;
+  noteId: string;
+}
+
 export type AppEvent =
   | NeverEvent
   | UserAuthenticatedEvent
@@ -273,4 +286,6 @@ export type AppEvent =
   | NoteConvertedToMarkdownEvent
   | NoteFailedToConvertToMarkdownEvent
   | SwitchEditorToMarkdownRequestedEvent
-  | SwitchEditorToTextRequestedEvent;
+  | SwitchEditorToTextRequestedEvent
+  | RetryNoteErrorRequestedEvent
+  | DiscardNoteErrorRequestedEvent;
