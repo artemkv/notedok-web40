@@ -17,6 +17,7 @@ export enum EventType {
 
   LoadNoteTextSuccess,
   FailedToLoadNote,
+  RetryLoadingNoteRequested,
 
   NoteTitleUpdated,
   NoteRenamed,
@@ -94,6 +95,11 @@ export interface FailedToLoadNoteEvent {
   type: EventType.FailedToLoadNote;
   note: NoteLoading;
   err: string;
+}
+
+export interface RetryLoadingNoteRequestedEvent {
+  type: EventType.RetryLoadingNoteRequested;
+  noteId: string;
 }
 
 export interface NoteTitleUpdatedEvent {
@@ -242,6 +248,7 @@ export type AppEvent =
   | NoteSelectedEvent
   | LoadNoteTextSuccessEvent
   | FailedToLoadNoteEvent
+  | RetryLoadingNoteRequestedEvent
   | NoteTitleUpdatedEvent
   | NoteRenamedEvent
   | FailedToRenameNoteEvent

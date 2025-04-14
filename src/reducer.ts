@@ -5,6 +5,7 @@ import {
   handleDeleteNoteRequested,
   handleEditNoteRequested,
   handleFailedToInitializeMarkdownEditor,
+  handleFailedToLoadNote,
   handleFailedToRetrieveFileList,
   handleLoadNoteTextSuccess,
   handleNoteConvertedToMarkdown,
@@ -19,6 +20,7 @@ import {
   handleNoteTitleUpdated,
   handleRestoreNoteRequested,
   handleRetrieveFileListSuccess,
+  handleRetryLoadingNoteRequested,
   handleSearchTextUpdated,
   handleSwitchEditorToMarkdownRequested,
   handleSwitchEditorToTextRequested,
@@ -56,7 +58,6 @@ export const Reducer = (
     if (event.type === EventType.RetrieveFileListSuccess) {
       return handleRetrieveFileListSuccess(event);
     }
-
     if (event.type == EventType.FailedToRetrieveFileList) {
       return handleFailedToRetrieveFileList(event);
     }
@@ -71,6 +72,12 @@ export const Reducer = (
 
     if (event.type == EventType.LoadNoteTextSuccess) {
       return handleLoadNoteTextSuccess(state, event);
+    }
+    if (event.type == EventType.FailedToLoadNote) {
+      return handleFailedToLoadNote(state, event);
+    }
+    if (event.type == EventType.RetryLoadingNoteRequested) {
+      return handleRetryLoadingNoteRequested(state, event);
     }
 
     if (event.type == EventType.NoteTitleUpdated) {

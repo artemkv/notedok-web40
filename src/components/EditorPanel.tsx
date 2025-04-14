@@ -20,6 +20,7 @@ import ControlPanel from "./ControlPanel";
 import { memo, useRef } from "react";
 import { htmlEscape, renderNoteTextHtml } from "../ui";
 import PlainTextEditor from "./PlainTextEditor";
+import ErrorLoadingNote from "./ErrorLoadingNote";
 
 const EditorPanel = memo(function EditorPanel(props: {
   note: Note | undefined;
@@ -60,6 +61,12 @@ const EditorPanel = memo(function EditorPanel(props: {
       <div className="editor-panel">
         <ProgressIndicator />
       </div>
+    );
+  }
+
+  if (note.state == NoteState.FailedToLoad) {
+    return (
+      <ErrorLoadingNote noteId={note.id} err={note.err} dispatch={dispatch} />
     );
   }
 

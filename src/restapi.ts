@@ -5,10 +5,8 @@ export class ApiError extends Error {
   statusCode: number;
   statusMessage: string;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(statusCode: number, statusMessage: string, ...params: any[]) {
-    // Pass remaining arguments (including vendor specific ones) to parent constructor
-    super(...params);
+  constructor(message: string, statusCode: number, statusMessage: string) {
+    super(message);
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
     if (Error.captureStackTrace) {
@@ -21,12 +19,12 @@ export class ApiError extends Error {
   }
 }
 
-// TODO: here I am losing the error text, if any was sent in the body
-function handleErrors(response: Response) {
+async function handleErrors(response: Response) {
   if (response.status < 400) {
     return response;
   }
-  throw new ApiError(response.status, response.statusText, response.statusText);
+  const message = await response.text();
+  throw new ApiError(message, response.status, response.statusText);
 }
 
 interface StringMap {

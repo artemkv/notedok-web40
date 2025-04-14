@@ -16,6 +16,7 @@ import {
   ConvertToMarkdownRequestedEvent,
   DeleteNoteRequestedEvent,
   EditNoteRequestedEvent,
+  FailedToLoadNoteEvent,
   FailedToRetrieveFileListEvent,
   LoadNoteTextSuccessEvent,
   NoteConvertedToMarkdownEvent,
@@ -30,6 +31,7 @@ import {
   NoteTitleUpdatedEvent,
   RestoreNoteRequestedEvent,
   RetrieveFileListSuccessEvent,
+  RetryLoadingNoteRequestedEvent,
   SearchTextUpdatedEvent,
   SwitchEditorToMarkdownRequestedEvent,
   SwitchEditorToTextRequestedEvent,
@@ -54,10 +56,12 @@ import {
   noteCreatingFromTitleToLoaded,
   noteDeletedToRestoring,
   noteDeletingToDeleted,
+  noteFailedToLoadToLoading,
   noteLoadedToConvertingToMarkdown,
   noteLoadedToDeleting,
   noteLoadedToRenaming,
   noteLoadedToSavingText,
+  noteLoadingToFailedToLoad,
   noteLoadingToLoaded,
   noteNewToCreatingFromText,
   noteNewToCreatingFromTitle,
@@ -267,8 +271,22 @@ export const handleNoteSelected = (
         };
         return [newState, LoadNoteText(noteLoading)];
       }
+      // If failed to load -> trigger load
+      if (event.note.state == NoteState.FailedToLoad) {
+        const noteLoading = noteFailedToLoadToLoading(event.note);
+        const newState: AppStateAuthenticated = {
+          ...state,
+          noteList: {
+            ...state.noteList,
+            notes: replace(state.noteList.notes, noteLoading),
+            selectedNoteId: noteLoading.id,
+            editor: { state: EditorState.Inactive }, // TODO: review at which moment this should happen
+          },
+        };
+        return [newState, LoadNoteText(noteLoading)];
+      }
 
-      // Not ref -> simply update selection
+      // Otherwise -> simply update selection
       const newState: AppStateAuthenticated = {
         ...state,
         noteList: {
@@ -278,6 +296,29 @@ export const handleNoteSelected = (
         },
       };
       return JustStateAuthenticated(newState);
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+export const handleRetryLoadingNoteRequested = (
+  state: AppStateAuthenticated,
+  event: RetryLoadingNoteRequestedEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const note = getNote(state.noteList.notes, event.noteId);
+
+    if (note && note.state == NoteState.FailedToLoad) {
+      const noteLoading = noteFailedToLoadToLoading(note);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteLoading),
+        },
+      };
+      return [newState, LoadNoteText(noteLoading)];
     }
   }
 
@@ -296,6 +337,27 @@ export const handleLoadNoteTextSuccess = (
         noteList: {
           ...state.noteList,
           notes: replace(state.noteList.notes, noteLoaded),
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+export const handleFailedToLoadNote = (
+  state: AppStateAuthenticated,
+  event: FailedToLoadNoteEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    if (event.note.state == NoteState.Loading) {
+      const noteFailedToLoad = noteLoadingToFailedToLoad(event.note, event.err);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteFailedToLoad),
         },
       };
       return JustStateAuthenticated(newState);
