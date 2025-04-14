@@ -61,36 +61,36 @@ V0.1
 - --The rest works the same--
 - --Show plain text note visually as deleted when appropriate--
 
----
+--- Error handling
 
 - --If note fails to load, show error and allow to retry. Re-selecting the note again also retries--
 
-- If note fails to rename, show error indicator in the list and the error in the editor
+- --If note fails to rename, show error indicator in the list and the error in the editor--
 - --While in "failed to rename" state, only button New is visible, title and text are read-only--
 - --If you discard the error, the note moves to the default state, the editor loses changes--
 - --You can also retry, in which case note goes to renaming again--
 
-- If note fails to save text, show error indicator in the list and the error in the editor
+- --If note fails to save text, show error indicator in the list and the error in the editor--
 - --While in "failed to save text" state, only button New is visible, title and text are read-only--
 - --If you discard the error, the note moves to the default state, the editor loses changes--
 - --You can also retry, in which case note goes to saving text again--
 
-- If note fails to delete, show error indicator in the list and the error in the editor
+- --If note fails to delete, show error indicator in the list and the error in the editor--
 - --While in "failed to delete" state, only button New is visible, title and text are read-only--
 - --If you discard the error, the note moves to the default state, as if delete didn't happen--
 - --You can also retry, in which case note goes to deleting again--
 
-- If note fails to restore, show error indicator in the list and the error in the editor
+- --If note fails to restore, show error indicator in the list and the error in the editor--
 - --While in "failed to restore" state, only button New is visible, the note is shown as if deleted in the list and the editor--
 - --If you discard the error, the note moves back to deleted state--
 - --You can also retry, in which case note goes to restoring again--
 
-- If note fails to create from title, show error indicator in the list and the error in the editor
+- --If note fails to create from title, show error indicator in the list and the error in the editor--
 - --While in "failed to create" state, only button New is visible, title and text are read-only--
 - --If you discard the error, the note moves to back to new, the editor loses changes--
 - --You can also retry, in which case note goes to creating again--
 
-- If note fails to create from text, show error indicator in the list and the error in the editor
+- --If note fails to create from text, show error indicator in the list and the error in the editor--
 - --While in "failed to create" state, only button New is visible, title and text are read-only--
 - --If you discard the error, the note moves to back to new, the editor loses changes--
 - --You can also retry, in which case note goes to creating again--

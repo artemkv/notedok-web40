@@ -3,6 +3,7 @@ import { AppEvent, EventType } from "../events";
 import { Dispatch } from "../hooks/useReducer";
 import { Note, NoteState } from "../model";
 import OrbitProgressIndicator from "./OrbitProgressIndicator";
+import ErrorIcon from "../assets/error_outline.svg";
 import { getEffectiveTitle, isMarkdownNote } from "../buisiness";
 import uistrings from "../uistrings";
 import { memo } from "react";
@@ -32,6 +33,22 @@ const NoteListItem = memo(function NoteListItem(props: {
     }
     return false;
   };
+
+  // TODO: single-source
+  const [hasError, error] = (() => {
+    if (
+      note.state == NoteState.FailedToCreateFromTitle ||
+      note.state == NoteState.FailedToCreateFromText ||
+      note.state == NoteState.FailedToRename ||
+      note.state == NoteState.FailedToSaveText ||
+      note.state == NoteState.FailedToDelete ||
+      note.state == NoteState.FailedToRestore ||
+      note.state == NoteState.FailedToConvertToMarkdown
+    ) {
+      return [true, note.err];
+    }
+    return [false, ""];
+  })();
 
   const placeholderText = (note: Note) => {
     if (note.state == NoteState.New) {
@@ -63,6 +80,28 @@ const NoteListItem = memo(function NoteListItem(props: {
     className += " note-list-item-deleted";
   }
 
+  const noteStatus = () => {
+    if (isPending(note)) {
+      return (
+        <div className="note-list-item-status">
+          <OrbitProgressIndicator />
+        </div>
+      );
+    }
+
+    if (hasError) {
+      return (
+        <div className="note-list-item-status">
+          <img className="note-error-icon" src={ErrorIcon} title={error} />
+        </div>
+      );
+    }
+
+    if (!isMarkdownNote(note)) {
+      return <div className="note-format-indicator">.txt</div>;
+    }
+  };
+
   return (
     <div className="note-list-item-container" id={note.id}>
       <div className={className} onClick={() => onNoteSelected(note)}>
@@ -70,13 +109,7 @@ const NoteListItem = memo(function NoteListItem(props: {
           ? getEffectiveTitle(note)
           : placeholderText(note)}
       </div>
-      {isPending(note) ? (
-        <div className="note-list-item-status">
-          <OrbitProgressIndicator />
-        </div>
-      ) : !isMarkdownNote(note) ? (
-        <div className="note-format-indicator">.txt</div>
-      ) : null}
+      {noteStatus()}
     </div>
   );
 });

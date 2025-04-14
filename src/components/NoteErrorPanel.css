@@ -19,7 +19,7 @@
 
 .note-error-panel .error-message {
     margin: 0px;
-    color: red;
+    color: #e92967;
     flex-grow: 1;
 }
 
