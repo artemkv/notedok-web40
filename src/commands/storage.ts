@@ -120,7 +120,7 @@ export const LoadNoteText = (note: NoteLoading): LoadNoteTextCommand => ({
       });
     } catch (err) {
       dispatch({
-        type: EventType.NoteLoadFailed,
+        type: EventType.FailedToLoadNote,
         note,
         err: `${err}`,
       });
