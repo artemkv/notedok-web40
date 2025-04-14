@@ -267,6 +267,7 @@ export type Editor =
 export enum NoteListState {
   Retrieving,
   Retrieved,
+  FailedToRetrieve,
 }
 
 export interface NoteListRetrieving {
@@ -282,7 +283,15 @@ export interface NoteListRetrieved {
   editor: Editor;
 }
 
-export type NoteList = NoteListRetrieving | NoteListRetrieved;
+export interface NoteListFailedToRetrieve {
+  state: NoteListState.FailedToRetrieve;
+  err: string;
+}
+
+export type NoteList =
+  | NoteListRetrieving
+  | NoteListRetrieved
+  | NoteListFailedToRetrieve;
 
 // App state
 

@@ -1,7 +1,5 @@
 import { Note, NoteLoading } from "./model";
 
-// TODO: maybe I'll need separate events for the case path changes
-
 export enum EventType {
   // "Never" event is never triggered in the app
   // this is just to make TS happy
@@ -11,6 +9,7 @@ export enum EventType {
   UserSessionCreated,
 
   RetrieveFileListSuccess,
+  FailedToRetrieveFileList,
 
   SearchTextUpdated,
 
@@ -50,8 +49,6 @@ export enum EventType {
 
   SwitchEditorToMarkdownRequested,
   SwitchEditorToTextRequested,
-
-  RestApiError,
 }
 
 export interface NeverEvent {
@@ -70,6 +67,11 @@ export interface UserSessionCreatedEvent {
 export interface RetrieveFileListSuccessEvent {
   type: EventType.RetrieveFileListSuccess;
   fileList: string[];
+}
+
+export interface FailedToRetrieveFileListEvent {
+  type: EventType.FailedToRetrieveFileList;
+  err: string;
 }
 
 export interface SearchTextUpdatedEvent {
@@ -202,11 +204,6 @@ export interface FailedToRestoreNoteEvent {
   err: string;
 }
 
-export interface RestApiErrorEvent {
-  type: EventType.RestApiError;
-  err: string;
-}
-
 export interface ConvertToMarkdownRequestedEvent {
   type: EventType.ConvertToMarkdownRequested;
   noteId: string;
@@ -240,6 +237,7 @@ export type AppEvent =
   | UserAuthenticatedEvent
   | UserSessionCreatedEvent
   | RetrieveFileListSuccessEvent
+  | FailedToRetrieveFileListEvent
   | SearchTextUpdatedEvent
   | NoteSelectedEvent
   | LoadNoteTextSuccessEvent
@@ -264,7 +262,6 @@ export type AppEvent =
   | NoteRestoredEvent
   | NoteRestoredOnNewPathEvent
   | FailedToRestoreNoteEvent
-  | RestApiErrorEvent
   | ConvertToMarkdownRequestedEvent
   | NoteConvertedToMarkdownEvent
   | NoteFailedToConvertToMarkdownEvent

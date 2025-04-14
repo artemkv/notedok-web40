@@ -1,6 +1,7 @@
 import "./App.css";
 import ClientArea from "./components/ClientArea";
 import CognitoSignin from "./components/CognitoSignIn";
+import ErrorScreen from "./components/ErrorScreen";
 import ProgressIndicator from "./components/ProgressIndicator";
 import { AppEvent } from "./events";
 import { Dispatch } from "./hooks/useReducer";
@@ -16,6 +17,10 @@ function App(props: { state: AppState; dispatch: Dispatch<AppEvent> }) {
 
   if (state.noteList.state == NoteListState.Retrieving) {
     return <ProgressIndicator />;
+  }
+
+  if (state.noteList.state == NoteListState.FailedToRetrieve) {
+    return <ErrorScreen err={state.noteList.err} />;
   }
 
   return <ClientArea noteList={state.noteList} dispatch={dispatch} />;

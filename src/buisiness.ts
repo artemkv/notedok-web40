@@ -16,6 +16,7 @@ import {
   ConvertToMarkdownRequestedEvent,
   DeleteNoteRequestedEvent,
   EditNoteRequestedEvent,
+  FailedToRetrieveFileListEvent,
   LoadNoteTextSuccessEvent,
   NoteConvertedToMarkdownEvent,
   NoteCreatedEvent,
@@ -210,6 +211,19 @@ export const handleRetrieveFileListSuccess = (
       selectedNoteId: "",
       searchText: "",
       editor: { state: EditorState.Inactive },
+    },
+  };
+  return JustStateAuthenticated(newState);
+};
+
+export const handleFailedToRetrieveFileList = (
+  event: FailedToRetrieveFileListEvent
+): [AppStateAuthenticated, AppCommand] => {
+  const newState: AppStateAuthenticated = {
+    auth: AuthenticationStatus.Authenticated,
+    noteList: {
+      state: NoteListState.FailedToRetrieve,
+      err: event.err,
     },
   };
   return JustStateAuthenticated(newState);

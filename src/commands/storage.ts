@@ -100,7 +100,7 @@ export const RetrieveFileList = (): RetrieveFileListCommand => ({
       });
     } catch (err) {
       dispatch({
-        type: EventType.RestApiError,
+        type: EventType.FailedToRetrieveFileList,
         err: `${err}`,
       });
     }

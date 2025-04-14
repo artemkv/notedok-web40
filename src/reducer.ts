@@ -5,6 +5,7 @@ import {
   handleDeleteNoteRequested,
   handleEditNoteRequested,
   handleFailedToInitializeMarkdownEditor,
+  handleFailedToRetrieveFileList,
   handleLoadNoteTextSuccess,
   handleNoteConvertedToMarkdown,
   handleNoteCreated,
@@ -54,6 +55,10 @@ export const Reducer = (
   } else {
     if (event.type === EventType.RetrieveFileListSuccess) {
       return handleRetrieveFileListSuccess(event);
+    }
+
+    if (event.type == EventType.FailedToRetrieveFileList) {
+      return handleFailedToRetrieveFileList(event);
     }
 
     if (event.type == EventType.SearchTextUpdated) {
@@ -138,10 +143,6 @@ export const Reducer = (
 
     if (event.type == EventType.SwitchEditorToTextRequested) {
       return handleSwitchEditorToTextRequested(state, event);
-    }
-
-    if (event.type == EventType.RestApiError) {
-      // TODO:
     }
   }
 
