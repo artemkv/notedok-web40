@@ -5,7 +5,7 @@ div.note-text-editable-container {
   width: 100%;
   outline: none;
   color: var(--text-color);
-  flex-grow: 1;
+  flex: 1;
 }
 
 textarea.note-text-editable {

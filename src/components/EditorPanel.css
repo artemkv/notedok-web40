@@ -10,6 +10,8 @@
     flex: 0 1 900px;
     max-width: 900px;
     padding: 16px;
+    display: flex;
+    flex-direction: column;
 }
 
 [contenteditable="true"]:active,
