@@ -18,7 +18,7 @@
 }
 
 .note-list-item-placeholder {
-    color: grey;
+    color: var(--placeholder-color);
 }
 
 .note-list-item-deleted {
@@ -33,7 +33,7 @@
 .note-format-indicator {
     margin-right: 8px;
     font-size: 10px;
-    color: #a9a9a9;
+    color: var(--faded-color);
     display: flex;
     justify-content: center;
     flex-direction: column;

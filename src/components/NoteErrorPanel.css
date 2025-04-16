@@ -1,6 +1,4 @@
 .note-error-panel {
-    font-family: "Segoe UI", arial, sans-serif;
-    font-weight: 400;
     font-size: 16px;
     margin: 32px 0px 16px 0px;
     padding: 0px;
@@ -19,7 +17,7 @@
 
 .note-error-panel .error-message {
     margin: 0px;
-    color: #e92967;
+    color: var(--error-color);
     flex-grow: 1;
 }
 
@@ -34,7 +32,7 @@
 .note-error-retry-button {
     width: fit-content;
     font-size: 13px;
-    color: grey;
+    color: var(--tech-color);
     background-color: white;
     border: none;
     outline: none;
@@ -44,9 +42,9 @@
 }
 
 .error-retry-button:hover {
-    color: #101720;
+    color: var(--text-color);
 }
 
 .error-retry-button:focus {
-    color: #101720;
+    color: var(--text-color);
 }

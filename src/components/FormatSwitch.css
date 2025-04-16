@@ -2,12 +2,12 @@
   font-size: 13px;
   margin-left: 4px;
   margin-right: 16px;
-  color: #101720;
+  color: var(--text-color);
 }
 
 .format-switch-button {
   margin: 0px 4px;
-  color: grey;
+  color: var(--tech-color);
   background-color: white;
   border: none;
   outline: none;
@@ -17,13 +17,13 @@
 
 .format-switch-text {
   margin: 0px 4px;
-  color: #101720;
+  color: var(--text-color);
 }
 
 .format-switch-button:hover {
-  color: #101720;
+  color: var(--text-color);
 }
 
 .format-switch-button:focus {
-  color: #101720;
+  color: var(--text-color);
 }

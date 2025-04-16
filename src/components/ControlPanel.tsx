@@ -144,7 +144,11 @@ const ControlPanel = memo(function ControlPanel(props: {
               {uistrings.RestoreButtonText}
             </button>
           ) : null}
-          {showProgress ? <OrbitProgressIndicator /> : null}
+          {showProgress ? (
+            <span className="control-panel-status">
+              <OrbitProgressIndicator />
+            </span>
+          ) : null}
         </div>
       </div>
     </div>

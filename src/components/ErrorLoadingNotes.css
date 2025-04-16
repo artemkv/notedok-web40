@@ -1,4 +1,4 @@
 .error-message {
   margin: 16px;
-  color: #e92967;
+  color: var(--error-color);
 }

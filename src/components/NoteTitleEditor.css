@@ -1,17 +1,15 @@
 .note-title {
-    font-family: "Segoe UI", arial, sans-serif;
-    font-weight: 400;
     font-size: 30px;
     padding: 0px 0px 16px 0px;
     margin-bottom: 16px;
     width: 100%;
     border: none;
-    border-bottom: 1px solid #101720;
+    border-bottom: 1px solid var(--text-color);
     outline: none;
-    color: #101720;
+    color: var(--text-color);
     text-overflow: ellipsis;
 }
 
 .note-title::placeholder {
-    color: grey;
+    color: var(--placeholder-color);
 }

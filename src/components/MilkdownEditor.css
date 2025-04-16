@@ -4,11 +4,11 @@
 }
 
 .milkdown-error-state {
-  color: #e92967;
+  color: var(--error-color);
 }
 
 .markdown-body * {
-  color: #101720;
+  color: var(--text-color);
 }
 
 .markdown-body.note-text-deleted * {

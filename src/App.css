@@ -14,7 +14,7 @@ body {
     padding: 0;
 
     /* Styles to inherit */
-    /* TODO */
+    font-family: "Segoe UI", arial, sans-serif;
 
     --placeholder-color: grey;
     --text-color: #101720;
@@ -22,6 +22,7 @@ body {
     --faded-color: #a9a9a9;
     --border-color: #c0c0c0;
     --splitter-color: #f1f1f1;
+    --error-color: #e92967;
 }
 
 /* Full screen */

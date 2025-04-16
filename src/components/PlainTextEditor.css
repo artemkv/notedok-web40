@@ -4,7 +4,7 @@ div.note-text-editable-container {
   border: none;
   width: 100%;
   outline: none;
-  color: #101720;
+  color: var(--text-color);
   flex-grow: 1;
 }
 

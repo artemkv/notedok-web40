@@ -1,11 +1,11 @@
 .error-message {
   margin: 16px;
-  color: #e92967;
+  color: var(--error-color);
 }
 
 .error-retry-button {
   font-size: 13px;
-  color: grey;
+  color: var(--tech-color);
   background-color: white;
   border: none;
   outline: none;
@@ -15,9 +15,9 @@
 }
 
 .error-retry-button:hover {
-  color: #101720;
+  color: var(--text-color);
 }
 
 .error-retry-button:focus {
-  color: #101720;
+  color: var(--text-color);
 }
