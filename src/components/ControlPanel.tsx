@@ -81,63 +81,71 @@ const ControlPanel = memo(function ControlPanel(props: {
 
   return (
     <div className="control-panel">
-      <div className="control-panel-left">
-        {showNew ? (
-          <button className="control-panel-button" onClick={newButtonOnClick}>
-            {uistrings.NewButtonText}
-          </button>
-        ) : null}
-      </div>
-      <div className="control-panel-right">
-        {showConvertToMarkdown ? (
-          <button
-            className="control-panel-button"
-            onClick={convertToMarkdownButtonOnClick}
-          >
-            {uistrings.ConvertToMarkdownButtonText}
-          </button>
-        ) : null}
-        {showEdit ? (
-          <button className="control-panel-button" onClick={editButtonOnClick}>
-            {uistrings.EditButtonText}
-          </button>
-        ) : null}
-        {showFormatSwitch ? (
-          <FormatSwitch
-            isMarkdown={isFormatMarkdown}
-            onFormatSwitch={onFormatSwitch}
-          />
-        ) : null}
-        {showSave ? (
-          <button className="control-panel-button" onClick={saveButtonOnClick}>
-            {uistrings.SaveButtonText}
-          </button>
-        ) : null}
-        {showCancel ? (
-          <button
-            className="control-panel-button"
-            onClick={cancelButtonOnClick}
-          >
-            {uistrings.CancelButtonText}
-          </button>
-        ) : null}
-        {showDelete ? (
-          <button
-            className="control-panel-button"
-            onClick={deleteButtonOnClick}
-          >
-            {uistrings.DeleteButtonText}
-          </button>
-        ) : null}
-        {showRestore ? (
-          <button
-            className="control-panel-button"
-            onClick={restoreButtonOnClick}
-          >
-            {uistrings.RestoreButtonText}
-          </button>
-        ) : null}
-        {showProgress ? <OrbitProgressIndicator /> : null}
+      <div className="control-panel-inner">
+        <div className="control-panel-left">
+          {showNew ? (
+            <button className="control-panel-button" onClick={newButtonOnClick}>
+              {uistrings.NewButtonText}
+            </button>
+          ) : null}
+        </div>
+        <div className="control-panel-right">
+          {showConvertToMarkdown ? (
+            <button
+              className="control-panel-button"
+              onClick={convertToMarkdownButtonOnClick}
+            >
+              {uistrings.ConvertToMarkdownButtonText}
+            </button>
+          ) : null}
+          {showEdit ? (
+            <button
+              className="control-panel-button"
+              onClick={editButtonOnClick}
+            >
+              {uistrings.EditButtonText}
+            </button>
+          ) : null}
+          {showFormatSwitch ? (
+            <FormatSwitch
+              isMarkdown={isFormatMarkdown}
+              onFormatSwitch={onFormatSwitch}
+            />
+          ) : null}
+          {showSave ? (
+            <button
+              className="control-panel-button"
+              onClick={saveButtonOnClick}
+            >
+              {uistrings.SaveButtonText}
+            </button>
+          ) : null}
+          {showCancel ? (
+            <button
+              className="control-panel-button"
+              onClick={cancelButtonOnClick}
+            >
+              {uistrings.CancelButtonText}
+            </button>
+          ) : null}
+          {showDelete ? (
+            <button
+              className="control-panel-button"
+              onClick={deleteButtonOnClick}
+            >
+              {uistrings.DeleteButtonText}
+            </button>
+          ) : null}
+          {showRestore ? (
+            <button
+              className="control-panel-button"
+              onClick={restoreButtonOnClick}
+            >
+              {uistrings.RestoreButtonText}
+            </button>
+          ) : null}
+          {showProgress ? <OrbitProgressIndicator /> : null}
+        </div>
       </div>
     </div>
   );

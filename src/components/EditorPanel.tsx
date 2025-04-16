@@ -295,52 +295,52 @@ const EditorPanel = memo(function EditorPanel(props: {
     })();
 
     return (
-      <div className="editor-panel">
-        <div className="editor-panel-left" />
-        <div id="editor" className="editor-panel-inner">
-          <ControlPanel
-            showNew={true}
-            onNew={onNew}
-            showConvertToMarkdown={
-              canConvertToMarkdown(note) && editor.state == EditorState.Inactive
-            }
-            onFormatSwitch={onFormatSwitch}
-            onConvertToMarkdown={onConvertToMarkdown}
-            showEdit={canEdit(note) && editor.state == EditorState.Inactive}
-            onEdit={onEdit}
-            showSave={editor.state != EditorState.Inactive}
-            onSave={onSave}
-            showCancel={editor.state != EditorState.Inactive}
-            onCancel={onCancel}
-            showDelete={canDelete(note)}
-            onDelete={onDelete}
-            showRestore={canRestore(note)}
-            onRestore={onRestore}
-            showProgress={showControlPanelAsPending()}
-            showFormatSwitch={
-              isMarkdownNote(note) && editor.state != EditorState.Inactive
-            }
-            isFormatMarkdown={editor.state == EditorState.EditingAsMarkdown}
-          />
-          {hasError ? (
-            <NoteErrorPanel
+      <>
+        <ControlPanel
+          showNew={true}
+          onNew={onNew}
+          showConvertToMarkdown={
+            canConvertToMarkdown(note) && editor.state == EditorState.Inactive
+          }
+          onFormatSwitch={onFormatSwitch}
+          onConvertToMarkdown={onConvertToMarkdown}
+          showEdit={canEdit(note) && editor.state == EditorState.Inactive}
+          onEdit={onEdit}
+          showSave={editor.state != EditorState.Inactive}
+          onSave={onSave}
+          showCancel={editor.state != EditorState.Inactive}
+          onCancel={onCancel}
+          showDelete={canDelete(note)}
+          onDelete={onDelete}
+          showRestore={canRestore(note)}
+          onRestore={onRestore}
+          showProgress={showControlPanelAsPending()}
+          showFormatSwitch={
+            isMarkdownNote(note) && editor.state != EditorState.Inactive
+          }
+          isFormatMarkdown={editor.state == EditorState.EditingAsMarkdown}
+        />
+        <div className="editor-panel">
+          <div id="editor" className="editor-panel-editor">
+            {hasError ? (
+              <NoteErrorPanel
+                noteId={note.id}
+                err={error}
+                dispatch={dispatch}
+              ></NoteErrorPanel>
+            ) : null}
+            <NoteTitleEditor
               noteId={note.id}
-              err={error}
+              isNew={isNew}
+              defaultTitle={getEffectiveTitle(note)}
+              editable={isTitleEditable()}
+              deleted={showAsDeleted()}
               dispatch={dispatch}
-            ></NoteErrorPanel>
-          ) : null}
-          <NoteTitleEditor
-            noteId={note.id}
-            isNew={isNew}
-            defaultTitle={getEffectiveTitle(note)}
-            editable={isTitleEditable()}
-            deleted={showAsDeleted()}
-            dispatch={dispatch}
-          />
-          {isMarkdownNote(note) ? markdownEditor() : plainTextEditor()}
+            />
+            {isMarkdownNote(note) ? markdownEditor() : plainTextEditor()}
+          </div>
         </div>
-        <div className="editor-panel-right" />
-      </div>
+      </>
     );
   }
 

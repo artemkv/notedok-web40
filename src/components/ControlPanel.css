@@ -1,7 +1,19 @@
 .control-panel {
+    padding-bottom: 4px;
+    padding-top: 4px;
     display: flex;
     flex-direction: row;
-    padding-bottom: 8px;
+    justify-content: center;
+    border-bottom: 1px solid var(--splitter-color);
+}
+
+.control-panel-inner {
+    padding-left: 16px;
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    max-width: 900px;
+    border: 1px solid transparent;
 }
 
 .control-panel-left {
@@ -14,13 +26,13 @@
 }
 
 .control-panel-button {
+    padding: 4px 0px 4px 0px;
     font-size: 13px;
     color: grey;
     background-color: white;
     border: none;
     outline: none;
-    margin-left: 4px;
-    margin-right: 16px;
+    margin-right: 20px;
     cursor: pointer;
     text-decoration: none;
 }

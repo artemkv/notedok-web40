@@ -1,0 +1,31 @@
+/* Universal border-box fix */
+html {
+    box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+
+    /* Styles to inherit */
+    /* TODO */
+
+    --placeholder-color: grey;
+    --text-color: #101720;
+    --tech-color: grey;
+    --faded-color: #a9a9a9;
+    --border-color: #c0c0c0;
+    --splitter-color: #f1f1f1;
+}
+
+/* Full screen */
+#root {
+    width: 100vw;
+    height: 100vh;
+}

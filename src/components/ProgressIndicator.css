@@ -10,7 +10,7 @@
 .container3>div {
   width: 6px;
   height: 6px;
-  background-color: #a9a9a9;
+  background-color: var(--faded-color);
 
   border-radius: 100%;
   position: absolute;

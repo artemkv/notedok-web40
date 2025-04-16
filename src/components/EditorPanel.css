@@ -1,17 +1,15 @@
 .editor-panel {
-    height: 100%;
+    flex: 1;
+    overflow: auto;
     display: flex;
     flex-direction: row;
     justify-content: center;
-    overflow-y: auto;
 }
 
-.editor-panel-inner {
-    flex-grow: 1;
+.editor-panel-editor {
+    flex: 0 1 900px;
     max-width: 900px;
     padding: 16px;
-    display: flex;
-    flex-direction: column;
 }
 
 [contenteditable="true"]:active,

@@ -1,11 +1,11 @@
 .note-list {
-    height: 100%;
-    overflow-y: auto;
+    flex: 1;
+    overflow: auto;
 }
 
 .note-list-counter {
     margin-left: 16px;
     padding: 0px 0px 4px;
     font-size: 10px;
-    color: grey;
+    color: var(--tech-color);
 }
