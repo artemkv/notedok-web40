@@ -127,14 +127,13 @@ Later versions:
 - --convert to md command for text files (rename + reformat)--
 - --lens icon in search textbox--
 - --cross in search textbox to clean the search text--
+- --make layout good, so that all the headers are shown where they should be etc.--
 
+- "New" could be visible before loading any note
 - make layout responsive and shown correctly on mobile
-- extract layout css into a single place
 - use ems/rems?
-- make layout good, so that all the headers are shown where they should be etc.
 - make sure UI is accessible with keyboard
 - some note text doesn't wrap when browser width gets smaller (ai_general_methods). See why
-- "New" could be visible before loading any note
 - bring back autosuggest (and consider react-friendly library, but only if it is worth it)
 - editor panel with buttons for formatting
 - sign out
