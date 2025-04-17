@@ -1,4 +1,4 @@
-V0.1
+V1.0
 
 - --When the page opens, load all the notes (in batches of 1000)--
 - --Show all the notes in the list, title is derived from filename--
@@ -26,6 +26,7 @@ V0.1
 - --By default, only buttons New, Edit, Delete are visible--
 - --To make text editable, you press Edit--
 - --If editor fails to initialize, it switches to the plain text mode--
+- --If editor initializes correctly, a user can switch between markdown and plain text mode editing at any time, preserving the unsaved changes--
 - --When text becomes editable, only buttons New, Save and Cancel are available--
 - --If you press Cancel, the text goes back to read-only; all the edits are lost--
 - --To save edits in the text, you need to click Save--
@@ -60,6 +61,7 @@ V0.1
 - --When you go into editing, instead of markdown editor, you have text area--
 - --The rest works the same--
 - --Show plain text note visually as deleted when appropriate--
+- --Notes in plain text can be converted to markdown (rename + reformat)--
 
 --- Error handling
 
@@ -98,38 +100,15 @@ V0.1
 ---
 
 
+
 Technical notes:
-
-- --when clicked save, but no changes, nothing happens, but editor is still editable--
-- --it's strange that new note has "Save" available (because is editable by default), but then you move away and it disappears (as editor stops being editable)--
-- --except if you just load note, then edit-save, saves something, I don't know what--
-- --MD editor re-formats the MD you pass to it. This breaks for new note and sometimes existing note--
-- --MD rendering sometimes fails, need to catch it and allow switching to text--
-- --UI optimizations (avoid re-renderings)--
-- --handle all the errors--
-
-- double-check: correct note item for all note states
-- double-check: correct editor state for all note states
 
 - unit-tests
 - todos
 
 
-Not sure if possible:
-
-- Text placeholder for an existing and new note is "No text"
-- You can cancel md editing by clicking `Esc`
-
-
 Later versions:
 
-- --switch to text edit for markdown notes--
-- --convert to md command for text files (rename + reformat)--
-- --lens icon in search textbox--
-- --cross in search textbox to clean the search text--
-- --make layout good, so that all the headers are shown where they should be etc.--
-
-- "New" could be visible before loading any note
 - make layout responsive and shown correctly on mobile
 - use ems/rems?
 - make sure UI is accessible with keyboard
@@ -147,3 +126,8 @@ Later versions:
 - maybe tags could be in blue in the note list titles?
 - otherwise, maybe parts of the text that match the search could be in blue
 - try to keep unsaved changes when error saving them, but was discarded. Go back to edit instead?
+
+Not sure if possible:
+
+- Text placeholder for an existing and new note is "No text"
+- You can cancel md editing by clicking `Esc`

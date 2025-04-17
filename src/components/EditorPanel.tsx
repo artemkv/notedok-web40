@@ -35,39 +35,99 @@ const EditorPanel = memo(function EditorPanel(props: {
   const getMarkdownRef = useRef({ getMarkdown: () => undefined });
   const getTextRef = useRef({ getText: () => undefined });
 
-  // TODO: make sure to handle all possible note states properly
+  const onNew = () => {
+    dispatch({
+      type: EventType.CreateNoteRequested,
+    });
+  };
 
   if (note == undefined) {
-    return <div className="editor-panel"></div>;
-  }
-
-  if (note.state == NoteState.Ref) {
     return (
-      <div className="editor-panel">
-        <ProgressIndicator />
-      </div>
+      <>
+        <ControlPanel
+          showNew={true}
+          onNew={onNew}
+          showConvertToMarkdown={false}
+          onFormatSwitch={() => {}}
+          onConvertToMarkdown={() => {}}
+          showEdit={false}
+          onEdit={() => {}}
+          showSave={false}
+          onSave={() => {}}
+          showCancel={false}
+          onCancel={() => {}}
+          showDelete={false}
+          onDelete={() => {}}
+          showRestore={false}
+          onRestore={() => {}}
+          showProgress={false}
+          showFormatSwitch={false}
+          isFormatMarkdown={editor.state == EditorState.EditingAsMarkdown}
+        />
+        <div className="editor-panel"></div>
+      </>
     );
   }
 
-  if (note.state == NoteState.Loading) {
+  if (
+    note.state == NoteState.Ref ||
+    note.state == NoteState.Loading ||
+    note.state == NoteState.ConvertingToMarkdown
+  ) {
     return (
-      <div className="editor-panel">
-        <ProgressIndicator />
-      </div>
-    );
-  }
-
-  if (note.state == NoteState.ConvertingToMarkdown) {
-    return (
-      <div className="editor-panel">
-        <ProgressIndicator />
-      </div>
+      <>
+        <ControlPanel
+          showNew={true}
+          onNew={onNew}
+          showConvertToMarkdown={false}
+          onFormatSwitch={() => {}}
+          onConvertToMarkdown={() => {}}
+          showEdit={false}
+          onEdit={() => {}}
+          showSave={false}
+          onSave={() => {}}
+          showCancel={false}
+          onCancel={() => {}}
+          showDelete={false}
+          onDelete={() => {}}
+          showRestore={false}
+          onRestore={() => {}}
+          showProgress={false}
+          showFormatSwitch={false}
+          isFormatMarkdown={editor.state == EditorState.EditingAsMarkdown}
+        />
+        <div className="editor-panel">
+          <ProgressIndicator />
+        </div>
+      </>
     );
   }
 
   if (note.state == NoteState.FailedToLoad) {
     return (
-      <ErrorLoadingNote noteId={note.id} err={note.err} dispatch={dispatch} />
+      <>
+        <ControlPanel
+          showNew={true}
+          onNew={onNew}
+          showConvertToMarkdown={false}
+          onFormatSwitch={() => {}}
+          onConvertToMarkdown={() => {}}
+          showEdit={false}
+          onEdit={() => {}}
+          showSave={false}
+          onSave={() => {}}
+          showCancel={false}
+          onCancel={() => {}}
+          showDelete={false}
+          onDelete={() => {}}
+          showRestore={false}
+          onRestore={() => {}}
+          showProgress={false}
+          showFormatSwitch={false}
+          isFormatMarkdown={editor.state == EditorState.EditingAsMarkdown}
+        />
+        <ErrorLoadingNote noteId={note.id} err={note.err} dispatch={dispatch} />
+      </>
     );
   }
 
@@ -77,12 +137,6 @@ const EditorPanel = memo(function EditorPanel(props: {
     }
     // TODO: show spinner next to the title while saving?
     return false;
-  };
-
-  const onNew = () => {
-    dispatch({
-      type: EventType.CreateNoteRequested,
-    });
   };
 
   const onConvertToMarkdown = () => {
