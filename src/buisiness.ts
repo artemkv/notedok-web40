@@ -102,7 +102,6 @@ import {
   noteSavingTextToLoaded,
 } from "./noteLifecycle";
 
-// TODO: make sure to handle all possible note states properly
 export const getEffectiveTitle = (note: Note): string => {
   if (
     note.state == NoteState.New ||
@@ -120,7 +119,6 @@ export const getEffectiveTitle = (note: Note): string => {
   return note.title;
 };
 
-// TODO: make sure to handle all possible note states properly
 export const getEffectiveText = (note: Note) => {
   if (
     note.state == NoteState.Ref ||
@@ -296,7 +294,7 @@ export const handleNoteSelected = (
             ...state.noteList,
             notes: replace(state.noteList.notes, noteLoading),
             selectedNoteId: noteLoading.id,
-            editor: { state: EditorState.Inactive }, // TODO: review at which moment this should happen
+            editor: { state: EditorState.Inactive },
           },
         };
         return [newState, LoadNoteText(noteLoading)];
@@ -310,7 +308,7 @@ export const handleNoteSelected = (
             ...state.noteList,
             notes: replace(state.noteList.notes, noteLoading),
             selectedNoteId: noteLoading.id,
-            editor: { state: EditorState.Inactive }, // TODO: review at which moment this should happen
+            editor: { state: EditorState.Inactive },
           },
         };
         return [newState, LoadNoteText(noteLoading)];
@@ -322,7 +320,7 @@ export const handleNoteSelected = (
         noteList: {
           ...state.noteList,
           selectedNoteId: event.note.id,
-          editor: { state: EditorState.Inactive }, // TODO: review at which moment this should happen
+          editor: { state: EditorState.Inactive },
         },
       };
       return JustStateAuthenticated(newState);
@@ -404,7 +402,6 @@ export const handleNoteTitleUpdated = (
   if (state.noteList.state == NoteListState.Retrieved) {
     const note = getNote(state.noteList.notes, event.noteId);
 
-    // TODO: make sure to handle all possible note states properly
     if (note && note.state == NoteState.Loaded) {
       if (note.title !== event.newTitle) {
         const noteRenaming = noteLoadedToRenaming(note, event.newTitle);
@@ -557,7 +554,6 @@ export const handleNoteSaveTextRequested = (
     const note = getNote(state.noteList.notes, event.noteId);
     const newText = sanitizeMilkdownWeirdStuff(event.newText);
 
-    // TODO: make sure to handle all possible note states properly
     if (note && note.state == NoteState.Loaded) {
       if (note.text !== newText) {
         const noteSavingText = noteLoadedToSavingText(note, newText);
@@ -770,7 +766,6 @@ export const handleDeleteNoteRequested = (
   if (state.noteList.state == NoteListState.Retrieved) {
     const note = getNote(state.noteList.notes, event.noteId);
 
-    // TODO: make sure to handle all possible note states properly
     if (note && note.state == NoteState.Loaded) {
       const noteDeleting = noteLoadedToDeleting(note);
       const newState: AppStateAuthenticated = {
@@ -851,7 +846,6 @@ export const handleRestoreNoteRequested = (
   if (state.noteList.state == NoteListState.Retrieved) {
     const note = getNote(state.noteList.notes, event.noteId);
 
-    // TODO: make sure to handle all possible note states properly
     if (note && note.state == NoteState.Deleted) {
       const noteRestoring = noteDeletedToRestoring(note);
       const newState: AppStateAuthenticated = {

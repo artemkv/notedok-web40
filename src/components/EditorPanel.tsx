@@ -135,7 +135,6 @@ const EditorPanel = memo(function EditorPanel(props: {
     if (note.state == NoteState.Loaded || note.state == NoteState.New) {
       return true;
     }
-    // TODO: show spinner next to the title while saving?
     return false;
   };
 
