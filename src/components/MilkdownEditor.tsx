@@ -21,15 +21,12 @@ import { gfm } from "@milkdown/kit/preset/gfm";
 import { Milkdown } from "@milkdown/react";
 import { memo, useEffect, useState } from "react";
 
-const SAVE_DRAFT_INTERVAL = 3000;
-
 const MilkdownEditor = memo(function MilkdownEditor(props: {
   noteId: string;
   defaultMarkdown: string;
   editable: boolean;
   deleted: boolean;
   getMarkdownRef: { getMarkdown: () => string | undefined };
-  onUpdate: (text: string) => void;
   onError: (err: string) => void;
 }) {
   const noteId = props.noteId;
@@ -39,7 +36,6 @@ const MilkdownEditor = memo(function MilkdownEditor(props: {
   // The documented solution to get the md from another component didn't work
   const getMarkdownRef = props.getMarkdownRef;
   const onError = props.onError;
-  const onUpdate = props.onUpdate;
 
   const [error, setError] = useState<string>("");
 
@@ -104,26 +100,8 @@ const MilkdownEditor = memo(function MilkdownEditor(props: {
         // allow querying the current markdown from above
         getMarkdownRef.getMarkdown = getMarkdown;
 
-        // report current markdown every 3 seconds
-        let intervalId: NodeJS.Timeout | undefined;
-        try {
-          if (editable) {
-            intervalId = setInterval(() => {
-              const md = getMarkdown();
-              if (md != undefined && md != defaultMarkdown) {
-                onUpdate(md);
-              }
-            }, SAVE_DRAFT_INTERVAL);
-          }
-        } catch {
-          // Ignore this. If we could not set interval, no draft saving
-        }
-
         return () => {
           getMarkdownRef.getMarkdown = () => undefined;
-          if (intervalId !== undefined) {
-            clearInterval(intervalId);
-          }
           editor.destroy();
         };
       })
@@ -140,15 +118,7 @@ const MilkdownEditor = memo(function MilkdownEditor(props: {
     return () => {
       cleanupContainer.then((cleanup) => cleanup());
     };
-  }, [
-    noteId,
-    editable,
-    getMarkdownRef,
-    defaultMarkdown,
-    deleted,
-    onError,
-    onUpdate,
-  ]);
+  }, [noteId, editable, getMarkdownRef, defaultMarkdown, deleted, onError]);
 
   return error ? (
     <div className="milkdown-error-state">{error}</div>

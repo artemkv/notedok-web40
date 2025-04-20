@@ -22,6 +22,7 @@ import { htmlEscape, renderNoteTextHtml } from "../ui";
 import PlainTextEditor from "./PlainTextEditor";
 import ErrorLoadingNote from "./ErrorLoadingNote";
 import NoteErrorPanel from "./NoteErrorPanel";
+import IntervalTrigger from "./IntervalTrigger";
 
 const EditorPanel = memo(function EditorPanel(props: {
   note: Note | undefined;
@@ -176,6 +177,30 @@ const EditorPanel = memo(function EditorPanel(props: {
     }
   };
 
+  const onSaveDraft = () => {
+    if (editor.state == EditorState.EditingAsMarkdown) {
+      const md = getMarkdownRef.current.getMarkdown();
+      if (md != undefined && md != editorDefaultText()) {
+        dispatch({
+          type: EventType.EditorCurrentStateReport,
+          noteId: note.id,
+          text: md,
+        });
+      }
+    }
+
+    if (editor.state == EditorState.EditingAsPlainText) {
+      const text = getTextRef.current.getText();
+      if (text != undefined && text != editorDefaultText()) {
+        dispatch({
+          type: EventType.EditorCurrentStateReport,
+          noteId: note.id,
+          text,
+        });
+      }
+    }
+  };
+
   const onCancel = () => {
     dispatch({
       type: EventType.CancelNoteEditRequested,
@@ -264,38 +289,35 @@ const EditorPanel = memo(function EditorPanel(props: {
     return editor.defaultText ?? getEffectiveText(note);
   };
 
-  const onEditorUpdateReported = (text: string) => {
-    dispatch({
-      type: EventType.EditorCurrentStateReport,
-      noteId: note.id,
-      text,
-    });
-  };
-
   const markdownEditor = () => {
     // We are in fallback mode
     if (editor.state == EditorState.EditingAsPlainText) {
       return (
-        <PlainTextEditor
-          noteId={note.id}
-          defaultText={editorDefaultText()}
-          getTextRef={getTextRef.current}
-        />
+        <>
+          <PlainTextEditor
+            noteId={note.id}
+            defaultText={editorDefaultText()}
+            getTextRef={getTextRef.current}
+          />
+          <IntervalTrigger callback={onSaveDraft} />
+        </>
       );
     }
 
     return (
-      <MilkdownProvider>
-        <MilkdownEditor
-          noteId={note.id}
-          defaultMarkdown={editorDefaultText()}
-          editable={editor.state == EditorState.EditingAsMarkdown}
-          deleted={showAsDeleted()}
-          getMarkdownRef={getMarkdownRef.current}
-          onUpdate={onEditorUpdateReported}
-          onError={onMdEditorError}
-        />
-      </MilkdownProvider>
+      <>
+        <MilkdownProvider>
+          <MilkdownEditor
+            noteId={note.id}
+            defaultMarkdown={editorDefaultText()}
+            editable={editor.state == EditorState.EditingAsMarkdown}
+            deleted={showAsDeleted()}
+            getMarkdownRef={getMarkdownRef.current}
+            onError={onMdEditorError}
+          />
+        </MilkdownProvider>
+        <IntervalTrigger callback={onSaveDraft} />
+      </>
     );
   };
 
@@ -303,11 +325,14 @@ const EditorPanel = memo(function EditorPanel(props: {
   const plainTextEditor = () => {
     if (editor.state == EditorState.EditingAsPlainText) {
       return (
-        <PlainTextEditor
-          noteId={note.id}
-          defaultText={editorDefaultText()}
-          getTextRef={getTextRef.current}
-        />
+        <>
+          <PlainTextEditor
+            noteId={note.id}
+            defaultText={editorDefaultText()}
+            getTextRef={getTextRef.current}
+          />
+          <IntervalTrigger callback={onSaveDraft} />
+        </>
       );
     }
 
