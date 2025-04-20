@@ -7,6 +7,11 @@
   color: var(--error-color);
 }
 
+.markdown-body li p {
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+}
+
 .markdown-body * {
   color: var(--text-color);
 }
