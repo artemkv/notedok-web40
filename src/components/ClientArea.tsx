@@ -6,6 +6,7 @@ import NoteList from "./NoteList";
 import EditorPanel from "./EditorPanel";
 import SearchPanel from "./SearchPanel";
 import { filter } from "../buisiness";
+import NoteListControlPanel from "./NoteListControlPanel";
 
 function ClientArea(props: {
   noteList: NoteListRetrieved;
@@ -13,6 +14,8 @@ function ClientArea(props: {
 }) {
   const noteList = props.noteList;
   const dispatch = props.dispatch;
+
+  const filteredNotes = filter(noteList.notes, noteList.searchText);
 
   const selectedNote = noteList.notes.find(
     (x) => x.id === noteList.selectedNoteId
@@ -22,9 +25,13 @@ function ClientArea(props: {
     <div className="client-area">
       <div className="client-area-left">
         <SearchPanel searchText={noteList.searchText} dispatch={dispatch} />
+        <NoteListControlPanel
+          notesTotal={noteList.notes.length}
+          filteredNotesTotal={filteredNotes.length}
+          dispatch={dispatch}
+        />
         <NoteList
-          notes={noteList.notes}
-          filteredNotes={filter(noteList.notes, noteList.searchText)}
+          filteredNotes={filteredNotes}
           selectedNoteId={noteList.selectedNoteId}
           dispatch={dispatch}
         />
