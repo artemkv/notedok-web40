@@ -136,6 +136,12 @@ export const Reducer = (
       return handleFailedToCreateNoteFromText(state, event);
     }
 
+    if (event.type == EventType.EditorCurrentStateReport) {
+      // TODO:
+      console.log("REPORTED UPDATE: " + event.noteId);
+      return JustState(state);
+    }
+
     if (event.type == EventType.DeleteNoteRequested) {
       return handleDeleteNoteRequested(state, event);
     }

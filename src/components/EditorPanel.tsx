@@ -264,6 +264,14 @@ const EditorPanel = memo(function EditorPanel(props: {
     return editor.defaultText ?? getEffectiveText(note);
   };
 
+  const onEditorUpdateReported = (text: string) => {
+    dispatch({
+      type: EventType.EditorCurrentStateReport,
+      noteId: note.id,
+      text,
+    });
+  };
+
   const markdownEditor = () => {
     // We are in fallback mode
     if (editor.state == EditorState.EditingAsPlainText) {
@@ -284,6 +292,7 @@ const EditorPanel = memo(function EditorPanel(props: {
           editable={editor.state == EditorState.EditingAsMarkdown}
           deleted={showAsDeleted()}
           getMarkdownRef={getMarkdownRef.current}
+          onUpdate={onEditorUpdateReported}
           onError={onMdEditorError}
         />
       </MilkdownProvider>

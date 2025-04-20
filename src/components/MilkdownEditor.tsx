@@ -21,7 +21,7 @@ import { gfm } from "@milkdown/kit/preset/gfm";
 import { Milkdown } from "@milkdown/react";
 import { memo, useEffect, useState } from "react";
 
-// TODO: const SAVE_DRAFT_INTERVAL = 3000;
+const SAVE_DRAFT_INTERVAL = 3000;
 
 const MilkdownEditor = memo(function MilkdownEditor(props: {
   noteId: string;
@@ -29,6 +29,7 @@ const MilkdownEditor = memo(function MilkdownEditor(props: {
   editable: boolean;
   deleted: boolean;
   getMarkdownRef: { getMarkdown: () => string | undefined };
+  onUpdate: (text: string) => void;
   onError: (err: string) => void;
 }) {
   const noteId = props.noteId;
@@ -38,6 +39,7 @@ const MilkdownEditor = memo(function MilkdownEditor(props: {
   // The documented solution to get the md from another component didn't work
   const getMarkdownRef = props.getMarkdownRef;
   const onError = props.onError;
+  const onUpdate = props.onUpdate;
 
   const [error, setError] = useState<string>("");
 
@@ -86,7 +88,7 @@ const MilkdownEditor = memo(function MilkdownEditor(props: {
       .use(indent)
       .create();
 
-    editor
+    const cleanupContainer = editor
       .then((editor) => {
         const getMarkdown = () => {
           if (editor.status == EditorStatus.Created) {
@@ -98,45 +100,55 @@ const MilkdownEditor = memo(function MilkdownEditor(props: {
           }
           return undefined;
         };
+
+        // allow querying the current markdown from above
         getMarkdownRef.getMarkdown = getMarkdown;
+
+        // report current markdown every 3 seconds
+        let intervalId: NodeJS.Timeout | undefined;
+        try {
+          if (editable) {
+            intervalId = setInterval(() => {
+              const md = getMarkdown();
+              if (md != undefined && md != defaultMarkdown) {
+                onUpdate(md);
+              }
+            }, SAVE_DRAFT_INTERVAL);
+          }
+        } catch {
+          // Ignore this. If we could not set interval, no draft saving
+        }
+
+        return () => {
+          getMarkdownRef.getMarkdown = () => undefined;
+          if (intervalId !== undefined) {
+            clearInterval(intervalId);
+          }
+          editor.destroy();
+        };
       })
       .catch((err) => {
         setError(() => err.toString());
         onError(err.toString());
+
+        return () => {
+          getMarkdownRef.getMarkdown = () => undefined;
+        };
       });
-
-    /* TODO:
-    const editorAndInterval = editor.then((editor) => {
-      // function to return the markdown as string
-      const getMarkdown = () =>
-        editor.action((ctx) => {
-          const editorView = ctx.get(editorViewCtx);
-          const serializer = ctx.get(serializerCtx);
-          return serializer(editorView.state.doc);
-        });
-
-      // report markdown every 3 seconds
-      const intervalId = setInterval(
-        () => saveDraft(getMarkdown()),
-        SAVE_DRAFT_INTERVAL
-      );
-      return { editor, intervalId };
-    });*/
 
     // properly destroy
     return () => {
-      editor
-        .then((editor) => {
-          getMarkdownRef.getMarkdown = () => undefined;
-          // TODO: clearInterval(x.intervalId);
-          editor.destroy();
-        })
-        .catch(() => {
-          getMarkdownRef.getMarkdown = () => undefined;
-          // TODO: clearInterval(x.intervalId);
-        });
+      cleanupContainer.then((cleanup) => cleanup());
     };
-  }, [noteId, editable, getMarkdownRef, defaultMarkdown, deleted, onError]);
+  }, [
+    noteId,
+    editable,
+    getMarkdownRef,
+    defaultMarkdown,
+    deleted,
+    onError,
+    onUpdate,
+  ]);
 
   return error ? (
     <div className="milkdown-error-state">{error}</div>
