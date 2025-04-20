@@ -100,12 +100,26 @@ V1.0
 ---
 
 
+Saving draft:
 
-Technical notes:
-
-- unit-tests
-- todos
-
+- When you start editing note, the editor reports current state every 3 seconds
+- If there are changes, this triggers command that saves those changes into the local storage
+- The note item in the list shows "unsaved changes" or something similar
+- If you save or cancel changes, the current state is cleared from local storage
+- In that case, the note item in the list loses the "unsaved changes" mark
+- If you close the window, and open it again, this is the way to lose changes
+- Note list loads, and all the notes that have unsaved changes stored locally show "unsaved changes" mark
+- If you select such a note, it loads from backend and is combined with changes from the local storage
+- The editor shows the most recent unsaved changes version
+- The editor also shows "unsaved changes" or "draft" in the header
+- You can discard those unsaved changes, without editing
+- But it you start editing, you continue with the most recent unsaved changes
+- This should work both in text mode and markdown mode
+- This should work for existing note or new note (so new note should be shown in the list even if not saved)
+- Reporting the most recent changes every 3 seconds should not affect an open and active editor
+- Unsaved changes are preserved if the note is renamed. In that case, the unsaved changes should be re-connected with the renamed note
+- As soon as you request to delete a note, all the unsaved changes are lost
+- When you convert to markdown, the unsaved changes are preserved, if possible
 
 Later versions:
 
@@ -125,7 +139,9 @@ Later versions:
 - show new notes in their own section
 - maybe tags could be in blue in the note list titles?
 - otherwise, maybe parts of the text that match the search could be in blue
-- try to keep unsaved changes when error saving them, but was discarded. Go back to edit instead?
+- try to keep unsaved changes when error happened saving them, but then was discarded by user. Go back to edit instead?
+- convert markdown back to text (what to do with formatting?)?
+- allow to create notes in .txt or .md?
 
 Not sure if possible:
 
