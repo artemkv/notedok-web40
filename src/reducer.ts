@@ -31,6 +31,7 @@ import {
   handleRetryLoadingNoteRequested,
   handleRetryNoteErrorRequested,
   handleSearchTextUpdated,
+  handleSortingOrderUpdated,
   handleSwitchEditorToMarkdownRequested,
   handleSwitchEditorToTextRequested,
   handleUserAuthenticated,
@@ -73,6 +74,9 @@ export const Reducer = (
 
     if (event.type == EventType.SearchTextUpdated) {
       return handleSearchTextUpdated(state, event);
+    }
+    if (event.type == EventType.SortingOrderUpdated) {
+      return handleSortingOrderUpdated(state, event);
     }
 
     if (event.type == EventType.NoteSelected) {

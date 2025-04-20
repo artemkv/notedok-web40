@@ -42,6 +42,7 @@ import {
   RetryLoadingNoteRequestedEvent,
   RetryNoteErrorRequestedEvent,
   SearchTextUpdatedEvent,
+  SortingOrderUpdatedEvent,
   SwitchEditorToMarkdownRequestedEvent,
   SwitchEditorToTextRequestedEvent,
   UserAuthenticatedEvent,
@@ -56,6 +57,7 @@ import {
   Note,
   NoteListState,
   NoteState,
+  SortingOrder,
 } from "./model";
 import {
   createNewNote,
@@ -156,6 +158,20 @@ export const isMarkdownNote = (note: Note) => {
   return isMarkdownFile(note.path);
 };
 
+export const sort = (notes: Note[], sortingOrder: SortingOrder) => {
+  if (sortingOrder == SortingOrder.Alphabetic) {
+    notes.sort((a, b) =>
+      getEffectiveTitle(a).localeCompare(getEffectiveTitle(b), undefined, {
+        sensitivity: "base",
+      })
+    );
+  } else {
+    notes.sort((a, b) => b.lastModified.getTime() - a.lastModified.getTime());
+  }
+
+  return notes;
+};
+
 export const filter = (notes: Note[], searchText: string) => {
   if (notes.length == 0) {
     return notes;
@@ -239,7 +255,13 @@ export const handleRetrieveFileListSuccess = (
     noteList: {
       state: NoteListState.Retrieved,
       lastUsedNoteId: event.fileList.length - 1,
-      notes: event.fileList.map((f, idx) => createNewNoteRef(idx, f)),
+      notes: sort(
+        event.fileList.map((f, idx) =>
+          createNewNoteRef(idx, f.fileName, f.lastModified)
+        ),
+        SortingOrder.Alphabetic
+      ),
+      sortingOrder: SortingOrder.Alphabetic,
       selectedNoteId: "",
       searchText: "",
       editor: { state: EditorState.Inactive },
@@ -271,6 +293,25 @@ export const handleSearchTextUpdated = (
       noteList: {
         ...state.noteList,
         searchText: event.searchText,
+      },
+    };
+    return JustStateAuthenticated(newState);
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+export const handleSortingOrderUpdated = (
+  state: AppStateAuthenticated,
+  event: SortingOrderUpdatedEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const newState: AppStateAuthenticated = {
+      ...state,
+      noteList: {
+        ...state.noteList,
+        notes: sort(state.noteList.notes, event.sortingOrder),
+        sortingOrder: event.sortingOrder,
       },
     };
     return JustStateAuthenticated(newState);
@@ -659,7 +700,11 @@ export const handleCreateNoteRequested = (
   state: AppStateAuthenticated
 ): [AppStateAuthenticated, AppCommand] => {
   if (state.noteList.state == NoteListState.Retrieved) {
-    const newNote = createNewNote(state.noteList.lastUsedNoteId + 1);
+    const newNote = createNewNote(
+      state.noteList.lastUsedNoteId + 1,
+      // TODO: this is a side effect, proper way to do it would be by creating this note in a command
+      new Date()
+    );
     const newState: AppStateAuthenticated = {
       ...state,
       noteList: {

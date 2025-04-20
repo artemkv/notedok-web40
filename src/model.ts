@@ -29,6 +29,7 @@ export interface NoteRef {
   id: string;
   path: string;
   title: string;
+  lastModified: Date;
 }
 
 export interface NoteLoading {
@@ -37,6 +38,7 @@ export interface NoteLoading {
   id: string;
   path: string;
   title: string;
+  lastModified: Date;
 }
 
 export interface NoteLoaded {
@@ -46,6 +48,7 @@ export interface NoteLoaded {
   path: string;
   title: string;
   text: string;
+  lastModified: Date;
 }
 
 export interface NoteFailedToLoad {
@@ -54,6 +57,7 @@ export interface NoteFailedToLoad {
   id: string;
   path: string;
   title: string;
+  lastModified: Date;
 
   err: string;
 }
@@ -65,6 +69,7 @@ export interface NoteSavingText {
   path: string;
   title: string;
   text: string;
+  lastModified: Date;
 
   newText: string;
 }
@@ -76,6 +81,7 @@ export interface NoteFailedToSaveText {
   path: string;
   title: string;
   text: string;
+  lastModified: Date;
 
   newText: string;
 
@@ -89,6 +95,7 @@ export interface NoteRenaming {
   path: string;
   title: string;
   text: string;
+  lastModified: Date;
 
   newTitle: string;
 }
@@ -100,6 +107,7 @@ export interface NoteFailedToRename {
   path: string;
   title: string;
   text: string;
+  lastModified: Date;
 
   newTitle: string;
 
@@ -113,6 +121,7 @@ export interface NoteDeleting {
   path: string;
   title: string;
   text: string;
+  lastModified: Date;
 }
 
 export interface NoteDeleted {
@@ -122,6 +131,7 @@ export interface NoteDeleted {
   path: string;
   title: string;
   text: string;
+  lastModified: Date;
 }
 
 export interface NoteFailedToDelete {
@@ -131,6 +141,7 @@ export interface NoteFailedToDelete {
   path: string;
   title: string;
   text: string;
+  lastModified: Date;
 
   err: string;
 }
@@ -142,6 +153,7 @@ export interface NoteRestoring {
   path: string;
   title: string;
   text: string;
+  lastModified: Date;
 }
 
 export interface NoteFailedToRestore {
@@ -151,6 +163,7 @@ export interface NoteFailedToRestore {
   path: string;
   title: string;
   text: string;
+  lastModified: Date;
 
   err: string;
 }
@@ -159,6 +172,7 @@ export interface NoteNew {
   state: NoteState.New;
 
   id: string;
+  lastModified: Date;
 }
 
 export interface NoteCreatingFromTitle {
@@ -166,6 +180,7 @@ export interface NoteCreatingFromTitle {
 
   id: string;
   title: string;
+  lastModified: Date;
 }
 
 export interface NoteFailedToCreateFromTitle {
@@ -173,6 +188,7 @@ export interface NoteFailedToCreateFromTitle {
 
   id: string;
   title: string;
+  lastModified: Date;
 
   err: string;
 }
@@ -182,6 +198,7 @@ export interface NoteCreatingFromText {
 
   id: string;
   text: string;
+  lastModified: Date;
 }
 
 export interface NoteFailedToCreateFromText {
@@ -189,6 +206,7 @@ export interface NoteFailedToCreateFromText {
 
   id: string;
   text: string;
+  lastModified: Date;
 
   err: string;
 }
@@ -200,6 +218,7 @@ export interface NoteConvertingToMarkdown {
   path: string;
   title: string;
   text: string;
+  lastModified: Date;
 }
 
 export interface NoteFailedToConvertToMarkdown {
@@ -209,6 +228,7 @@ export interface NoteFailedToConvertToMarkdown {
   path: string;
   title: string;
   text: string;
+  lastModified: Date;
 
   err: string;
 }
@@ -264,6 +284,11 @@ export type Editor =
 
 // Note List
 
+export enum SortingOrder {
+  Alphabetic,
+  MostRecentFirst,
+}
+
 export enum NoteListState {
   Retrieving,
   Retrieved,
@@ -277,6 +302,7 @@ export interface NoteListRetrieving {
 export interface NoteListRetrieved {
   state: NoteListState.Retrieved;
   searchText: string;
+  sortingOrder: SortingOrder;
   lastUsedNoteId: number;
   notes: Note[];
   selectedNoteId: string;

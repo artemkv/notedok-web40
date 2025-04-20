@@ -89,14 +89,12 @@ export const RetrieveFileList = (): RetrieveFileListCommand => ({
         files = [...files, ...mapToFiles(getFilesResponse.files)];
       }
 
-      // Sort alphabetically
-      files.sort((a, b) =>
-        a.fileName.localeCompare(b.fileName, undefined, { sensitivity: "base" })
-      );
-
       dispatch({
         type: EventType.RetrieveFileListSuccess,
-        fileList: files.map((f) => f.fileName),
+        fileList: files.map((f) => ({
+          fileName: f.fileName,
+          lastModified: f.lastModified,
+        })),
       });
     } catch (err) {
       dispatch({

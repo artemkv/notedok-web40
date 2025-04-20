@@ -1,4 +1,4 @@
-import { Note, NoteLoading } from "./model";
+import { Note, NoteLoading, SortingOrder } from "./model";
 
 export enum EventType {
   // "Never" event is never triggered in the app
@@ -12,6 +12,7 @@ export enum EventType {
   FailedToRetrieveFileList,
 
   SearchTextUpdated,
+  SortingOrderUpdated,
 
   NoteSelected,
 
@@ -68,9 +69,14 @@ export interface UserSessionCreatedEvent {
   type: EventType.UserSessionCreated;
 }
 
+export type FileInfo = {
+  fileName: string;
+  lastModified: Date;
+};
+
 export interface RetrieveFileListSuccessEvent {
   type: EventType.RetrieveFileListSuccess;
-  fileList: string[];
+  fileList: FileInfo[];
 }
 
 export interface FailedToRetrieveFileListEvent {
@@ -81,6 +87,11 @@ export interface FailedToRetrieveFileListEvent {
 export interface SearchTextUpdatedEvent {
   type: EventType.SearchTextUpdated;
   searchText: string;
+}
+
+export interface SortingOrderUpdatedEvent {
+  type: EventType.SortingOrderUpdated;
+  sortingOrder: SortingOrder;
 }
 
 export interface NoteSelectedEvent {
@@ -258,6 +269,7 @@ export type AppEvent =
   | RetrieveFileListSuccessEvent
   | FailedToRetrieveFileListEvent
   | SearchTextUpdatedEvent
+  | SortingOrderUpdatedEvent
   | NoteSelectedEvent
   | LoadNoteTextSuccessEvent
   | FailedToLoadNoteEvent

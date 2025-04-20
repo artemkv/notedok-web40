@@ -23,13 +23,18 @@ import {
   NoteState,
 } from "./model";
 
-export const createNewNoteRef = (id: number, path: string): NoteRef => {
+export const createNewNoteRef = (
+  id: number,
+  path: string,
+  lastModified: Date
+): NoteRef => {
   return {
     state: NoteState.Ref,
 
     id: "note_" + id.toString(),
     path,
     title: getTitleFromPath(path),
+    lastModified,
   };
 };
 
@@ -40,6 +45,7 @@ export const noteRefToLoading = (note: NoteRef): NoteLoading => {
     id: note.id,
     path: note.path,
     title: note.title,
+    lastModified: note.lastModified,
   };
 };
 
@@ -53,6 +59,7 @@ export const noteLoadingToFailedToLoad = (
     id: note.id,
     path: note.path,
     title: note.title,
+    lastModified: note.lastModified,
 
     err,
   };
@@ -67,6 +74,7 @@ export const noteFailedToLoadToLoading = (
     id: note.id,
     path: note.path,
     title: note.title,
+    lastModified: note.lastModified,
   };
 };
 
@@ -81,6 +89,7 @@ export const noteLoadingToLoaded = (
     path: note.path,
     title: note.title,
     text,
+    lastModified: note.lastModified,
   };
 };
 
@@ -95,6 +104,7 @@ export const noteLoadedToRenaming = (
     path: note.path,
     title: note.title,
     text: note.text,
+    lastModified: note.lastModified,
 
     newTitle,
   };
@@ -111,6 +121,7 @@ export const noteRenamingToLoaded = (
     path: newPath,
     title: note.newTitle,
     text: note.text,
+    lastModified: note.lastModified,
   };
 };
 
@@ -125,6 +136,7 @@ export const noteRenamingToFailedToRename = (
     path: note.path,
     title: note.title,
     text: note.text,
+    lastModified: note.lastModified,
 
     newTitle: note.newTitle,
 
@@ -142,6 +154,7 @@ export const noteFailedToRenameToRenaming = (
     path: note.path,
     title: note.title,
     text: note.text,
+    lastModified: note.lastModified,
 
     newTitle: note.newTitle,
   };
@@ -157,6 +170,7 @@ export const noteFailedToRenameToLoaded = (
     path: note.path,
     title: note.title,
     text: note.text,
+    lastModified: note.lastModified,
   };
 };
 
@@ -171,6 +185,7 @@ export const noteLoadedToSavingText = (
     path: note.path,
     title: note.title,
     text: note.text,
+    lastModified: note.lastModified,
 
     newText,
   };
@@ -184,6 +199,7 @@ export const noteSavingTextToLoaded = (note: NoteSavingText): NoteLoaded => {
     path: note.path,
     title: note.title,
     text: note.newText,
+    lastModified: note.lastModified,
   };
 };
 
@@ -198,6 +214,7 @@ export const noteSavingTextToFailedToSaveText = (
     path: note.path,
     title: note.title,
     text: note.text,
+    lastModified: note.lastModified,
 
     newText: note.newText,
 
@@ -215,6 +232,7 @@ export const noteFailedToSaveTextToSavingText = (
     path: note.path,
     title: note.title,
     text: note.text,
+    lastModified: note.lastModified,
 
     newText: note.newText,
   };
@@ -230,6 +248,7 @@ export const noteFailedToSaveTextToLoaded = (
     path: note.path,
     title: note.title,
     text: note.text,
+    lastModified: note.lastModified,
   };
 };
 
@@ -241,6 +260,7 @@ export const noteLoadedToDeleting = (note: NoteLoaded): NoteDeleting => {
     path: note.path,
     title: note.title,
     text: note.text,
+    lastModified: note.lastModified,
   };
 };
 
@@ -252,6 +272,7 @@ export const noteDeletingToDeleted = (note: NoteDeleting): NoteDeleted => {
     path: note.path,
     title: note.title,
     text: note.text,
+    lastModified: note.lastModified,
   };
 };
 
@@ -266,6 +287,7 @@ export const noteDeletingToFailedToDelete = (
     path: note.path,
     title: note.title,
     text: note.text,
+    lastModified: note.lastModified,
 
     err,
   };
@@ -281,6 +303,7 @@ export const noteFailedToDeleteToDeleting = (
     path: note.path,
     title: note.title,
     text: note.text,
+    lastModified: note.lastModified,
   };
 };
 
@@ -294,6 +317,7 @@ export const noteFailedToDeleteToLoaded = (
     path: note.path,
     title: note.title,
     text: note.text,
+    lastModified: note.lastModified,
   };
 };
 
@@ -305,6 +329,7 @@ export const noteDeletedToRestoring = (note: NoteDeleted): NoteRestoring => {
     path: note.path,
     title: note.title,
     text: note.text,
+    lastModified: note.lastModified,
   };
 };
 
@@ -316,6 +341,7 @@ export const noteRestoringToLoaded = (note: NoteRestoring): NoteLoaded => {
     path: note.path,
     title: note.title,
     text: note.text,
+    lastModified: note.lastModified,
   };
 };
 
@@ -330,6 +356,7 @@ export const noteRestoringToLoadedWithNewPath = (
     path: newPath,
     title: note.title,
     text: note.text,
+    lastModified: note.lastModified,
   };
 };
 
@@ -344,6 +371,7 @@ export const noteRestoringToFailedToRestore = (
     path: note.path,
     title: note.title,
     text: note.text,
+    lastModified: note.lastModified,
 
     err,
   };
@@ -359,6 +387,7 @@ export const noteFailedToRestoreToRestoring = (
     path: note.path,
     title: note.title,
     text: note.text,
+    lastModified: note.lastModified,
   };
 };
 
@@ -372,12 +401,14 @@ export const noteFailedToRestoreToDeleted = (
     path: note.path,
     title: note.title,
     text: note.text,
+    lastModified: note.lastModified,
   };
 };
 
-export const createNewNote = (id: number): NoteNew => {
+export const createNewNote = (id: number, lastModified: Date): NoteNew => {
   return {
     state: NoteState.New,
+    lastModified,
 
     id: "note_" + id.toString(),
   };
@@ -392,6 +423,7 @@ export const noteNewToCreatingFromTitle = (
 
     id: note.id,
     title,
+    lastModified: note.lastModified,
   };
 };
 
@@ -406,6 +438,7 @@ export const noteCreatingFromTitleToLoaded = (
     path,
     title: note.title,
     text: "",
+    lastModified: note.lastModified,
   };
 };
 
@@ -418,6 +451,7 @@ export const noteCreatingFromTitleToFailedToCreateFromTitle = (
 
     id: note.id,
     title: note.title,
+    lastModified: note.lastModified,
 
     err,
   };
@@ -431,6 +465,7 @@ export const noteFailedToCreateFromTitleToCreatingFromTitle = (
 
     id: note.id,
     title: note.title,
+    lastModified: note.lastModified,
   };
 };
 
@@ -441,6 +476,7 @@ export const noteFailedToCreateFromTitleToNew = (
     state: NoteState.New,
 
     id: note.id,
+    lastModified: note.lastModified,
   };
 };
 
@@ -453,6 +489,7 @@ export const noteNewToCreatingFromText = (
 
     id: note.id,
     text,
+    lastModified: note.lastModified,
   };
 };
 
@@ -467,6 +504,7 @@ export const noteCreatingFromTextToLoaded = (
     path,
     title: "",
     text: note.text,
+    lastModified: note.lastModified,
   };
 };
 
@@ -479,6 +517,7 @@ export const noteCreatingFromTextToFailedToCreateFromText = (
 
     id: note.id,
     text: note.text,
+    lastModified: note.lastModified,
 
     err,
   };
@@ -492,6 +531,7 @@ export const noteFailedToCreateFromTextToCreatingFromText = (
 
     id: note.id,
     text: note.text,
+    lastModified: note.lastModified,
   };
 };
 
@@ -502,6 +542,7 @@ export const noteFailedToCreateFromTextToNew = (
     state: NoteState.New,
 
     id: note.id,
+    lastModified: note.lastModified,
   };
 };
 
@@ -515,6 +556,7 @@ export const noteLoadedToConvertingToMarkdown = (
     path: note.path,
     title: note.title,
     text: note.text,
+    lastModified: note.lastModified,
   };
 };
 
@@ -529,6 +571,7 @@ export const noteConvertingToMarkdownToFailedToConvertToMarkdown = (
     path: note.path,
     title: note.title,
     text: note.text,
+    lastModified: note.lastModified,
 
     err,
   };
@@ -546,6 +589,7 @@ export const noteConvertingToMarkdownToLoaded = (
     path: newPath,
     title: getTitleFromPath(newPath),
     text: newText,
+    lastModified: note.lastModified,
   };
 };
 
@@ -559,6 +603,7 @@ export const noteFailedToConvertToMarkdownToConvertingToMarkdown = (
     path: note.path,
     title: note.title,
     text: note.text,
+    lastModified: note.lastModified,
   };
 };
 
@@ -572,5 +617,6 @@ export const noteFailedToConvertToMarkdownToLoaded = (
     path: note.path,
     title: note.title,
     text: note.text,
+    lastModified: note.lastModified,
   };
 };

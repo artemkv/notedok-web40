@@ -28,6 +28,7 @@ function ClientArea(props: {
         <NoteListControlPanel
           notesTotal={noteList.notes.length}
           filteredNotesTotal={filteredNotes.length}
+          sortingOrder={noteList.sortingOrder}
           dispatch={dispatch}
         />
         <NoteList

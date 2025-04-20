@@ -1,0 +1,29 @@
+.filter-switch {
+    font-size: 10px;
+    color: var(--tech-color);
+}
+
+.filter-switch-separator {
+    margin: 0px 4px;
+}
+
+.filter-switch-text {
+    color: var(--text-color);
+}
+
+.filter-switch-button {
+    color: var(--tech-color);
+    background-color: white;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.filter-switch-button:hover {
+    color: var(--text-color);
+}
+
+.filter-switch-button:focus {
+    color: var(--text-color);
+}

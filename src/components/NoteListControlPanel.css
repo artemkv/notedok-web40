@@ -1,6 +1,18 @@
+.note-list-control-panel {
+    display: flex;
+    flex-direction: row;
+}
+
 .note-list-counter {
     margin-left: 16px;
     padding: 0px 0px 8px;
     font-size: 10px;
     color: var(--tech-color);
+}
+
+.note-list-filter {
+    margin-right: 16px;
+    padding: 0px 0px 8px;
+    text-align: right;
+    flex: 1;
 }
