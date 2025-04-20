@@ -286,6 +286,16 @@ const EditorPanel = memo(function EditorPanel(props: {
       return getEffectiveText(note);
     }
 
+    // TODO: I could ignore the text from the note, and just use the one on the editor
+    // TODO: it would be calculated once upon request to edit
+    // TODO: and that would be the place I insert draft
+    // TODO: this would avoid changing default text when draft updates
+
+    // TODO: alternative is to, instead of updating the note directly,
+    // TODO: instead update a draft property of an editor
+    // TODO: the draft goes away on both save and cancel, which means I could update
+    // TODO: the note only when it is selected again.
+    // TODO: but I think it is more confusing
     return editor.defaultText ?? getEffectiveText(note);
   };
 
