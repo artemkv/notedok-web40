@@ -1,3 +1,25 @@
+// Maybe
+
+export enum MaybeOption {
+  None,
+  Some,
+}
+
+export interface None {
+  option: MaybeOption.None;
+}
+
+export interface Some<T> {
+  option: MaybeOption.Some;
+  value: T;
+}
+
+export type Maybe<T> = None | Some<T>;
+
+export const MaybeOfNone: None = {
+  option: MaybeOption.None,
+};
+
 // Note States
 
 export enum NoteState {
@@ -23,6 +45,8 @@ export enum NoteState {
   FailedToConvertToMarkdown,
 }
 
+// TODO: make draft optional
+
 export interface NoteRef {
   state: NoteState.Ref;
 
@@ -30,6 +54,7 @@ export interface NoteRef {
   path: string;
   title: string;
   lastModified: Date;
+  draft: Maybe<string>;
 }
 
 export interface NoteLoading {
@@ -39,6 +64,7 @@ export interface NoteLoading {
   path: string;
   title: string;
   lastModified: Date;
+  draft: Maybe<string>;
 }
 
 export interface NoteLoaded {
@@ -49,6 +75,7 @@ export interface NoteLoaded {
   title: string;
   text: string;
   lastModified: Date;
+  draft: Maybe<string>;
 }
 
 export interface NoteFailedToLoad {
@@ -58,6 +85,7 @@ export interface NoteFailedToLoad {
   path: string;
   title: string;
   lastModified: Date;
+  draft: Maybe<string>;
 
   err: string;
 }
@@ -96,6 +124,7 @@ export interface NoteRenaming {
   title: string;
   text: string;
   lastModified: Date;
+  draft: Maybe<string>;
 
   newTitle: string;
 }
@@ -108,6 +137,7 @@ export interface NoteFailedToRename {
   title: string;
   text: string;
   lastModified: Date;
+  draft: Maybe<string>;
 
   newTitle: string;
 
@@ -173,6 +203,7 @@ export interface NoteNew {
 
   id: string;
   lastModified: Date;
+  draft: Maybe<string>;
 }
 
 export interface NoteCreatingFromTitle {
@@ -181,6 +212,7 @@ export interface NoteCreatingFromTitle {
   id: string;
   title: string;
   lastModified: Date;
+  draft: Maybe<string>;
 }
 
 export interface NoteFailedToCreateFromTitle {
@@ -189,6 +221,7 @@ export interface NoteFailedToCreateFromTitle {
   id: string;
   title: string;
   lastModified: Date;
+  draft: Maybe<string>;
 
   err: string;
 }
@@ -210,6 +243,8 @@ export interface NoteFailedToCreateFromText {
 
   err: string;
 }
+
+// TODO: what to do with the draft when converting? just use it? prohibit converting?
 
 export interface NoteConvertingToMarkdown {
   state: NoteState.ConvertingToMarkdown;

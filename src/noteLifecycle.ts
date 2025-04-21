@@ -1,5 +1,7 @@
 import { getTitleFromPath } from "./conversion";
 import {
+  Maybe,
+  MaybeOfNone,
   NoteConvertingToMarkdown,
   NoteCreatingFromText,
   NoteCreatingFromTitle,
@@ -26,7 +28,8 @@ import {
 export const createNewNoteRef = (
   id: number,
   path: string,
-  lastModified: Date
+  lastModified: Date,
+  draft: Maybe<string>
 ): NoteRef => {
   return {
     state: NoteState.Ref,
@@ -35,6 +38,7 @@ export const createNewNoteRef = (
     path,
     title: getTitleFromPath(path),
     lastModified,
+    draft,
   };
 };
 
@@ -46,6 +50,7 @@ export const noteRefToLoading = (note: NoteRef): NoteLoading => {
     path: note.path,
     title: note.title,
     lastModified: note.lastModified,
+    draft: note.draft,
   };
 };
 
@@ -60,6 +65,7 @@ export const noteLoadingToFailedToLoad = (
     path: note.path,
     title: note.title,
     lastModified: note.lastModified,
+    draft: note.draft,
 
     err,
   };
@@ -75,6 +81,7 @@ export const noteFailedToLoadToLoading = (
     path: note.path,
     title: note.title,
     lastModified: note.lastModified,
+    draft: note.draft,
   };
 };
 
@@ -90,6 +97,7 @@ export const noteLoadingToLoaded = (
     title: note.title,
     text,
     lastModified: note.lastModified,
+    draft: note.draft,
   };
 };
 
@@ -105,6 +113,7 @@ export const noteLoadedToRenaming = (
     title: note.title,
     text: note.text,
     lastModified: note.lastModified,
+    draft: note.draft,
 
     newTitle,
   };
@@ -122,6 +131,7 @@ export const noteRenamingToLoaded = (
     title: note.newTitle,
     text: note.text,
     lastModified: note.lastModified,
+    draft: note.draft,
   };
 };
 
@@ -137,6 +147,7 @@ export const noteRenamingToFailedToRename = (
     title: note.title,
     text: note.text,
     lastModified: note.lastModified,
+    draft: note.draft,
 
     newTitle: note.newTitle,
 
@@ -155,6 +166,7 @@ export const noteFailedToRenameToRenaming = (
     title: note.title,
     text: note.text,
     lastModified: note.lastModified,
+    draft: note.draft,
 
     newTitle: note.newTitle,
   };
@@ -171,6 +183,7 @@ export const noteFailedToRenameToLoaded = (
     title: note.title,
     text: note.text,
     lastModified: note.lastModified,
+    draft: note.draft,
   };
 };
 
@@ -200,6 +213,7 @@ export const noteSavingTextToLoaded = (note: NoteSavingText): NoteLoaded => {
     title: note.title,
     text: note.newText,
     lastModified: note.lastModified,
+    draft: MaybeOfNone,
   };
 };
 
@@ -249,6 +263,7 @@ export const noteFailedToSaveTextToLoaded = (
     title: note.title,
     text: note.text,
     lastModified: note.lastModified,
+    draft: MaybeOfNone,
   };
 };
 
@@ -318,6 +333,7 @@ export const noteFailedToDeleteToLoaded = (
     title: note.title,
     text: note.text,
     lastModified: note.lastModified,
+    draft: MaybeOfNone,
   };
 };
 
@@ -342,6 +358,7 @@ export const noteRestoringToLoaded = (note: NoteRestoring): NoteLoaded => {
     title: note.title,
     text: note.text,
     lastModified: note.lastModified,
+    draft: MaybeOfNone,
   };
 };
 
@@ -357,6 +374,7 @@ export const noteRestoringToLoadedWithNewPath = (
     title: note.title,
     text: note.text,
     lastModified: note.lastModified,
+    draft: MaybeOfNone,
   };
 };
 
@@ -405,10 +423,15 @@ export const noteFailedToRestoreToDeleted = (
   };
 };
 
-export const createNewNote = (id: number, lastModified: Date): NoteNew => {
+export const createNewNote = (
+  id: number,
+  lastModified: Date,
+  draft: Maybe<string>
+): NoteNew => {
   return {
     state: NoteState.New,
     lastModified,
+    draft,
 
     id: "note_" + id.toString(),
   };
@@ -424,6 +447,7 @@ export const noteNewToCreatingFromTitle = (
     id: note.id,
     title,
     lastModified: note.lastModified,
+    draft: note.draft,
   };
 };
 
@@ -439,6 +463,7 @@ export const noteCreatingFromTitleToLoaded = (
     title: note.title,
     text: "",
     lastModified: note.lastModified,
+    draft: note.draft,
   };
 };
 
@@ -452,6 +477,7 @@ export const noteCreatingFromTitleToFailedToCreateFromTitle = (
     id: note.id,
     title: note.title,
     lastModified: note.lastModified,
+    draft: note.draft,
 
     err,
   };
@@ -466,6 +492,7 @@ export const noteFailedToCreateFromTitleToCreatingFromTitle = (
     id: note.id,
     title: note.title,
     lastModified: note.lastModified,
+    draft: note.draft,
   };
 };
 
@@ -477,6 +504,7 @@ export const noteFailedToCreateFromTitleToNew = (
 
     id: note.id,
     lastModified: note.lastModified,
+    draft: note.draft,
   };
 };
 
@@ -505,6 +533,7 @@ export const noteCreatingFromTextToLoaded = (
     title: "",
     text: note.text,
     lastModified: note.lastModified,
+    draft: MaybeOfNone,
   };
 };
 
@@ -543,6 +572,7 @@ export const noteFailedToCreateFromTextToNew = (
 
     id: note.id,
     lastModified: note.lastModified,
+    draft: MaybeOfNone,
   };
 };
 
@@ -590,6 +620,7 @@ export const noteConvertingToMarkdownToLoaded = (
     title: getTitleFromPath(newPath),
     text: newText,
     lastModified: note.lastModified,
+    draft: MaybeOfNone,
   };
 };
 
@@ -618,5 +649,6 @@ export const noteFailedToConvertToMarkdownToLoaded = (
     title: note.title,
     text: note.text,
     lastModified: note.lastModified,
+    draft: MaybeOfNone,
   };
 };

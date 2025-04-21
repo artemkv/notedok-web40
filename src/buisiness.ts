@@ -54,6 +54,7 @@ import {
   AppStateUnauthenticated,
   AuthenticationStatus,
   EditorState,
+  MaybeOfNone,
   Note,
   NoteListState,
   NoteState,
@@ -257,7 +258,8 @@ export const handleRetrieveFileListSuccess = (
       lastUsedNoteId: event.fileList.length - 1,
       notes: sort(
         event.fileList.map((f, idx) =>
-          createNewNoteRef(idx, f.fileName, f.lastModified)
+          // TODO: restore draft
+          createNewNoteRef(idx, f.fileName, f.lastModified, MaybeOfNone)
         ),
         SortingOrder.Alphabetic
       ),
@@ -703,7 +705,9 @@ export const handleCreateNoteRequested = (
     const newNote = createNewNote(
       state.noteList.lastUsedNoteId + 1,
       // TODO: this is a side effect, proper way to do it would be by creating this note in a command
-      new Date()
+      new Date(),
+      // TODO: restore draft
+      MaybeOfNone
     );
     const newState: AppStateAuthenticated = {
       ...state,
