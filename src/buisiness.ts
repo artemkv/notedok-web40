@@ -122,6 +122,7 @@ export const getEffectiveTitle = (note: Note): string => {
   return note.title;
 };
 
+// Here I ignore the draft, if any. Draft is handled using editor state
 export const getEffectiveText = (note: Note) => {
   if (
     note.state == NoteState.Ref ||
