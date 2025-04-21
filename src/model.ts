@@ -14,11 +14,17 @@ export interface Some<T> {
   value: T;
 }
 
+// TODO: rename
 export type Maybe<T> = None | Some<T>;
 
 export const MaybeOfNone: None = {
   option: MaybeOption.None,
 };
+
+export const MaybeOfSome = <T>(value: T): Some<T> => ({
+  option: MaybeOption.Some,
+  value,
+});
 
 // Note States
 
@@ -300,16 +306,17 @@ export enum EditorState {
 
 export interface EditorInactive {
   state: EditorState.Inactive;
+  draft: Maybe<string>;
 }
 
 export interface EditorEditingAsMarkdown {
   state: EditorState.EditingAsMarkdown;
-  defaultText?: string;
+  draft: Maybe<string>;
 }
 
 export interface EditorEditingAsPlainText {
   state: EditorState.EditingAsPlainText;
-  defaultText?: string;
+  draft: Maybe<string>;
 }
 
 export type Editor =

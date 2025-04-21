@@ -143,6 +143,7 @@ export interface EditNoteRequestedEvent {
 
 export interface FailedToInitializeMarkdownEditorEvent {
   type: EventType.FailedToInitializeMarkdownEditor;
+  note: Note;
 }
 
 export interface CancelNoteEditRequestedEvent {

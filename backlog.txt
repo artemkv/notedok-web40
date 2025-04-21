@@ -103,6 +103,8 @@ V1.0
 Saving draft:
 
 - When you start editing note, the editor reports current state every 3 seconds
+- Editor also reports current state upon moving to another note
+- Editor also reports current state upon switching between text/markdown when editing
 - If there are changes, this triggers command that saves those changes into the local storage
 - The note item in the list shows "unsaved changes" or something similar
 - If you save or cancel changes, the current state is cleared from local storage

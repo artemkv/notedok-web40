@@ -107,7 +107,7 @@ export const Reducer = (
       return handleEditNoteRequested(state, event);
     }
     if (event.type == EventType.FailedToInitializeMarkdownEditor) {
-      return handleFailedToInitializeMarkdownEditor(state);
+      return handleFailedToInitializeMarkdownEditor(state, event);
     }
     if (event.type == EventType.CancelNoteEditRequested) {
       return handleCancelNoteEditRequested(state);

@@ -1,6 +1,6 @@
 import "./EditorPanel.css";
 import "github-markdown-css";
-import { Editor, EditorState, Note, NoteState } from "../model";
+import { Editor, EditorState, MaybeOption, Note, NoteState } from "../model";
 import ProgressIndicator from "./ProgressIndicator";
 import { MilkdownProvider } from "@milkdown/react";
 import MilkdownEditor from "./MilkdownEditor";
@@ -225,6 +225,7 @@ const EditorPanel = memo(function EditorPanel(props: {
     if (editor.state == EditorState.EditingAsMarkdown) {
       dispatch({
         type: EventType.FailedToInitializeMarkdownEditor,
+        note,
       });
     }
   };
@@ -281,7 +282,9 @@ const EditorPanel = memo(function EditorPanel(props: {
 
   const isNew = note.state == NoteState.New;
 
+  // TODO: I need to make it clear how the draft is handled, otherwise it's a bit messy
   const editorDefaultText = () => {
+    // TODO: draft??
     if (editor.state == EditorState.Inactive) {
       return getEffectiveText(note);
     }
@@ -296,7 +299,10 @@ const EditorPanel = memo(function EditorPanel(props: {
     // TODO: the draft goes away on both save and cancel, which means I could update
     // TODO: the note only when it is selected again.
     // TODO: but I think it is more confusing
-    return editor.defaultText ?? getEffectiveText(note);
+    if (editor.draft.option == MaybeOption.Some) {
+      return editor.draft.value;
+    }
+    return getEffectiveText(note);
   };
 
   const markdownEditor = () => {
