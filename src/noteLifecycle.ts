@@ -1,7 +1,7 @@
 import { getTitleFromPath } from "./conversion";
 import {
   Maybe,
-  MaybeOfNone,
+  None,
   NoteConvertingToMarkdown,
   NoteCreatingFromText,
   NoteCreatingFromTitle,
@@ -213,7 +213,7 @@ export const noteSavingTextToLoaded = (note: NoteSavingText): NoteLoaded => {
     title: note.title,
     text: note.newText,
     lastModified: note.lastModified,
-    draft: MaybeOfNone,
+    draft: None,
   };
 };
 
@@ -263,7 +263,7 @@ export const noteFailedToSaveTextToLoaded = (
     title: note.title,
     text: note.text,
     lastModified: note.lastModified,
-    draft: MaybeOfNone,
+    draft: None,
   };
 };
 
@@ -333,7 +333,7 @@ export const noteFailedToDeleteToLoaded = (
     title: note.title,
     text: note.text,
     lastModified: note.lastModified,
-    draft: MaybeOfNone,
+    draft: None,
   };
 };
 
@@ -358,7 +358,7 @@ export const noteRestoringToLoaded = (note: NoteRestoring): NoteLoaded => {
     title: note.title,
     text: note.text,
     lastModified: note.lastModified,
-    draft: MaybeOfNone,
+    draft: None,
   };
 };
 
@@ -374,7 +374,7 @@ export const noteRestoringToLoadedWithNewPath = (
     title: note.title,
     text: note.text,
     lastModified: note.lastModified,
-    draft: MaybeOfNone,
+    draft: None,
   };
 };
 
@@ -533,7 +533,7 @@ export const noteCreatingFromTextToLoaded = (
     title: "",
     text: note.text,
     lastModified: note.lastModified,
-    draft: MaybeOfNone,
+    draft: None,
   };
 };
 
@@ -572,7 +572,7 @@ export const noteFailedToCreateFromTextToNew = (
 
     id: note.id,
     lastModified: note.lastModified,
-    draft: MaybeOfNone,
+    draft: None,
   };
 };
 
@@ -620,7 +620,7 @@ export const noteConvertingToMarkdownToLoaded = (
     title: getTitleFromPath(newPath),
     text: newText,
     lastModified: note.lastModified,
-    draft: MaybeOfNone,
+    draft: None,
   };
 };
 
@@ -649,6 +649,6 @@ export const noteFailedToConvertToMarkdownToLoaded = (
     title: note.title,
     text: note.text,
     lastModified: note.lastModified,
-    draft: MaybeOfNone,
+    draft: None,
   };
 };

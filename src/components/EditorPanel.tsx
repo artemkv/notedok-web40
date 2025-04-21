@@ -1,6 +1,6 @@
 import "./EditorPanel.css";
 import "github-markdown-css";
-import { Editor, EditorState, MaybeOption, Note, NoteState } from "../model";
+import { Editor, EditorState, MaybeType, Note, NoteState } from "../model";
 import ProgressIndicator from "./ProgressIndicator";
 import { MilkdownProvider } from "@milkdown/react";
 import MilkdownEditor from "./MilkdownEditor";
@@ -299,7 +299,7 @@ const EditorPanel = memo(function EditorPanel(props: {
     // TODO: the draft goes away on both save and cancel, which means I could update
     // TODO: the note only when it is selected again.
     // TODO: but I think it is more confusing
-    if (editor.draft.option == MaybeOption.Some) {
+    if (editor.draft.type == MaybeType.Some) {
       return editor.draft.value;
     }
     return getEffectiveText(note);

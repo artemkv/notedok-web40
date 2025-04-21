@@ -56,11 +56,11 @@ import {
   AuthenticationStatus,
   EditorState,
   Maybe,
-  MaybeOfNone,
-  MaybeOfSome,
+  None,
   Note,
   NoteListState,
   NoteState,
+  Some,
   SortingOrder,
 } from "./model";
 import {
@@ -237,7 +237,7 @@ export const getDraft = (note: Note): Maybe<string> => {
     return note.draft;
   }
 
-  return MaybeOfNone;
+  return None;
 };
 
 export const JustStateAuthenticated = (
@@ -276,14 +276,14 @@ export const handleRetrieveFileListSuccess = (
       notes: sort(
         event.fileList.map((f, idx) =>
           // TODO: restore draft
-          createNewNoteRef(idx, f.fileName, f.lastModified, MaybeOfNone)
+          createNewNoteRef(idx, f.fileName, f.lastModified, None)
         ),
         SortingOrder.Alphabetic
       ),
       sortingOrder: SortingOrder.Alphabetic,
       selectedNoteId: "",
       searchText: "",
-      editor: { state: EditorState.Inactive, draft: MaybeOfNone },
+      editor: { state: EditorState.Inactive, draft: None },
     },
   };
   return JustStateAuthenticated(newState);
@@ -354,7 +354,7 @@ export const handleNoteSelected = (
             ...state.noteList,
             notes: replace(state.noteList.notes, noteLoading),
             selectedNoteId: noteLoading.id,
-            editor: { state: EditorState.Inactive, draft: MaybeOfNone },
+            editor: { state: EditorState.Inactive, draft: None },
           },
         };
         return [newState, LoadNoteText(noteLoading)];
@@ -368,7 +368,7 @@ export const handleNoteSelected = (
             ...state.noteList,
             notes: replace(state.noteList.notes, noteLoading),
             selectedNoteId: noteLoading.id,
-            editor: { state: EditorState.Inactive, draft: MaybeOfNone },
+            editor: { state: EditorState.Inactive, draft: None },
           },
         };
         return [newState, LoadNoteText(noteLoading)];
@@ -607,7 +607,7 @@ export const handleCancelNoteEditRequested = (
         noteList: {
           ...state.noteList,
           // TODO: also remove from local storage
-          editor: { state: EditorState.Inactive, draft: MaybeOfNone },
+          editor: { state: EditorState.Inactive, draft: None },
         },
       };
       return JustStateAuthenticated(newState);
@@ -634,7 +634,7 @@ export const handleNoteSaveTextRequested = (
             ...state.noteList,
             notes: replace(state.noteList.notes, noteSavingText),
             // TODO: clear draft in local storage
-            editor: { state: EditorState.Inactive, draft: MaybeOfNone },
+            editor: { state: EditorState.Inactive, draft: None },
           },
         };
         return [newState, SaveNoteText(noteSavingText)];
@@ -644,7 +644,7 @@ export const handleNoteSaveTextRequested = (
           noteList: {
             ...state.noteList,
             // TODO: clear draft in local storage
-            editor: { state: EditorState.Inactive, draft: MaybeOfNone },
+            editor: { state: EditorState.Inactive, draft: None },
           },
         };
         return JustStateAuthenticated(newState);
@@ -660,7 +660,7 @@ export const handleNoteSaveTextRequested = (
             ...state.noteList,
             notes: replace(state.noteList.notes, noteCreatingFromText),
             // TODO: clear draft in local storage
-            editor: { state: EditorState.Inactive, draft: MaybeOfNone },
+            editor: { state: EditorState.Inactive, draft: None },
           },
         };
         return [newState, CreateNewNoteWithText(noteCreatingFromText)];
@@ -670,7 +670,7 @@ export const handleNoteSaveTextRequested = (
           noteList: {
             ...state.noteList,
             // TODO: clear draft in local storage
-            editor: { state: EditorState.Inactive, draft: MaybeOfNone },
+            editor: { state: EditorState.Inactive, draft: None },
           },
         };
         return JustStateAuthenticated(newState);
@@ -739,7 +739,7 @@ export const handleCreateNoteRequested = (
       // TODO: this is a side effect, proper way to do it would be by creating this note in a command
       new Date(),
       // TODO: restore draft
-      MaybeOfNone
+      None
     );
     const newState: AppStateAuthenticated = {
       ...state,
@@ -748,7 +748,7 @@ export const handleCreateNoteRequested = (
         lastUsedNoteId: state.noteList.lastUsedNoteId + 1,
         notes: [newNote, ...state.noteList.notes],
         selectedNoteId: newNote.id,
-        editor: { state: EditorState.Inactive, draft: MaybeOfNone },
+        editor: { state: EditorState.Inactive, draft: None },
       },
     };
     return JustStateAuthenticated(newState);
@@ -1101,7 +1101,7 @@ export const handleSwitchEditorToMarkdownRequested = (
           ...state.noteList,
           editor: {
             state: EditorState.EditingAsMarkdown,
-            draft: MaybeOfSome(event.text),
+            draft: Some(event.text),
           },
         },
       };
@@ -1124,7 +1124,7 @@ export const handleSwitchEditorToTextRequested = (
           ...state.noteList,
           editor: {
             state: EditorState.EditingAsPlainText,
-            draft: MaybeOfSome(event.text),
+            draft: Some(event.text),
           },
         },
       };

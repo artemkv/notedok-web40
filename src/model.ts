@@ -1,28 +1,27 @@
 // Maybe
 
-export enum MaybeOption {
+export enum MaybeType {
   None,
   Some,
 }
 
-export interface None {
-  option: MaybeOption.None;
+export interface MaybeNone {
+  type: MaybeType.None;
 }
 
-export interface Some<T> {
-  option: MaybeOption.Some;
+export interface MaybeSome<T> {
+  type: MaybeType.Some;
   value: T;
 }
 
-// TODO: rename
-export type Maybe<T> = None | Some<T>;
+export type Maybe<T> = MaybeNone | MaybeSome<T>;
 
-export const MaybeOfNone: None = {
-  option: MaybeOption.None,
+export const None: MaybeNone = {
+  type: MaybeType.None,
 };
 
-export const MaybeOfSome = <T>(value: T): Some<T> => ({
-  option: MaybeOption.Some,
+export const Some = <T>(value: T): MaybeSome<T> => ({
+  type: MaybeType.Some,
   value,
 });
 
