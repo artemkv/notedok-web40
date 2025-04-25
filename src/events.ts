@@ -96,6 +96,8 @@ export interface SortingOrderUpdatedEvent {
   sortingOrder: SortingOrder;
 }
 
+// TODO: some events use note, some noteid, inconsistent
+
 export interface NoteSelectedEvent {
   type: EventType.NoteSelected;
   note: Note;
@@ -138,16 +140,16 @@ export interface FailedToRenameNoteEvent {
 
 export interface EditNoteRequestedEvent {
   type: EventType.EditNoteRequested;
-  note: Note;
+  note: Note; // TODO: why not noteId?
 }
 
 export interface FailedToInitializeMarkdownEditorEvent {
   type: EventType.FailedToInitializeMarkdownEditor;
-  note: Note;
 }
 
 export interface CancelNoteEditRequestedEvent {
   type: EventType.CancelNoteEditRequested;
+  noteId: string;
 }
 
 export interface NoteSaveTextRequestedEvent {

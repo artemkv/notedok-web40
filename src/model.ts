@@ -299,27 +299,33 @@ export type Note =
 
 export enum EditorState {
   Inactive,
+  ReadOnly,
   EditingAsMarkdown,
   EditingAsPlainText,
 }
 
 export interface EditorInactive {
   state: EditorState.Inactive;
-  draft: Maybe<string>;
+}
+
+export interface EditorReadOnly {
+  state: EditorState.ReadOnly;
+  text: string;
 }
 
 export interface EditorEditingAsMarkdown {
   state: EditorState.EditingAsMarkdown;
-  draft: Maybe<string>;
+  defaultText: string;
 }
 
 export interface EditorEditingAsPlainText {
   state: EditorState.EditingAsPlainText;
-  draft: Maybe<string>;
+  defaultText: string;
 }
 
 export type Editor =
   | EditorInactive
+  | EditorReadOnly
   | EditorEditingAsMarkdown
   | EditorEditingAsPlainText;
 

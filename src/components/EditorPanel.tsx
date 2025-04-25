@@ -1,6 +1,6 @@
 import "./EditorPanel.css";
 import "github-markdown-css";
-import { Editor, EditorState, MaybeType, Note, NoteState } from "../model";
+import { Editor, EditorState, Note, NoteState } from "../model";
 import ProgressIndicator from "./ProgressIndicator";
 import { MilkdownProvider } from "@milkdown/react";
 import MilkdownEditor from "./MilkdownEditor";
@@ -11,9 +11,9 @@ import {
   canDelete,
   canEdit,
   canRestore,
-  getEffectiveText,
   getEffectiveTitle,
   isMarkdownNote,
+  isTitleEditable,
 } from "../buisiness";
 import NoteTitleEditor from "./NoteTitleEditor";
 import ControlPanel from "./ControlPanel";
@@ -63,7 +63,7 @@ const EditorPanel = memo(function EditorPanel(props: {
           onRestore={() => {}}
           showProgress={false}
           showFormatSwitch={false}
-          isFormatMarkdown={editor.state == EditorState.EditingAsMarkdown}
+          isFormatMarkdown={false}
         />
         <div className="editor-panel"></div>
       </>
@@ -95,7 +95,7 @@ const EditorPanel = memo(function EditorPanel(props: {
           onRestore={() => {}}
           showProgress={false}
           showFormatSwitch={false}
-          isFormatMarkdown={editor.state == EditorState.EditingAsMarkdown}
+          isFormatMarkdown={false}
         />
         <div className="editor-panel">
           <ProgressIndicator />
@@ -125,19 +125,12 @@ const EditorPanel = memo(function EditorPanel(props: {
           onRestore={() => {}}
           showProgress={false}
           showFormatSwitch={false}
-          isFormatMarkdown={editor.state == EditorState.EditingAsMarkdown}
+          isFormatMarkdown={false}
         />
         <ErrorLoadingNote noteId={note.id} err={note.err} dispatch={dispatch} />
       </>
     );
   }
-
-  const isTitleEditable = () => {
-    if (note.state == NoteState.Loaded || note.state == NoteState.New) {
-      return true;
-    }
-    return false;
-  };
 
   const onConvertToMarkdown = () => {
     dispatch({
@@ -180,7 +173,7 @@ const EditorPanel = memo(function EditorPanel(props: {
   const onSaveDraft = () => {
     if (editor.state == EditorState.EditingAsMarkdown) {
       const md = getMarkdownRef.current.getMarkdown();
-      if (md != undefined && md != editorDefaultText()) {
+      if (md != undefined) {
         dispatch({
           type: EventType.EditorCurrentStateReport,
           noteId: note.id,
@@ -191,7 +184,7 @@ const EditorPanel = memo(function EditorPanel(props: {
 
     if (editor.state == EditorState.EditingAsPlainText) {
       const text = getTextRef.current.getText();
-      if (text != undefined && text != editorDefaultText()) {
+      if (text != undefined) {
         dispatch({
           type: EventType.EditorCurrentStateReport,
           noteId: note.id,
@@ -204,6 +197,7 @@ const EditorPanel = memo(function EditorPanel(props: {
   const onCancel = () => {
     dispatch({
       type: EventType.CancelNoteEditRequested,
+      noteId: note.id,
     });
   };
 
@@ -219,15 +213,6 @@ const EditorPanel = memo(function EditorPanel(props: {
       type: EventType.RestoreNoteRequested,
       noteId: note.id,
     });
-  };
-
-  const onMdEditorError = () => {
-    if (editor.state == EditorState.EditingAsMarkdown) {
-      dispatch({
-        type: EventType.FailedToInitializeMarkdownEditor,
-        note,
-      });
-    }
   };
 
   const showControlPanelAsPending = () => {
@@ -280,31 +265,10 @@ const EditorPanel = memo(function EditorPanel(props: {
     }
   };
 
-  const isNew = note.state == NoteState.New;
-
-  // TODO: I need to make it clear how the draft is handled, otherwise it's a bit messy
-  const editorDefaultText = () => {
-    // TODO: draft??
-    if (editor.state == EditorState.Inactive) {
-      return getEffectiveText(note);
-    }
-
-    // TODO: I could ignore the text from the note, and just use the one on the editor
-    // TODO: it would be calculated once upon request to edit
-    // TODO: and that would be the place I insert draft
-    // TODO: this would avoid changing default text when draft updates
-
-    // TODO: alternative is to, instead of updating the note directly,
-    // TODO: instead update a draft property of an editor
-    // TODO: the draft goes away on both save and cancel, which means I could update
-    // TODO: the note only when it is selected again.
-    // TODO: but I think it is more confusing
-    if (editor.draft.type == MaybeType.Some) {
-      return editor.draft.value;
-    }
-    return getEffectiveText(note);
-  };
-
+  // Implementation note: editor part is fully initialized in business
+  // and does not depend on the note; this creates a specific place where the state
+  // is transferred from the note to the editor, detaching the latter from the note
+  // this allows updating note w/o re-rendering the editor component
   const markdownEditor = () => {
     // We are in fallback mode
     if (editor.state == EditorState.EditingAsPlainText) {
@@ -312,7 +276,7 @@ const EditorPanel = memo(function EditorPanel(props: {
         <>
           <PlainTextEditor
             noteId={note.id}
-            defaultText={editorDefaultText()}
+            defaultText={editor.defaultText}
             getTextRef={getTextRef.current}
           />
           <IntervalTrigger callback={onSaveDraft} />
@@ -320,21 +284,42 @@ const EditorPanel = memo(function EditorPanel(props: {
       );
     }
 
-    return (
-      <>
-        <MilkdownProvider>
-          <MilkdownEditor
-            noteId={note.id}
-            defaultMarkdown={editorDefaultText()}
-            editable={editor.state == EditorState.EditingAsMarkdown}
-            deleted={showAsDeleted()}
-            getMarkdownRef={getMarkdownRef.current}
-            onError={onMdEditorError}
-          />
-        </MilkdownProvider>
-        <IntervalTrigger callback={onSaveDraft} />
-      </>
-    );
+    if (editor.state == EditorState.EditingAsMarkdown) {
+      return (
+        <>
+          <MilkdownProvider>
+            <MilkdownEditor
+              noteId={note.id}
+              defaultMarkdown={editor.defaultText}
+              editable={true}
+              deleted={false}
+              getMarkdownRef={getMarkdownRef.current}
+              dispatch={dispatch}
+            />
+          </MilkdownProvider>
+          <IntervalTrigger callback={onSaveDraft} />
+        </>
+      );
+    }
+
+    if (editor.state == EditorState.ReadOnly) {
+      return (
+        <>
+          <MilkdownProvider>
+            <MilkdownEditor
+              noteId={note.id}
+              defaultMarkdown={editor.text}
+              editable={false}
+              deleted={showAsDeleted()}
+              getMarkdownRef={getMarkdownRef.current}
+              dispatch={dispatch}
+            />
+          </MilkdownProvider>
+        </>
+      );
+    }
+
+    return null;
   };
 
   // Eventually will go away, when I convert all my notes to md
@@ -344,7 +329,7 @@ const EditorPanel = memo(function EditorPanel(props: {
         <>
           <PlainTextEditor
             noteId={note.id}
-            defaultText={editorDefaultText()}
+            defaultText={editor.defaultText}
             getTextRef={getTextRef.current}
           />
           <IntervalTrigger callback={onSaveDraft} />
@@ -352,16 +337,20 @@ const EditorPanel = memo(function EditorPanel(props: {
       );
     }
 
-    return (
-      <div
-        className={
-          showAsDeleted() ? "note-text note-text-deleted" : "note-text"
-        }
-        dangerouslySetInnerHTML={{
-          __html: renderNoteTextHtml(htmlEscape(editorDefaultText())),
-        }}
-      ></div>
-    );
+    if (editor.state == EditorState.ReadOnly) {
+      return (
+        <div
+          className={
+            showAsDeleted() ? "note-text note-text-deleted" : "note-text"
+          }
+          dangerouslySetInnerHTML={{
+            __html: renderNoteTextHtml(htmlEscape(editor.text)),
+          }}
+        ></div>
+      );
+    }
+
+    return null;
   };
 
   if (
@@ -403,15 +392,21 @@ const EditorPanel = memo(function EditorPanel(props: {
           showNew={true}
           onNew={onNew}
           showConvertToMarkdown={
-            canConvertToMarkdown(note) && editor.state == EditorState.Inactive
+            canConvertToMarkdown(note) && editor.state == EditorState.ReadOnly
           }
           onFormatSwitch={onFormatSwitch}
           onConvertToMarkdown={onConvertToMarkdown}
-          showEdit={canEdit(note) && editor.state == EditorState.Inactive}
+          showEdit={canEdit(note) && editor.state == EditorState.ReadOnly}
           onEdit={onEdit}
-          showSave={editor.state != EditorState.Inactive}
+          showSave={
+            editor.state == EditorState.EditingAsMarkdown ||
+            editor.state == EditorState.EditingAsPlainText
+          }
           onSave={onSave}
-          showCancel={editor.state != EditorState.Inactive}
+          showCancel={
+            editor.state == EditorState.EditingAsMarkdown ||
+            editor.state == EditorState.EditingAsPlainText
+          }
           onCancel={onCancel}
           showDelete={canDelete(note)}
           onDelete={onDelete}
@@ -419,7 +414,9 @@ const EditorPanel = memo(function EditorPanel(props: {
           onRestore={onRestore}
           showProgress={showControlPanelAsPending()}
           showFormatSwitch={
-            isMarkdownNote(note) && editor.state != EditorState.Inactive
+            isMarkdownNote(note) &&
+            (editor.state == EditorState.EditingAsMarkdown ||
+              editor.state == EditorState.EditingAsPlainText)
           }
           isFormatMarkdown={editor.state == EditorState.EditingAsMarkdown}
         />
@@ -434,9 +431,9 @@ const EditorPanel = memo(function EditorPanel(props: {
             ) : null}
             <NoteTitleEditor
               noteId={note.id}
-              isNew={isNew}
+              isNew={note.state == NoteState.New}
               defaultTitle={getEffectiveTitle(note)}
-              editable={isTitleEditable()}
+              editable={isTitleEditable(note)}
               deleted={showAsDeleted()}
               dispatch={dispatch}
             />

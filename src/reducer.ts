@@ -4,6 +4,7 @@ import {
   handleCreateNoteRequested,
   handleDeleteNoteRequested,
   handleEditNoteRequested,
+  handleEditorCurrentStateReport,
   handleFailedToCreateNoteFromText,
   handleFailedToCreateNoteFromTitle,
   handleFailedToDeleteNote,
@@ -107,10 +108,10 @@ export const Reducer = (
       return handleEditNoteRequested(state, event);
     }
     if (event.type == EventType.FailedToInitializeMarkdownEditor) {
-      return handleFailedToInitializeMarkdownEditor(state, event);
+      return handleFailedToInitializeMarkdownEditor(state);
     }
     if (event.type == EventType.CancelNoteEditRequested) {
-      return handleCancelNoteEditRequested(state);
+      return handleCancelNoteEditRequested(state, event);
     }
 
     if (event.type == EventType.NoteSaveTextRequested) {
@@ -137,9 +138,10 @@ export const Reducer = (
     }
 
     if (event.type == EventType.EditorCurrentStateReport) {
-      // TODO:
-      console.log("REPORTED UPDATE: " + event.noteId);
-      return JustState(state);
+      // TODO: remove
+      // console.log("SAVED");
+      // return JustState(state);
+      return handleEditorCurrentStateReport(state, event);
     }
 
     if (event.type == EventType.DeleteNoteRequested) {

@@ -20,6 +20,8 @@ import { commonmark, linkAttr } from "@milkdown/kit/preset/commonmark";
 import { gfm } from "@milkdown/kit/preset/gfm";
 import { Milkdown } from "@milkdown/react";
 import { memo, useEffect, useState } from "react";
+import { AppEvent, EventType } from "../events";
+import { Dispatch } from "../hooks/useReducer";
 
 const MilkdownEditor = memo(function MilkdownEditor(props: {
   noteId: string;
@@ -27,7 +29,7 @@ const MilkdownEditor = memo(function MilkdownEditor(props: {
   editable: boolean;
   deleted: boolean;
   getMarkdownRef: { getMarkdown: () => string | undefined };
-  onError: (err: string) => void;
+  dispatch: Dispatch<AppEvent>;
 }) {
   const noteId = props.noteId;
   const defaultMarkdown = props.defaultMarkdown;
@@ -35,7 +37,7 @@ const MilkdownEditor = memo(function MilkdownEditor(props: {
   const deleted = props.deleted;
   // The documented solution to get the md from another component didn't work
   const getMarkdownRef = props.getMarkdownRef;
-  const onError = props.onError;
+  const dispatch = props.dispatch;
 
   const [error, setError] = useState<string>("");
 
@@ -48,6 +50,9 @@ const MilkdownEditor = memo(function MilkdownEditor(props: {
   // TODO: empty editor inserts '<br />\n' that I have to remove later; sometimes non-empty editor does this too
 
   useEffect(() => {
+    let isDestroying = false;
+
+    getMarkdownRef.getMarkdown = () => undefined;
     setError("");
 
     const editor = Editor.make()
@@ -84,41 +89,44 @@ const MilkdownEditor = memo(function MilkdownEditor(props: {
       .use(indent)
       .create();
 
-    const cleanupContainer = editor
+    const initializeAndReturnCleanup = editor
       .then((editor) => {
-        const getMarkdown = () => {
-          if (editor.status == EditorStatus.Created) {
-            return editor.action((ctx) => {
-              const editorView = ctx.get(editorViewCtx);
-              const serializer = ctx.get(serializerCtx);
-              return serializer(editorView.state.doc);
-            });
-          }
-          return undefined;
-        };
+        if (!isDestroying) {
+          const getMarkdown = () => {
+            if (editor.status == EditorStatus.Created) {
+              return editor.action((ctx) => {
+                const editorView = ctx.get(editorViewCtx);
+                const serializer = ctx.get(serializerCtx);
+                return serializer(editorView.state.doc);
+              });
+            }
+            return undefined;
+          };
 
-        // allow querying the current markdown from above
-        getMarkdownRef.getMarkdown = getMarkdown;
+          // allow querying the current markdown from above
+          getMarkdownRef.getMarkdown = getMarkdown;
+        }
 
         return () => {
-          getMarkdownRef.getMarkdown = () => undefined;
           editor.destroy();
         };
       })
       .catch((err) => {
         setError(() => err.toString());
-        onError(err.toString());
-
-        return () => {
-          getMarkdownRef.getMarkdown = () => undefined;
-        };
+        dispatch({
+          type: EventType.FailedToInitializeMarkdownEditor,
+        });
+        return () => {};
       });
 
     // properly destroy
     return () => {
-      cleanupContainer.then((cleanup) => cleanup());
+      // indicate that we are already destroying, since the cleanup is async
+      isDestroying = true;
+      // and then cleanup when we can
+      initializeAndReturnCleanup.then((cleanup) => cleanup());
     };
-  }, [noteId, editable, getMarkdownRef, defaultMarkdown, deleted, onError]);
+  }, [noteId, editable, getMarkdownRef, defaultMarkdown, deleted, dispatch]);
 
   return error ? (
     <div className="milkdown-error-state">{error}</div>

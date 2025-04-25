@@ -13,14 +13,15 @@ import {
 } from "./commands/storage";
 import { isMarkdownFile } from "./conversion";
 import {
+  CancelNoteEditRequestedEvent,
   ConvertToMarkdownRequestedEvent,
   DeleteNoteRequestedEvent,
   DiscardNoteErrorRequestedEvent,
   EditNoteRequestedEvent,
+  EditorCurrentStateReportEvent,
   FailedToCreateNoteFromTextEvent,
   FailedToCreateNoteFromTitleEvent,
   FailedToDeleteNoteEvent,
-  FailedToInitializeMarkdownEditorEvent,
   FailedToLoadNoteEvent,
   FailedToRenameNoteEvent,
   FailedToRestoreNoteEvent,
@@ -56,9 +57,12 @@ import {
   AuthenticationStatus,
   EditorState,
   Maybe,
+  MaybeType,
   None,
   Note,
   NoteListState,
+  NoteLoaded,
+  NoteNew,
   NoteState,
   Some,
   SortingOrder,
@@ -125,8 +129,30 @@ export const getEffectiveTitle = (note: Note): string => {
   return note.title;
 };
 
-// Here I ignore the draft, if any. Draft is handled using editor state
+export const getDraft = (note: Note): Maybe<string> => {
+  if (
+    note.state == NoteState.Ref ||
+    note.state == NoteState.Loading ||
+    note.state == NoteState.Loaded ||
+    note.state == NoteState.FailedToLoad ||
+    note.state == NoteState.Renaming ||
+    note.state == NoteState.FailedToRename ||
+    note.state == NoteState.New ||
+    note.state == NoteState.CreatingFromTitle ||
+    note.state == NoteState.FailedToCreateFromTitle
+  ) {
+    return note.draft;
+  }
+
+  return None;
+};
+
 export const getEffectiveText = (note: Note) => {
+  const draft = getDraft(note);
+  if (draft.type == MaybeType.Some) {
+    return draft.value;
+  }
+
   if (
     note.state == NoteState.Ref ||
     note.state == NoteState.Loading ||
@@ -199,6 +225,13 @@ export const filter = (notes: Note[], searchText: string) => {
   );
 };
 
+export const isTitleEditable = (note: Note) => {
+  if (note.state == NoteState.Loaded || note.state == NoteState.New) {
+    return true;
+  }
+  return false;
+};
+
 export const canEdit = (note: Note) => {
   if (note.state == NoteState.Loaded || note.state == NoteState.New) {
     return true;
@@ -225,19 +258,6 @@ export const canConvertToMarkdown = (note: Note) => {
     return true;
   }
   return false;
-};
-
-export const getDraft = (note: Note): Maybe<string> => {
-  // TODO: all states
-  if (
-    note.state == NoteState.Ref ||
-    note.state == NoteState.Loading ||
-    note.state == NoteState.FailedToLoad
-  ) {
-    return note.draft;
-  }
-
-  return None;
 };
 
 export const JustStateAuthenticated = (
@@ -283,7 +303,7 @@ export const handleRetrieveFileListSuccess = (
       sortingOrder: SortingOrder.Alphabetic,
       selectedNoteId: "",
       searchText: "",
-      editor: { state: EditorState.Inactive, draft: None },
+      editor: { state: EditorState.Inactive },
     },
   };
   return JustStateAuthenticated(newState);
@@ -354,7 +374,7 @@ export const handleNoteSelected = (
             ...state.noteList,
             notes: replace(state.noteList.notes, noteLoading),
             selectedNoteId: noteLoading.id,
-            editor: { state: EditorState.Inactive, draft: None },
+            editor: { state: EditorState.Inactive },
           },
         };
         return [newState, LoadNoteText(noteLoading)];
@@ -368,7 +388,7 @@ export const handleNoteSelected = (
             ...state.noteList,
             notes: replace(state.noteList.notes, noteLoading),
             selectedNoteId: noteLoading.id,
-            editor: { state: EditorState.Inactive, draft: None },
+            editor: { state: EditorState.Inactive },
           },
         };
         return [newState, LoadNoteText(noteLoading)];
@@ -380,7 +400,10 @@ export const handleNoteSelected = (
         noteList: {
           ...state.noteList,
           selectedNoteId: event.note.id,
-          editor: { state: EditorState.Inactive, draft: getDraft(event.note) },
+          editor: {
+            state: EditorState.ReadOnly,
+            text: getEffectiveText(event.note),
+          },
         },
       };
       return JustStateAuthenticated(newState);
@@ -418,17 +441,19 @@ export const handleLoadNoteTextSuccess = (
   event: LoadNoteTextSuccessEvent
 ): [AppStateAuthenticated, AppCommand] => {
   if (state.noteList.state == NoteListState.Retrieved) {
-    if (event.note.state == NoteState.Loading) {
-      const noteLoaded = noteLoadingToLoaded(event.note, event.text);
-      const newState: AppStateAuthenticated = {
-        ...state,
-        noteList: {
-          ...state.noteList,
-          notes: replace(state.noteList.notes, noteLoaded),
+    const noteLoaded = noteLoadingToLoaded(event.note, event.text);
+    const newState: AppStateAuthenticated = {
+      ...state,
+      noteList: {
+        ...state.noteList,
+        notes: replace(state.noteList.notes, noteLoaded),
+        editor: {
+          state: EditorState.ReadOnly,
+          text: getEffectiveText(noteLoaded),
         },
-      };
-      return JustStateAuthenticated(newState);
-    }
+      },
+    };
+    return JustStateAuthenticated(newState);
   }
 
   return JustStateAuthenticated(state);
@@ -439,17 +464,15 @@ export const handleFailedToLoadNote = (
   event: FailedToLoadNoteEvent
 ): [AppStateAuthenticated, AppCommand] => {
   if (state.noteList.state == NoteListState.Retrieved) {
-    if (event.note.state == NoteState.Loading) {
-      const noteFailedToLoad = noteLoadingToFailedToLoad(event.note, event.err);
-      const newState: AppStateAuthenticated = {
-        ...state,
-        noteList: {
-          ...state.noteList,
-          notes: replace(state.noteList.notes, noteFailedToLoad),
-        },
-      };
-      return JustStateAuthenticated(newState);
-    }
+    const noteFailedToLoad = noteLoadingToFailedToLoad(event.note, event.err);
+    const newState: AppStateAuthenticated = {
+      ...state,
+      noteList: {
+        ...state.noteList,
+        notes: replace(state.noteList.notes, noteFailedToLoad),
+      },
+    };
+    return JustStateAuthenticated(newState);
   }
 
   return JustStateAuthenticated(state);
@@ -548,19 +571,20 @@ export const handleEditNoteRequested = (
   event: EditNoteRequestedEvent
 ): [AppStateAuthenticated, AppCommand] => {
   if (state.noteList.state == NoteListState.Retrieved) {
-    if (state.noteList.editor.state == EditorState.Inactive) {
+    if (state.noteList.editor.state == EditorState.ReadOnly) {
       const newState: AppStateAuthenticated = {
         ...state,
         noteList: {
           ...state.noteList,
+          // Technically, defaultText could come from editor.text, as it was already set
           editor: isMarkdownNote(event.note)
             ? {
                 state: EditorState.EditingAsMarkdown,
-                draft: getDraft(event.note),
+                defaultText: getEffectiveText(event.note),
               }
             : {
                 state: EditorState.EditingAsPlainText,
-                draft: getDraft(event.note),
+                defaultText: getEffectiveText(event.note),
               },
         },
       };
@@ -572,8 +596,7 @@ export const handleEditNoteRequested = (
 };
 
 export const handleFailedToInitializeMarkdownEditor = (
-  state: AppStateAuthenticated,
-  event: FailedToInitializeMarkdownEditorEvent
+  state: AppStateAuthenticated
 ): [AppStateAuthenticated, AppCommand] => {
   if (state.noteList.state == NoteListState.Retrieved) {
     if (state.noteList.editor.state == EditorState.EditingAsMarkdown) {
@@ -583,7 +606,7 @@ export const handleFailedToInitializeMarkdownEditor = (
           ...state.noteList,
           editor: {
             state: EditorState.EditingAsPlainText,
-            draft: getDraft(event.note),
+            defaultText: state.noteList.editor.defaultText,
           },
         },
       };
@@ -595,22 +618,35 @@ export const handleFailedToInitializeMarkdownEditor = (
 };
 
 export const handleCancelNoteEditRequested = (
-  state: AppStateAuthenticated
+  state: AppStateAuthenticated,
+  event: CancelNoteEditRequestedEvent
 ): [AppStateAuthenticated, AppCommand] => {
   if (state.noteList.state == NoteListState.Retrieved) {
-    if (
-      state.noteList.editor.state == EditorState.EditingAsMarkdown ||
-      state.noteList.editor.state == EditorState.EditingAsPlainText
-    ) {
-      const newState: AppStateAuthenticated = {
-        ...state,
-        noteList: {
-          ...state.noteList,
-          // TODO: also remove from local storage
-          editor: { state: EditorState.Inactive, draft: None },
-        },
-      };
-      return JustStateAuthenticated(newState);
+    const note = getNote(state.noteList.notes, event.noteId);
+
+    if (note && note.state == NoteState.Loaded) {
+      if (
+        state.noteList.editor.state == EditorState.EditingAsMarkdown ||
+        state.noteList.editor.state == EditorState.EditingAsPlainText
+      ) {
+        const noteWithoutDraft: NoteLoaded = {
+          ...note,
+          draft: None,
+        };
+        const newState: AppStateAuthenticated = {
+          ...state,
+          noteList: {
+            ...state.noteList,
+            notes: replace(state.noteList.notes, noteWithoutDraft),
+            // TODO: remove from local storage
+            editor: {
+              state: EditorState.ReadOnly,
+              text: getEffectiveText(noteWithoutDraft),
+            },
+          },
+        };
+        return JustStateAuthenticated(newState);
+      }
     }
   }
 
@@ -634,17 +670,28 @@ export const handleNoteSaveTextRequested = (
             ...state.noteList,
             notes: replace(state.noteList.notes, noteSavingText),
             // TODO: clear draft in local storage
-            editor: { state: EditorState.Inactive, draft: None },
+            editor: {
+              state: EditorState.ReadOnly,
+              text: getEffectiveText(noteSavingText),
+            },
           },
         };
         return [newState, SaveNoteText(noteSavingText)];
       } else {
+        const noteWithoutDraft: NoteLoaded = {
+          ...note,
+          draft: None,
+        };
         const newState: AppStateAuthenticated = {
           ...state,
           noteList: {
             ...state.noteList,
+            notes: replace(state.noteList.notes, noteWithoutDraft),
             // TODO: clear draft in local storage
-            editor: { state: EditorState.Inactive, draft: None },
+            editor: {
+              state: EditorState.ReadOnly,
+              text: getEffectiveText(noteWithoutDraft),
+            },
           },
         };
         return JustStateAuthenticated(newState);
@@ -660,17 +707,29 @@ export const handleNoteSaveTextRequested = (
             ...state.noteList,
             notes: replace(state.noteList.notes, noteCreatingFromText),
             // TODO: clear draft in local storage
-            editor: { state: EditorState.Inactive, draft: None },
+            editor: {
+              state: EditorState.ReadOnly,
+              text: getEffectiveText(noteCreatingFromText),
+            },
           },
         };
         return [newState, CreateNewNoteWithText(noteCreatingFromText)];
       } else {
+        const noteWithoutDraft: NoteNew = {
+          ...note,
+          draft: None,
+        };
+        // TODO: maybe save it anyway
         const newState: AppStateAuthenticated = {
           ...state,
           noteList: {
             ...state.noteList,
+            notes: replace(state.noteList.notes, noteWithoutDraft),
             // TODO: clear draft in local storage
-            editor: { state: EditorState.Inactive, draft: None },
+            editor: {
+              state: EditorState.ReadOnly,
+              text: getEffectiveText(noteWithoutDraft),
+            },
           },
         };
         return JustStateAuthenticated(newState);
@@ -701,6 +760,40 @@ export const handleNoteTextSaved = (
     }
   }
 
+  return JustStateAuthenticated(state);
+};
+
+export const handleEditorCurrentStateReport = (
+  state: AppStateAuthenticated,
+  event: EditorCurrentStateReportEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const note = getNote(state.noteList.notes, event.noteId);
+
+    // TODO: all states (basically, new)
+    if (note && note.state == NoteState.Loaded) {
+      let noteUpdated: NoteLoaded;
+      if (note.text != event.text) {
+        noteUpdated = {
+          ...note,
+          draft: Some(event.text),
+        };
+      } else {
+        noteUpdated = {
+          ...note,
+          draft: None,
+        };
+      }
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteUpdated),
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+  }
   return JustStateAuthenticated(state);
 };
 
@@ -738,7 +831,7 @@ export const handleCreateNoteRequested = (
       state.noteList.lastUsedNoteId + 1,
       // TODO: this is a side effect, proper way to do it would be by creating this note in a command
       new Date(),
-      // TODO: restore draft
+      // TODO: restore draft, another reason to do it with command
       None
     );
     const newState: AppStateAuthenticated = {
@@ -748,7 +841,10 @@ export const handleCreateNoteRequested = (
         lastUsedNoteId: state.noteList.lastUsedNoteId + 1,
         notes: [newNote, ...state.noteList.notes],
         selectedNoteId: newNote.id,
-        editor: { state: EditorState.Inactive, draft: None },
+        editor: {
+          state: EditorState.ReadOnly,
+          text: getEffectiveText(newNote),
+        },
       },
     };
     return JustStateAuthenticated(newState);
@@ -854,6 +950,11 @@ export const handleDeleteNoteRequested = (
         noteList: {
           ...state.noteList,
           notes: replace(state.noteList.notes, noteDeleting),
+          // TODO: remove from local storage
+          editor: {
+            state: EditorState.ReadOnly,
+            text: getEffectiveText(noteDeleting),
+          },
         },
       };
       return [newState, DeleteNote(noteDeleting)];
@@ -865,6 +966,10 @@ export const handleDeleteNoteRequested = (
         noteList: {
           ...state.noteList,
           notes: state.noteList.notes.filter((x) => x.id != note.id),
+          selectedNoteId: "",
+          editor: {
+            state: EditorState.Inactive,
+          },
         },
       };
       return JustStateAuthenticated(newState);
@@ -1031,6 +1136,7 @@ export const handleConvertToMarkdownRequested = (
           notes: replace(state.noteList.notes, noteConvertingToMarkdown),
         },
       };
+      // TODO: here we are losing draft
       return [newState, ConvertToMarkdown(noteConvertingToMarkdown)];
     }
   }
@@ -1101,7 +1207,7 @@ export const handleSwitchEditorToMarkdownRequested = (
           ...state.noteList,
           editor: {
             state: EditorState.EditingAsMarkdown,
-            draft: Some(event.text),
+            defaultText: event.text,
           },
         },
       };
@@ -1124,7 +1230,7 @@ export const handleSwitchEditorToTextRequested = (
           ...state.noteList,
           editor: {
             state: EditorState.EditingAsPlainText,
-            draft: Some(event.text),
+            defaultText: event.text,
           },
         },
       };
