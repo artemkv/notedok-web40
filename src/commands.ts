@@ -5,6 +5,7 @@ import {
   NoteCreatingFromText,
   NoteCreatingFromTitle,
   NoteDeleting,
+  NoteLoaded,
   NoteLoading,
   NoteRenaming,
   NoteRestoring,
@@ -25,6 +26,8 @@ export enum CommandType {
   SaveNoteText,
   DeleteNote,
   RestoreNote,
+
+  UpdateNoteDraft,
 
   ConvertToMarkdown,
 }
@@ -86,6 +89,11 @@ export interface RestoreNoteCommand extends Command<AppEvent> {
   note: NoteRestoring;
 }
 
+export interface UpdateNoteDraftCommand extends Command<AppEvent> {
+  type: CommandType.UpdateNoteDraft;
+  note: NoteLoaded; // TODO: or new
+}
+
 export interface ConvertToMarkdownCommand extends Command<AppEvent> {
   type: CommandType.ConvertToMarkdown;
   note: NoteConvertingToMarkdown;
@@ -104,6 +112,7 @@ export type AppCommand =
   | SaveNoteTextCommand
   | DeleteNoteCommand
   | RestoreNoteCommand
+  | UpdateNoteDraftCommand
   | ConvertToMarkdownCommand;
 
 export const DoNothing: DoNothingCommand = {

@@ -1,5 +1,6 @@
 import { AppCommand, DoMany, DoNothing } from "./commands";
 import { ScheduleIdTokenRefresh, StartUserSession } from "./commands/auth";
+import { UpdateNoteDraft } from "./commands/draftStorage";
 import {
   ConvertToMarkdown,
   CreateNewNoteWithText,
@@ -792,7 +793,7 @@ export const handleEditorCurrentStateReport = (
           notes: replace(state.noteList.notes, noteUpdated),
         },
       };
-      return JustStateAuthenticated(newState);
+      return [newState, UpdateNoteDraft(noteUpdated)];
     }
   }
   return JustStateAuthenticated(state);
