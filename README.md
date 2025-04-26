@@ -25,6 +25,10 @@ _This is a port of a project I started back in 2013, so you can still find some 
 - The app state is managed using custom-made `src\hooks\useReducer.ts` hook. The reason to use custom hook is that I like the Elm model where reducer spits out new state and command, and the existing `useReducer` only returns the new state. I don't like thunks and stuff like that
 - The app state lives in `src\AppStatefulContainer.tsx`, the uppermost component
 
+## Note Editor state transition diagram
+
+![editor model](editor_states.png "Editor model")
+
 ## Running the app
 
 Development
