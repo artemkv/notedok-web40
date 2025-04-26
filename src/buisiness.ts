@@ -262,6 +262,20 @@ export const canConvertToMarkdown = (note: Note) => {
   return false;
 };
 
+export const getNoteKey = (note: Note) => {
+  if (
+    note.state == NoteState.New ||
+    note.state == NoteState.CreatingFromTitle ||
+    note.state == NoteState.FailedToCreateFromTitle ||
+    note.state == NoteState.CreatingFromText ||
+    note.state == NoteState.FailedToCreateFromText
+  ) {
+    return note.lastModified.getTime().toString();
+  }
+
+  return note.path;
+};
+
 export const JustStateAuthenticated = (
   state: AppStateAuthenticated
 ): [AppStateAuthenticated, AppCommand] => [state, DoNothing];
@@ -655,7 +669,7 @@ export const handleCancelNoteEditRequested = (
             },
           },
         };
-        return [newState, DiscardNoteDraft(noteWithoutDraft.path)];
+        return [newState, DiscardNoteDraft(getNoteKey(noteWithoutDraft))];
       }
     }
   }
@@ -688,7 +702,7 @@ export const handleNoteSaveTextRequested = (
         return [
           newState,
           DoMany([
-            DiscardNoteDraft(noteSavingText.path),
+            DiscardNoteDraft(getNoteKey(noteSavingText)),
             SaveNoteText(noteSavingText),
           ]),
         ];
@@ -708,7 +722,7 @@ export const handleNoteSaveTextRequested = (
             },
           },
         };
-        return [newState, DiscardNoteDraft(noteWithoutDraft.path)];
+        return [newState, DiscardNoteDraft(getNoteKey(noteWithoutDraft))];
       }
     }
 
@@ -805,7 +819,10 @@ export const handleEditorCurrentStateReport = (
           notes: replace(state.noteList.notes, noteUpdated),
         },
       };
-      return [newState, UpdateNoteDraft(noteUpdated.path, noteUpdated.draft)];
+      return [
+        newState,
+        UpdateNoteDraft(getNoteKey(noteUpdated), noteUpdated.draft),
+      ];
     }
   }
   return JustStateAuthenticated(state);
@@ -835,7 +852,7 @@ export const handleDiscardNoteDraftRequested = (
             },
           },
         };
-        return [newState, DiscardNoteDraft(note.path)];
+        return [newState, DiscardNoteDraft(getNoteKey(note))];
       }
     }
   }
