@@ -36,6 +36,7 @@ import {
   renameFile,
 } from "../sessionapi";
 import { wiki2md } from "../wikitomd";
+import { loadDrafts } from "./draftStorage";
 
 interface FileData {
   fileName: string;
@@ -89,12 +90,16 @@ export const RetrieveFileList = (): RetrieveFileListCommand => ({
         files = [...files, ...mapToFiles(getFilesResponse.files)];
       }
 
+      // Combine with drafts here for simplicity
+      const drafts = loadDrafts();
+
       dispatch({
         type: EventType.RetrieveFileListSuccess,
         fileList: files.map((f) => ({
           fileName: f.fileName,
           lastModified: f.lastModified,
         })),
+        drafts,
       });
     } catch (err) {
       dispatch({

@@ -1,11 +1,11 @@
 import { AppEvent } from "./events";
 import { Command } from "./hooks/useReducer";
 import {
+  Maybe,
   NoteConvertingToMarkdown,
   NoteCreatingFromText,
   NoteCreatingFromTitle,
   NoteDeleting,
-  NoteLoaded,
   NoteLoading,
   NoteRenaming,
   NoteRestoring,
@@ -91,7 +91,8 @@ export interface RestoreNoteCommand extends Command<AppEvent> {
 
 export interface UpdateNoteDraftCommand extends Command<AppEvent> {
   type: CommandType.UpdateNoteDraft;
-  note: NoteLoaded; // TODO: or new
+  key: string;
+  draft: Maybe<string>;
 }
 
 export interface ConvertToMarkdownCommand extends Command<AppEvent> {

@@ -1,4 +1,4 @@
-import { Note, NoteLoading, SortingOrder } from "./model";
+import { Drafts, Note, NoteLoading, SortingOrder } from "./model";
 
 export enum EventType {
   // "Never" event is never triggered in the app
@@ -80,6 +80,7 @@ export type FileInfo = {
 export interface RetrieveFileListSuccessEvent {
   type: EventType.RetrieveFileListSuccess;
   fileList: FileInfo[];
+  drafts: Drafts;
 }
 
 export interface FailedToRetrieveFileListEvent {

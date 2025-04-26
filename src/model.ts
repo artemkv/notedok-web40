@@ -50,8 +50,6 @@ export enum NoteState {
   FailedToConvertToMarkdown,
 }
 
-// TODO: make draft optional
-
 export interface NoteRef {
   state: NoteState.Ref;
 
@@ -328,6 +326,12 @@ export type Editor =
   | EditorReadOnly
   | EditorEditingAsMarkdown
   | EditorEditingAsPlainText;
+
+// Draft
+
+export interface Drafts {
+  [key: string]: string;
+}
 
 // Note List
 

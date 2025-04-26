@@ -296,10 +296,19 @@ export const handleRetrieveFileListSuccess = (
       state: NoteListState.Retrieved,
       lastUsedNoteId: event.fileList.length - 1,
       notes: sort(
-        event.fileList.map((f, idx) =>
-          // TODO: restore draft
-          createNewNoteRef(idx, f.fileName, f.lastModified, None)
-        ),
+        event.fileList.map((f, idx) => {
+          const noteRef = createNewNoteRef(
+            idx,
+            f.fileName,
+            f.lastModified,
+            None
+          );
+          // restore draft, if exists
+          if (noteRef.path in event.drafts) {
+            noteRef.draft = Some(event.drafts[noteRef.path]);
+          }
+          return noteRef;
+        }),
         SortingOrder.Alphabetic
       ),
       sortingOrder: SortingOrder.Alphabetic,
@@ -793,7 +802,7 @@ export const handleEditorCurrentStateReport = (
           notes: replace(state.noteList.notes, noteUpdated),
         },
       };
-      return [newState, UpdateNoteDraft(noteUpdated)];
+      return [newState, UpdateNoteDraft(noteUpdated.path, noteUpdated.draft)];
     }
   }
   return JustStateAuthenticated(state);
