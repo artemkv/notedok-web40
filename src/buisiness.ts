@@ -801,10 +801,35 @@ export const handleEditorCurrentStateReport = (
   if (state.noteList.state == NoteListState.Retrieved) {
     const note = getNote(state.noteList.notes, event.noteId);
 
-    // TODO: all states (basically, new)
     if (note && note.state == NoteState.Loaded) {
       let noteUpdated: NoteLoaded;
       if (note.text != event.text) {
+        noteUpdated = {
+          ...note,
+          draft: Some(event.text),
+        };
+      } else {
+        noteUpdated = {
+          ...note,
+          draft: None,
+        };
+      }
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteUpdated),
+        },
+      };
+      return [
+        newState,
+        UpdateNoteDraft(getNoteKey(noteUpdated), noteUpdated.draft),
+      ];
+    }
+
+    if (note && note.state == NoteState.New) {
+      let noteUpdated: NoteNew;
+      if (event.text != "") {
         noteUpdated = {
           ...note,
           draft: Some(event.text),
@@ -838,9 +863,28 @@ export const handleDiscardNoteDraftRequested = (
   if (state.noteList.state == NoteListState.Retrieved) {
     const note = getNote(state.noteList.notes, event.noteId);
 
-    if (note && note.state == NoteState.Loaded) {
-      if (state.noteList.editor.state == EditorState.ReadOnly) {
+    if (state.noteList.editor.state == EditorState.ReadOnly) {
+      if (note && note.state == NoteState.Loaded) {
         const noteWithoutDraft: NoteLoaded = {
+          ...note,
+          draft: None,
+        };
+        const newState: AppStateAuthenticated = {
+          ...state,
+          noteList: {
+            ...state.noteList,
+            notes: replace(state.noteList.notes, noteWithoutDraft),
+            editor: {
+              state: EditorState.ReadOnly,
+              text: getEffectiveText(noteWithoutDraft),
+            },
+          },
+        };
+        return [newState, DiscardNoteDraft(getNoteKey(note))];
+      }
+
+      if (note && note.state == NoteState.New) {
+        const noteWithoutDraft: NoteNew = {
           ...note,
           draft: None,
         };
