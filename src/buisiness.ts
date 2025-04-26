@@ -679,14 +679,19 @@ export const handleNoteSaveTextRequested = (
           noteList: {
             ...state.noteList,
             notes: replace(state.noteList.notes, noteSavingText),
-            // TODO: clear draft in local storage
             editor: {
               state: EditorState.ReadOnly,
               text: getEffectiveText(noteSavingText),
             },
           },
         };
-        return [newState, SaveNoteText(noteSavingText)];
+        return [
+          newState,
+          DoMany([
+            DiscardNoteDraft(noteSavingText.path),
+            SaveNoteText(noteSavingText),
+          ]),
+        ];
       } else {
         const noteWithoutDraft: NoteLoaded = {
           ...note,
@@ -697,14 +702,13 @@ export const handleNoteSaveTextRequested = (
           noteList: {
             ...state.noteList,
             notes: replace(state.noteList.notes, noteWithoutDraft),
-            // TODO: clear draft in local storage
             editor: {
               state: EditorState.ReadOnly,
               text: getEffectiveText(noteWithoutDraft),
             },
           },
         };
-        return JustStateAuthenticated(newState);
+        return [newState, DiscardNoteDraft(noteWithoutDraft.path)];
       }
     }
 
