@@ -1,0 +1,29 @@
+.draft-control {
+    font-size: 13px;
+    margin-left: 4px;
+    margin-right: 16px;
+    color: var(--text-color);
+}
+
+.draft-control-button {
+    margin: 0px 4px;
+    color: var(--tech-color);
+    background-color: white;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.draft-control-text {
+    margin: 0px 4px;
+    color: var(--text-color);
+}
+
+.draft-control-button:hover {
+    color: var(--text-color);
+}
+
+.draft-control-button:focus {
+    color: var(--text-color);
+}

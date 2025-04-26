@@ -37,6 +37,7 @@ export enum EventType {
   FailedToCreateNoteFromText,
 
   EditorCurrentStateReport,
+  DiscardNoteDraftRequested,
 
   DeleteNoteRequested,
   NoteDeleted,
@@ -197,6 +198,11 @@ export interface EditorCurrentStateReportEvent {
   text: string;
 }
 
+export interface DiscardNoteDraftRequestedEvent {
+  type: EventType.DiscardNoteDraftRequested;
+  noteId: string;
+}
+
 export interface DeleteNoteRequestedEvent {
   type: EventType.DeleteNoteRequested;
   noteId: string;
@@ -299,6 +305,7 @@ export type AppEvent =
   | FailedToCreateNoteFromTitleEvent
   | FailedToCreateNoteFromTextEvent
   | EditorCurrentStateReportEvent
+  | DiscardNoteDraftRequestedEvent
   | DeleteNoteRequestedEvent
   | NoteDeletedEvent
   | FailedToDeleteNoteEvent

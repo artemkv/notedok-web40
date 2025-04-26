@@ -3,6 +3,7 @@ import uistrings from "../uistrings";
 import OrbitProgressIndicator from "./OrbitProgressIndicator";
 import { memo } from "react";
 import FormatSwitch from "./FormatSwitch";
+import DraftControl from "./DraftControl";
 
 const ControlPanel = memo(function ControlPanel(props: {
   showNew: boolean;
@@ -31,6 +32,9 @@ const ControlPanel = memo(function ControlPanel(props: {
   showFormatSwitch: boolean;
   isFormatMarkdown: boolean;
   onFormatSwitch: (isMarkdown: boolean) => void;
+
+  hasDraft: boolean;
+  onDiscardDraft: () => void;
 }) {
   const showNew = props.showNew;
   const onNew = props.onNew;
@@ -50,6 +54,8 @@ const ControlPanel = memo(function ControlPanel(props: {
   const showFormatSwitch = props.showFormatSwitch;
   const isFormatMarkdown = props.isFormatMarkdown;
   const onFormatSwitch = props.onFormatSwitch;
+  const hasDraft = props.hasDraft;
+  const onDiscardDraft = props.onDiscardDraft;
 
   const newButtonOnClick = () => {
     onNew();
@@ -90,6 +96,7 @@ const ControlPanel = memo(function ControlPanel(props: {
           ) : null}
         </div>
         <div className="control-panel-right">
+          {hasDraft ? <DraftControl onDiscardDraft={onDiscardDraft} /> : null}
           {showConvertToMarkdown ? (
             <button
               className="control-panel-button"

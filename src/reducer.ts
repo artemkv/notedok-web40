@@ -3,6 +3,7 @@ import {
   handleConvertToMarkdownRequested,
   handleCreateNoteRequested,
   handleDeleteNoteRequested,
+  handleDiscardNoteDraftRequested,
   handleEditNoteRequested,
   handleEditorCurrentStateReport,
   handleFailedToCreateNoteFromText,
@@ -138,10 +139,10 @@ export const Reducer = (
     }
 
     if (event.type == EventType.EditorCurrentStateReport) {
-      // TODO: remove
-      // console.log("SAVED");
-      // return JustState(state);
       return handleEditorCurrentStateReport(state, event);
+    }
+    if (event.type == EventType.DiscardNoteDraftRequested) {
+      return handleDiscardNoteDraftRequested(state, event);
     }
 
     if (event.type == EventType.DeleteNoteRequested) {

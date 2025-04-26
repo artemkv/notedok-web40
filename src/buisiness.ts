@@ -16,6 +16,7 @@ import {
   CancelNoteEditRequestedEvent,
   ConvertToMarkdownRequestedEvent,
   DeleteNoteRequestedEvent,
+  DiscardNoteDraftRequestedEvent,
   DiscardNoteErrorRequestedEvent,
   EditNoteRequestedEvent,
   EditorCurrentStateReportEvent,
@@ -794,6 +795,39 @@ export const handleEditorCurrentStateReport = (
       return JustStateAuthenticated(newState);
     }
   }
+  return JustStateAuthenticated(state);
+};
+
+export const handleDiscardNoteDraftRequested = (
+  state: AppStateAuthenticated,
+  event: DiscardNoteDraftRequestedEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const note = getNote(state.noteList.notes, event.noteId);
+
+    if (note && note.state == NoteState.Loaded) {
+      if (state.noteList.editor.state == EditorState.ReadOnly) {
+        const noteWithoutDraft: NoteLoaded = {
+          ...note,
+          draft: None,
+        };
+        const newState: AppStateAuthenticated = {
+          ...state,
+          noteList: {
+            ...state.noteList,
+            notes: replace(state.noteList.notes, noteWithoutDraft),
+            // TODO: remove from local storage
+            editor: {
+              state: EditorState.ReadOnly,
+              text: getEffectiveText(noteWithoutDraft),
+            },
+          },
+        };
+        return JustStateAuthenticated(newState);
+      }
+    }
+  }
+
   return JustStateAuthenticated(state);
 };
 

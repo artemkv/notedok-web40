@@ -16,6 +16,8 @@ const uistrings = {
   ConvertToMarkdownButtonText: "→.md",
   AsTextButtonText: "Text",
   AsMarkdownButtonText: "Markdown",
+  DraftText: "Unsaved Draft",
+  DiscardDraftButtonText: "Discard",
 };
 
 export default uistrings;

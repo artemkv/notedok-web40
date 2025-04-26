@@ -1,10 +1,10 @@
 import "./NoteListItem.css";
 import { AppEvent, EventType } from "../events";
 import { Dispatch } from "../hooks/useReducer";
-import { Note, NoteState } from "../model";
+import { MaybeType, Note, NoteState } from "../model";
 import OrbitProgressIndicator from "./OrbitProgressIndicator";
 import ErrorIcon from "../assets/error_outline.svg";
-import { getEffectiveTitle, isMarkdownNote } from "../buisiness";
+import { getDraft, getEffectiveTitle, isMarkdownNote } from "../buisiness";
 import uistrings from "../uistrings";
 import { memo } from "react";
 
@@ -49,6 +49,8 @@ const NoteListItem = memo(function NoteListItem(props: {
     }
     return [false, ""];
   })();
+
+  const hasDraft = getDraft(note).type == MaybeType.Some;
 
   const placeholderText = (note: Note) => {
     if (note.state == NoteState.New) {
@@ -105,6 +107,7 @@ const NoteListItem = memo(function NoteListItem(props: {
   return (
     <div className="note-list-item-container" id={note.id}>
       <div className={className} onClick={() => onNoteSelected(note)}>
+        {hasDraft ? "• " : ""}
         {getEffectiveTitle(note) !== ""
           ? getEffectiveTitle(note)
           : placeholderText(note)}

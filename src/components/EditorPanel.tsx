@@ -1,6 +1,6 @@
 import "./EditorPanel.css";
 import "github-markdown-css";
-import { Editor, EditorState, Note, NoteState } from "../model";
+import { Editor, EditorState, MaybeType, Note, NoteState } from "../model";
 import ProgressIndicator from "./ProgressIndicator";
 import { MilkdownProvider } from "@milkdown/react";
 import MilkdownEditor from "./MilkdownEditor";
@@ -11,6 +11,7 @@ import {
   canDelete,
   canEdit,
   canRestore,
+  getDraft,
   getEffectiveTitle,
   isMarkdownNote,
   isTitleEditable,
@@ -64,6 +65,8 @@ const EditorPanel = memo(function EditorPanel(props: {
           showProgress={false}
           showFormatSwitch={false}
           isFormatMarkdown={false}
+          hasDraft={false}
+          onDiscardDraft={() => {}}
         />
         <div className="editor-panel"></div>
       </>
@@ -96,6 +99,8 @@ const EditorPanel = memo(function EditorPanel(props: {
           showProgress={false}
           showFormatSwitch={false}
           isFormatMarkdown={false}
+          hasDraft={false}
+          onDiscardDraft={() => {}}
         />
         <div className="editor-panel">
           <ProgressIndicator />
@@ -126,6 +131,8 @@ const EditorPanel = memo(function EditorPanel(props: {
           showProgress={false}
           showFormatSwitch={false}
           isFormatMarkdown={false}
+          hasDraft={false}
+          onDiscardDraft={() => {}}
         />
         <ErrorLoadingNote noteId={note.id} err={note.err} dispatch={dispatch} />
       </>
@@ -265,6 +272,13 @@ const EditorPanel = memo(function EditorPanel(props: {
     }
   };
 
+  const onDiscardDraft = () => {
+    dispatch({
+      type: EventType.DiscardNoteDraftRequested,
+      noteId: note.id,
+    });
+  };
+
   // Implementation note: editor part is fully initialized in business
   // and does not depend on the note; this creates a specific place where the state
   // is transferred from the note to the editor, detaching the latter from the note
@@ -386,6 +400,8 @@ const EditorPanel = memo(function EditorPanel(props: {
       return [false, ""];
     })();
 
+    const hasDraft = getDraft(note).type == MaybeType.Some;
+
     return (
       <>
         <ControlPanel
@@ -419,6 +435,8 @@ const EditorPanel = memo(function EditorPanel(props: {
               editor.state == EditorState.EditingAsPlainText)
           }
           isFormatMarkdown={editor.state == EditorState.EditingAsMarkdown}
+          hasDraft={hasDraft && editor.state == EditorState.ReadOnly}
+          onDiscardDraft={onDiscardDraft}
         />
         <div className="editor-panel">
           <div id="editor" className="editor-panel-editor">
