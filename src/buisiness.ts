@@ -270,6 +270,9 @@ export const getNoteKey = (note: Note) => {
     note.state == NoteState.CreatingFromText ||
     note.state == NoteState.FailedToCreateFromText
   ) {
+    // If this is not enough I could add some randomness here
+    // Or simply use noteid
+    // This is only going to be used upon reloading the page
     return note.lastModified.getTime().toString();
   }
 
@@ -894,9 +897,9 @@ export const handleCreateNoteRequested = (
       state.noteList.lastUsedNoteId + 1,
       // TODO: this is a side effect, proper way to do it would be by creating this note in a command
       new Date(),
-      // TODO: restore draft, another reason to do it with command
       None
     );
+    console.log(newNote.lastModified.getTime());
     const newState: AppStateAuthenticated = {
       ...state,
       noteList: {
