@@ -1,6 +1,6 @@
 import { AppCommand, DoMany, DoNothing } from "./commands";
 import { ScheduleIdTokenRefresh, StartUserSession } from "./commands/auth";
-import { UpdateNoteDraft } from "./commands/draftStorage";
+import { DiscardNoteDraft, UpdateNoteDraft } from "./commands/draftStorage";
 import {
   ConvertToMarkdown,
   CreateNewNoteWithText,
@@ -649,14 +649,13 @@ export const handleCancelNoteEditRequested = (
           noteList: {
             ...state.noteList,
             notes: replace(state.noteList.notes, noteWithoutDraft),
-            // TODO: remove from local storage
             editor: {
               state: EditorState.ReadOnly,
               text: getEffectiveText(noteWithoutDraft),
             },
           },
         };
-        return JustStateAuthenticated(newState);
+        return [newState, DiscardNoteDraft(noteWithoutDraft.path)];
       }
     }
   }
@@ -826,14 +825,13 @@ export const handleDiscardNoteDraftRequested = (
           noteList: {
             ...state.noteList,
             notes: replace(state.noteList.notes, noteWithoutDraft),
-            // TODO: remove from local storage
             editor: {
               state: EditorState.ReadOnly,
               text: getEffectiveText(noteWithoutDraft),
             },
           },
         };
-        return JustStateAuthenticated(newState);
+        return [newState, DiscardNoteDraft(note.path)];
       }
     }
   }

@@ -1,4 +1,8 @@
-import { CommandType, UpdateNoteDraftCommand } from "../commands";
+import {
+  CommandType,
+  DiscardNoteDraftCommand,
+  UpdateNoteDraftCommand,
+} from "../commands";
 import { Drafts, Maybe, MaybeType } from "../model";
 
 const draftsKey = "notedok.com/drafts";
@@ -36,5 +40,15 @@ export const UpdateNoteDraft = (
       delete drafts[key];
       saveDrafts(drafts);
     }
+  },
+});
+
+export const DiscardNoteDraft = (key: string): DiscardNoteDraftCommand => ({
+  type: CommandType.DiscardNoteDraft,
+  key,
+  execute: async () => {
+    const drafts = loadDrafts();
+    delete drafts[key];
+    saveDrafts(drafts);
   },
 });
