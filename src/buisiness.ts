@@ -1016,17 +1016,23 @@ export const handleDeleteNoteRequested = (
         noteList: {
           ...state.noteList,
           notes: replace(state.noteList.notes, noteDeleting),
-          // TODO: remove from local storage
           editor: {
             state: EditorState.ReadOnly,
             text: getEffectiveText(noteDeleting),
           },
         },
       };
-      return [newState, DeleteNote(noteDeleting)];
+      return [
+        newState,
+        DoMany([
+          DiscardNoteDraft(getNoteKey(noteDeleting)),
+          DeleteNote(noteDeleting),
+        ]),
+      ];
     }
 
     if (note && note.state == NoteState.New) {
+      // TODO: remove from local storage
       const newState: AppStateAuthenticated = {
         ...state,
         noteList: {
