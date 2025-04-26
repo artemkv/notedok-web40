@@ -1,6 +1,6 @@
 import { memo, useEffect } from "react";
 
-const SAVE_DRAFT_INTERVAL = 1000; // TODO:
+const SAVE_DRAFT_INTERVAL = 3000;
 
 const IntervalTrigger = memo(function OrbitProgressIndicator(props: {
   callback: () => void;
