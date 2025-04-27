@@ -99,8 +99,7 @@ V1.0
 
 ---
 
-
-Saving draft:
+V 1.3 Saving draft:
 
 - --When you start editing note, the editor reports current state every 5 seconds--
 - --If there are changes, this triggers command that saves those changes into the local storage--
@@ -124,6 +123,22 @@ Saving draft:
 - --As soon as you request to delete a note, all the unsaved changes are lost--
 - --Draft is also deleted when you create a new note by editing a title--
 - --When note has draft, option to convert to markdown is not available--
+
+---
+
+V 1.4 Allow creating text notes
+
+- --New button splits into Text and Markdown--
+- --Update event to carry that information to business--
+- --Add the property on new note model--
+- --Business initializes it from the event--
+- --When command is triggered to create note from text or title, it uses the flag--
+- --New note should be recognized by the editor to be in a correct format--
+- --Draft should remember the format it was saved in--
+
+Lower priority
+- Allow conversion to text from markdown (content stays as is, only for existing note)
+- Re-think how the format is indicated in UI
 
 
 Later versions:

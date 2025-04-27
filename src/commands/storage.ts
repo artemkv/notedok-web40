@@ -21,6 +21,7 @@ import {
   NoteCreatingFromText,
   NoteCreatingFromTitle,
   NoteDeleting,
+  NoteFormat,
   NoteLoading,
   NoteRenaming,
   NoteRestoring,
@@ -202,15 +203,18 @@ export const SaveNoteText = (note: NoteSavingText): SaveNoteTextCommand => ({
   },
 });
 
-// New notes are created as .md
 export const CreateNewNoteWithTitle = (
   note: NoteCreatingFromTitle
 ): CreateNewNoteWithTitleCommand => ({
   type: CommandType.CreateNewNoteWithTitle,
   note,
   execute: async (dispatch) => {
+    const isMarkdown = note.format == NoteFormat.Markdown;
+
     // Title is not empty, ensured by business, so we first try to store with path derived from the title
-    const path = generatePathFromTitleMd(note.title, false);
+    const path = isMarkdown
+      ? generatePathFromTitleMd(note.title, false)
+      : generatePathFromTitleText(note.title, false);
     try {
       // Don't overwrite, in case not unique
       await postFile(path, encode(""));
@@ -222,7 +226,9 @@ export const CreateNewNoteWithTitle = (
     } catch (err) {
       if ((err as ApiError).statusCode === 409) {
         // Regenerate path from title, this time enfocing uniqueness
-        const newPath = generatePathFromTitleMd(note.title, true);
+        const newPath = isMarkdown
+          ? generatePathFromTitleMd(note.title, true)
+          : generatePathFromTitleText(note.title, true);
         try {
           await putFile(newPath, encode(""));
           dispatch({
@@ -248,16 +254,19 @@ export const CreateNewNoteWithTitle = (
   },
 });
 
-// New notes are created as .md
 export const CreateNewNoteWithText = (
   note: NoteCreatingFromText
 ): CreateNewNoteWithTextCommand => ({
   type: CommandType.CreateNewNoteWithText,
   note,
   execute: async (dispatch) => {
+    const isMarkdown = note.format == NoteFormat.Markdown;
+
     // Here we know that title is empty, so no need to even try storing it with an original path
     // Immediately ask for a unique (empty) path
-    const path = generatePathFromTitleMd("", true);
+    const path = isMarkdown
+      ? generatePathFromTitleMd("", true)
+      : generatePathFromTitleText("", true);
     try {
       await putFile(path, encode(note.text));
       dispatch({

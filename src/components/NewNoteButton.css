@@ -1,0 +1,30 @@
+.format-selector {
+    font-size: 13px;
+    margin-left: 4px;
+    margin-right: 16px;
+    color: var(--tech-color);
+}
+
+.format-selector-button {
+    margin: 0px 4px;
+    padding: 4px 0px 4px 0px;
+    color: var(--tech-color);
+    background-color: white;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.format-selector-text {
+    margin: 0px 4px;
+    color: var(--text-color);
+}
+
+.format-selector-button:hover {
+    color: var(--text-color);
+}
+
+.format-selector-button:focus {
+    color: var(--text-color);
+}

@@ -1,6 +1,13 @@
 import "./EditorPanel.css";
 import "github-markdown-css";
-import { Editor, EditorState, MaybeType, Note, NoteState } from "../model";
+import {
+  Editor,
+  EditorState,
+  MaybeType,
+  Note,
+  NoteFormat,
+  NoteState,
+} from "../model";
 import ProgressIndicator from "./ProgressIndicator";
 import { MilkdownProvider } from "@milkdown/react";
 import MilkdownEditor from "./MilkdownEditor";
@@ -37,9 +44,10 @@ const EditorPanel = memo(function EditorPanel(props: {
   const getMarkdownRef = useRef({ getMarkdown: () => undefined });
   const getTextRef = useRef({ getText: () => undefined });
 
-  const onNew = () => {
+  const onNew = (format: NoteFormat) => {
     dispatch({
       type: EventType.CreateNoteRequested,
+      format,
     });
   };
 

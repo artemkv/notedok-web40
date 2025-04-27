@@ -6,6 +6,7 @@ import {
   NoteCreatingFromText,
   NoteCreatingFromTitle,
   NoteDeleting,
+  NoteFormat,
   NoteLoading,
   NoteRenaming,
   NoteRestoring,
@@ -27,8 +28,10 @@ export enum CommandType {
   DeleteNote,
   RestoreNote,
 
-  UpdateNoteDraft,
-  UpdateNoteDraftKey,
+  UpdateExistingNoteDraft,
+  UpdateNewNoteDraft,
+  UpdateNoteDraftOnRename,
+  UpdateNoteDraftOnCreate,
   DiscardNoteDraft,
 
   ConvertToMarkdown,
@@ -91,18 +94,30 @@ export interface RestoreNoteCommand extends Command<AppEvent> {
   note: NoteRestoring;
 }
 
-export interface UpdateNoteDraftCommand extends Command<AppEvent> {
-  type: CommandType.UpdateNoteDraft;
+export interface UpdateExistingNoteDraftCommand extends Command<AppEvent> {
+  type: CommandType.UpdateExistingNoteDraft;
   key: string;
-  isNewNote: boolean;
   draft: Maybe<string>;
 }
 
-export interface UpdateNoteDraftKeyCommand extends Command<AppEvent> {
-  type: CommandType.UpdateNoteDraftKey;
+export interface UpdateNewNoteDraftCommand extends Command<AppEvent> {
+  type: CommandType.UpdateNewNoteDraft;
+  key: string;
+  timestamp: number;
+  format: NoteFormat;
+  draft: Maybe<string>;
+}
+
+export interface UpdateNoteDraftOnRenameCommand extends Command<AppEvent> {
+  type: CommandType.UpdateNoteDraftOnRename;
   oldKey: string;
   newKey: string;
-  isNewNote: boolean;
+}
+
+export interface UpdateNoteDraftOnCreateCommand extends Command<AppEvent> {
+  type: CommandType.UpdateNoteDraftOnCreate;
+  oldKey: string;
+  newKey: string;
 }
 
 export interface DiscardNoteDraftCommand extends Command<AppEvent> {
@@ -129,8 +144,10 @@ export type AppCommand =
   | SaveNoteTextCommand
   | DeleteNoteCommand
   | RestoreNoteCommand
-  | UpdateNoteDraftCommand
-  | UpdateNoteDraftKeyCommand
+  | UpdateExistingNoteDraftCommand
+  | UpdateNewNoteDraftCommand
+  | UpdateNoteDraftOnRenameCommand
+  | UpdateNoteDraftOnCreateCommand
   | DiscardNoteDraftCommand
   | ConvertToMarkdownCommand;
 

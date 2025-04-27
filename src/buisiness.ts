@@ -2,8 +2,10 @@ import { AppCommand, DoMany, DoNothing } from "./commands";
 import { ScheduleIdTokenRefresh, StartUserSession } from "./commands/auth";
 import {
   DiscardNoteDraft,
-  UpdateNoteDraft,
-  UpdateNoteDraftKey,
+  UpdateExistingNoteDraft,
+  UpdateNewNoteDraft,
+  UpdateNoteDraftOnCreate,
+  UpdateNoteDraftOnRename,
 } from "./commands/draftStorage";
 import {
   ConvertToMarkdown,
@@ -20,6 +22,7 @@ import { isMarkdownFile } from "./conversion";
 import {
   CancelNoteEditRequestedEvent,
   ConvertToMarkdownRequestedEvent,
+  CreateNoteRequestedEvent,
   DeleteNoteRequestedEvent,
   DiscardNoteDraftRequestedEvent,
   DiscardNoteErrorRequestedEvent,
@@ -66,6 +69,7 @@ import {
   MaybeType,
   None,
   Note,
+  NoteFormat,
   NoteListState,
   NoteLoaded,
   NoteNew,
@@ -190,7 +194,7 @@ export const isMarkdownNote = (note: Note) => {
     note.state == NoteState.FailedToCreateFromTitle ||
     note.state == NoteState.FailedToCreateFromText
   ) {
-    return true;
+    return note.format == NoteFormat.Markdown;
   }
   return isMarkdownFile(note.path);
 };
@@ -332,8 +336,9 @@ export const handleRetrieveFileListSuccess = (
     try {
       const noteNew = createNewNote(
         nextId++,
-        new Date(parseInt(key)),
-        Some(newNoteDraft)
+        new Date(newNoteDraft.timestamp),
+        newNoteDraft.format,
+        Some(newNoteDraft.text)
       );
       newNotes.push(noteNew);
     } catch {
@@ -585,7 +590,7 @@ export const handleNoteRenamed = (
       };
       return [
         newState,
-        UpdateNoteDraftKey(getNoteKey(note), getNoteKey(noteLoaded), false),
+        UpdateNoteDraftOnRename(getNoteKey(note), getNoteKey(noteLoaded)),
       ];
     }
   }
@@ -874,7 +879,7 @@ export const handleEditorCurrentStateReport = (
       };
       return [
         newState,
-        UpdateNoteDraft(getNoteKey(noteUpdated), false, noteUpdated.draft),
+        UpdateExistingNoteDraft(getNoteKey(noteUpdated), noteUpdated.draft),
       ];
     }
 
@@ -900,7 +905,12 @@ export const handleEditorCurrentStateReport = (
       };
       return [
         newState,
-        UpdateNoteDraft(getNoteKey(noteUpdated), true, noteUpdated.draft),
+        UpdateNewNoteDraft(
+          getNoteKey(noteUpdated),
+          noteUpdated.lastModified.getTime(),
+          noteUpdated.format,
+          noteUpdated.draft
+        ),
       ];
     }
   }
@@ -985,13 +995,16 @@ export const handleFailedToSaveNoteText = (
 };
 
 export const handleCreateNoteRequested = (
-  state: AppStateAuthenticated
+  state: AppStateAuthenticated,
+  event: CreateNoteRequestedEvent
 ): [AppStateAuthenticated, AppCommand] => {
   if (state.noteList.state == NoteListState.Retrieved) {
     const newNote = createNewNote(
       state.noteList.lastUsedNoteId + 1,
       // TODO: this is a side effect, proper way to do it would be by creating this note in a command
+      // TODO: but this would be a pain in the ass to be honest
       new Date(),
+      event.format,
       None
     );
     console.log(newNote.lastModified.getTime());
@@ -1032,7 +1045,7 @@ export const handleNoteCreated = (
       };
       return [
         newState,
-        UpdateNoteDraftKey(getNoteKey(note), getNoteKey(noteCreated), true),
+        UpdateNoteDraftOnCreate(getNoteKey(note), getNoteKey(noteCreated)),
       ];
     }
 

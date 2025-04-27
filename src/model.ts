@@ -25,6 +25,14 @@ export const Some = <T>(value: T): MaybeSome<T> => ({
   value,
 });
 
+// Format
+
+// Do not change order, is persisted in draft storage
+export enum NoteFormat {
+  Markdown,
+  Text,
+}
+
 // Note States
 
 export enum NoteState {
@@ -206,6 +214,7 @@ export interface NoteNew {
 
   id: string;
   lastModified: Date;
+  format: NoteFormat;
   draft: Maybe<string>;
 }
 
@@ -215,6 +224,7 @@ export interface NoteCreatingFromTitle {
   id: string;
   title: string;
   lastModified: Date;
+  format: NoteFormat;
   draft: Maybe<string>;
 }
 
@@ -224,6 +234,7 @@ export interface NoteFailedToCreateFromTitle {
   id: string;
   title: string;
   lastModified: Date;
+  format: NoteFormat;
   draft: Maybe<string>;
 
   err: string;
@@ -235,6 +246,7 @@ export interface NoteCreatingFromText {
   id: string;
   text: string;
   lastModified: Date;
+  format: NoteFormat;
 }
 
 export interface NoteFailedToCreateFromText {
@@ -243,6 +255,7 @@ export interface NoteFailedToCreateFromText {
   id: string;
   text: string;
   lastModified: Date;
+  format: NoteFormat;
 
   err: string;
 }
@@ -331,9 +344,19 @@ export interface DraftKeyToTextMap {
   [key: string]: string;
 }
 
+export interface NewNoteInfo {
+  timestamp: number;
+  text: string;
+  format: NoteFormat;
+}
+
+export interface DraftKeyToNewNoteInfoMap {
+  [key: string]: NewNoteInfo;
+}
+
 export interface Drafts {
   version: number;
-  newNotes: DraftKeyToTextMap;
+  newNotes: DraftKeyToNewNoteInfoMap;
   notes: DraftKeyToTextMap;
 }
 

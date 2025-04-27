@@ -4,10 +4,12 @@ import OrbitProgressIndicator from "./OrbitProgressIndicator";
 import { memo } from "react";
 import FormatSwitch from "./FormatSwitch";
 import DraftControl from "./DraftControl";
+import NewNoteButton from "./NewNoteButton";
+import { NoteFormat } from "../model";
 
 const ControlPanel = memo(function ControlPanel(props: {
   showNew: boolean;
-  onNew: () => void;
+  onNew: (format: NoteFormat) => void;
 
   showConvertToMarkdown: boolean;
   onConvertToMarkdown: () => void;
@@ -57,10 +59,6 @@ const ControlPanel = memo(function ControlPanel(props: {
   const hasDraft = props.hasDraft;
   const onDiscardDraft = props.onDiscardDraft;
 
-  const newButtonOnClick = () => {
-    onNew();
-  };
-
   const convertToMarkdownButtonOnClick = () => {
     onConvertToMarkdown();
   };
@@ -89,11 +87,7 @@ const ControlPanel = memo(function ControlPanel(props: {
     <div className="control-panel">
       <div className="control-panel-inner">
         <div className="control-panel-left">
-          {showNew ? (
-            <button className="control-panel-button" onClick={newButtonOnClick}>
-              {uistrings.NewButtonText}
-            </button>
-          ) : null}
+          {showNew ? <NewNoteButton onNew={onNew} /> : null}
         </div>
         <div className="control-panel-right">
           {hasDraft ? <DraftControl onDiscardDraft={onDiscardDraft} /> : null}

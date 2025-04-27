@@ -1,4 +1,4 @@
-import { Drafts, Note, NoteLoading, SortingOrder } from "./model";
+import { Drafts, Note, NoteFormat, NoteLoading, SortingOrder } from "./model";
 
 export enum EventType {
   // "Never" event is never triggered in the app
@@ -173,6 +173,7 @@ export interface FailedToSaveNoteTextEvent {
 
 export interface CreateNoteRequestedEvent {
   type: EventType.CreateNoteRequested;
+  format: NoteFormat;
 }
 
 export interface NoteCreatedEvent {

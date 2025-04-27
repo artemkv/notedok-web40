@@ -15,6 +15,7 @@ import {
   NoteFailedToRename,
   NoteFailedToRestore,
   NoteFailedToSaveText,
+  NoteFormat,
   NoteLoaded,
   NoteLoading,
   NoteNew,
@@ -426,11 +427,13 @@ export const noteFailedToRestoreToDeleted = (
 export const createNewNote = (
   id: number,
   lastModified: Date,
+  format: NoteFormat,
   draft: Maybe<string>
 ): NoteNew => {
   return {
     state: NoteState.New,
     lastModified,
+    format,
     draft,
 
     id: "note_" + id.toString(),
@@ -447,6 +450,7 @@ export const noteNewToCreatingFromTitle = (
     id: note.id,
     title,
     lastModified: note.lastModified,
+    format: note.format,
     draft: note.draft,
   };
 };
@@ -477,6 +481,7 @@ export const noteCreatingFromTitleToFailedToCreateFromTitle = (
     id: note.id,
     title: note.title,
     lastModified: note.lastModified,
+    format: note.format,
     draft: note.draft,
 
     err,
@@ -492,6 +497,7 @@ export const noteFailedToCreateFromTitleToCreatingFromTitle = (
     id: note.id,
     title: note.title,
     lastModified: note.lastModified,
+    format: note.format,
     draft: note.draft,
   };
 };
@@ -505,6 +511,7 @@ export const noteFailedToCreateFromTitleToNew = (
     id: note.id,
     lastModified: note.lastModified,
     draft: note.draft,
+    format: note.format,
   };
 };
 
@@ -518,6 +525,7 @@ export const noteNewToCreatingFromText = (
     id: note.id,
     text,
     lastModified: note.lastModified,
+    format: note.format,
   };
 };
 
@@ -547,6 +555,7 @@ export const noteCreatingFromTextToFailedToCreateFromText = (
     id: note.id,
     text: note.text,
     lastModified: note.lastModified,
+    format: note.format,
 
     err,
   };
@@ -561,6 +570,7 @@ export const noteFailedToCreateFromTextToCreatingFromText = (
     id: note.id,
     text: note.text,
     lastModified: note.lastModified,
+    format: note.format,
   };
 };
 
@@ -572,6 +582,7 @@ export const noteFailedToCreateFromTextToNew = (
 
     id: note.id,
     lastModified: note.lastModified,
+    format: note.format,
     draft: None,
   };
 };

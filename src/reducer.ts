@@ -126,7 +126,7 @@ export const Reducer = (
     }
 
     if (event.type == EventType.CreateNoteRequested) {
-      return handleCreateNoteRequested(state);
+      return handleCreateNoteRequested(state, event);
     }
     if (event.type == EventType.NoteCreated) {
       return handleNoteCreated(state, event);
