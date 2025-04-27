@@ -664,11 +664,11 @@ export const handleCancelNoteEditRequested = (
   if (state.noteList.state == NoteListState.Retrieved) {
     const note = getNote(state.noteList.notes, event.noteId);
 
-    if (note && note.state == NoteState.Loaded) {
-      if (
-        state.noteList.editor.state == EditorState.EditingAsMarkdown ||
-        state.noteList.editor.state == EditorState.EditingAsPlainText
-      ) {
+    if (
+      state.noteList.editor.state == EditorState.EditingAsMarkdown ||
+      state.noteList.editor.state == EditorState.EditingAsPlainText
+    ) {
+      if (note && note.state == NoteState.Loaded) {
         const noteWithoutDraft: NoteLoaded = {
           ...note,
           draft: None,
@@ -688,6 +688,25 @@ export const handleCancelNoteEditRequested = (
           newState,
           DiscardNoteDraft(getNoteKey(noteWithoutDraft), false),
         ];
+      }
+
+      if (note && note.state == NoteState.New) {
+        const noteWithoutDraft: NoteNew = {
+          ...note,
+          draft: None,
+        };
+        const newState: AppStateAuthenticated = {
+          ...state,
+          noteList: {
+            ...state.noteList,
+            notes: replace(state.noteList.notes, noteWithoutDraft),
+            editor: {
+              state: EditorState.ReadOnly,
+              text: getEffectiveText(noteWithoutDraft),
+            },
+          },
+        };
+        return [newState, DiscardNoteDraft(getNoteKey(noteWithoutDraft), true)];
       }
     }
   }
@@ -755,14 +774,19 @@ export const handleNoteSaveTextRequested = (
           noteList: {
             ...state.noteList,
             notes: replace(state.noteList.notes, noteCreatingFromText),
-            // TODO: clear draft in local storage
             editor: {
               state: EditorState.ReadOnly,
               text: getEffectiveText(noteCreatingFromText),
             },
           },
         };
-        return [newState, CreateNewNoteWithText(noteCreatingFromText)];
+        return [
+          newState,
+          DoMany([
+            DiscardNoteDraft(getNoteKey(noteCreatingFromText), true),
+            CreateNewNoteWithText(noteCreatingFromText),
+          ]),
+        ];
       } else {
         const noteWithoutDraft: NoteNew = {
           ...note,
@@ -774,14 +798,13 @@ export const handleNoteSaveTextRequested = (
           noteList: {
             ...state.noteList,
             notes: replace(state.noteList.notes, noteWithoutDraft),
-            // TODO: clear draft in local storage
             editor: {
               state: EditorState.ReadOnly,
               text: getEffectiveText(noteWithoutDraft),
             },
           },
         };
-        return JustStateAuthenticated(newState);
+        return [newState, DiscardNoteDraft(getNoteKey(noteWithoutDraft), true)];
       }
     }
   }
@@ -1094,7 +1117,6 @@ export const handleDeleteNoteRequested = (
     }
 
     if (note && note.state == NoteState.New) {
-      // TODO: remove from local storage
       const newState: AppStateAuthenticated = {
         ...state,
         noteList: {
@@ -1106,7 +1128,7 @@ export const handleDeleteNoteRequested = (
           },
         },
       };
-      return JustStateAuthenticated(newState);
+      return [newState, DiscardNoteDraft(getNoteKey(note), true)];
     }
   }
 
