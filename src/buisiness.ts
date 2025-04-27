@@ -312,7 +312,6 @@ export const handleUserSessionCreated = (): [
   return [newState, DoMany([RetrieveFileList(), ScheduleIdTokenRefresh()])];
 };
 
-// TODO: definitely unit-test
 export const handleRetrieveFileListSuccess = (
   event: RetrieveFileListSuccessEvent
 ): [AppStateAuthenticated, AppCommand] => {
@@ -326,7 +325,7 @@ export const handleRetrieveFileListSuccess = (
   });
 
   // Restore drafts for new notes, if any
-  let nextId = notes.length + 1;
+  let nextId = notes.length;
   const newNotes = [];
   for (const key in event.drafts.newNotes) {
     const newNoteDraft = event.drafts.newNotes[key];

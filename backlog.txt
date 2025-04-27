@@ -125,7 +125,6 @@ Saving draft:
 - --Draft is also deleted when you create a new note by editing a title--
 - --When note has draft, option to convert to markdown is not available--
 
-- Test: handling of the draft while saving note fails
 
 Later versions:
 
