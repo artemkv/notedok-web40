@@ -82,12 +82,10 @@ export const UpdateNoteDraftKey = (
     } else {
       delete drafts.notes[oldKey];
     }
+    // This is either upon rename or creation of a note from title
+    // In both cases, new key is from an existing note
     if (draft) {
-      if (isNewNote) {
-        drafts.newNotes[newKey] = draft;
-      } else {
-        drafts.notes[newKey] = draft;
-      }
+      drafts.notes[newKey] = draft;
     }
     saveDrafts(drafts);
   },

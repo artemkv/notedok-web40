@@ -556,7 +556,6 @@ export const handleNoteTitleUpdated = (
             notes: replace(state.noteList.notes, noteCreatingFromTitle),
           },
         };
-        // TODO: kill the draft
         return [newState, CreateNewNoteWithTitle(noteCreatingFromTitle)];
       }
     }
@@ -1028,7 +1027,10 @@ export const handleNoteCreated = (
           notes: replace(state.noteList.notes, noteCreated),
         },
       };
-      return JustStateAuthenticated(newState);
+      return [
+        newState,
+        UpdateNoteDraftKey(getNoteKey(note), getNoteKey(noteCreated), true),
+      ];
     }
 
     if (note && note.state == NoteState.CreatingFromText) {
