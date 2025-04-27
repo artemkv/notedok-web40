@@ -260,7 +260,11 @@ export const canRestore = (note: Note) => {
 };
 
 export const canConvertToMarkdown = (note: Note) => {
-  if (note.state == NoteState.Loaded && !isMarkdownNote(note)) {
+  if (
+    note.state == NoteState.Loaded &&
+    !isMarkdownNote(note) &&
+    note.draft.type == MaybeType.None
+  ) {
     return true;
   }
   return false;
@@ -1302,7 +1306,6 @@ export const handleConvertToMarkdownRequested = (
           notes: replace(state.noteList.notes, noteConvertingToMarkdown),
         },
       };
-      // TODO: here we are losing draft
       return [newState, ConvertToMarkdown(noteConvertingToMarkdown)];
     }
   }

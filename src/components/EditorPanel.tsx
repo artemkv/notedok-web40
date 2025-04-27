@@ -50,7 +50,6 @@ const EditorPanel = memo(function EditorPanel(props: {
           showNew={true}
           onNew={onNew}
           showConvertToMarkdown={false}
-          onFormatSwitch={() => {}}
           onConvertToMarkdown={() => {}}
           showEdit={false}
           onEdit={() => {}}
@@ -65,6 +64,7 @@ const EditorPanel = memo(function EditorPanel(props: {
           showProgress={false}
           showFormatSwitch={false}
           isFormatMarkdown={false}
+          onFormatSwitch={() => {}}
           hasDraft={false}
           onDiscardDraft={() => {}}
         />
@@ -84,7 +84,6 @@ const EditorPanel = memo(function EditorPanel(props: {
           showNew={true}
           onNew={onNew}
           showConvertToMarkdown={false}
-          onFormatSwitch={() => {}}
           onConvertToMarkdown={() => {}}
           showEdit={false}
           onEdit={() => {}}
@@ -99,6 +98,7 @@ const EditorPanel = memo(function EditorPanel(props: {
           showProgress={false}
           showFormatSwitch={false}
           isFormatMarkdown={false}
+          onFormatSwitch={() => {}}
           hasDraft={false}
           onDiscardDraft={() => {}}
         />
@@ -116,7 +116,6 @@ const EditorPanel = memo(function EditorPanel(props: {
           showNew={true}
           onNew={onNew}
           showConvertToMarkdown={false}
-          onFormatSwitch={() => {}}
           onConvertToMarkdown={() => {}}
           showEdit={false}
           onEdit={() => {}}
@@ -131,6 +130,7 @@ const EditorPanel = memo(function EditorPanel(props: {
           showProgress={false}
           showFormatSwitch={false}
           isFormatMarkdown={false}
+          onFormatSwitch={() => {}}
           hasDraft={false}
           onDiscardDraft={() => {}}
         />
@@ -410,7 +410,6 @@ const EditorPanel = memo(function EditorPanel(props: {
           showConvertToMarkdown={
             canConvertToMarkdown(note) && editor.state == EditorState.ReadOnly
           }
-          onFormatSwitch={onFormatSwitch}
           onConvertToMarkdown={onConvertToMarkdown}
           showEdit={canEdit(note) && editor.state == EditorState.ReadOnly}
           onEdit={onEdit}
@@ -435,6 +434,7 @@ const EditorPanel = memo(function EditorPanel(props: {
               editor.state == EditorState.EditingAsPlainText)
           }
           isFormatMarkdown={editor.state == EditorState.EditingAsMarkdown}
+          onFormatSwitch={onFormatSwitch}
           hasDraft={hasDraft && editor.state == EditorState.ReadOnly}
           onDiscardDraft={onDiscardDraft}
         />

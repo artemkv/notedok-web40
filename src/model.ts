@@ -247,8 +247,6 @@ export interface NoteFailedToCreateFromText {
   err: string;
 }
 
-// TODO: what to do with the draft when converting? just use it? prohibit converting?
-
 export interface NoteConvertingToMarkdown {
   state: NoteState.ConvertingToMarkdown;
 

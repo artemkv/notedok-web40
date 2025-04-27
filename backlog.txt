@@ -124,8 +124,8 @@ Saving draft:
 - --Reporting the most recent changes every 3 seconds should not affect an open and active editor--
 - --Unsaved changes are preserved if the note is renamed. In that case, the unsaved changes should be re-connected with the renamed note--
 - --As soon as you request to delete a note, all the unsaved changes are lost--
-- Draft is also deleted when you create a new note by editing a title
-- When you convert to markdown, the unsaved changes are preserved, if possible
+- --Draft is also deleted when you create a new note by editing a title--
+- --When note has draft, option to convert to markdown is not available--
 
 - Test: handling of the draft while saving note fails
 
