@@ -2,6 +2,7 @@ import {
   CommandType,
   DiscardNoteDraftCommand,
   UpdateNoteDraftCommand,
+  UpdateNoteDraftKeyCommand,
 } from "../commands";
 import { Drafts, Maybe, MaybeType } from "../model";
 
@@ -61,6 +62,34 @@ export const UpdateNoteDraft = (
       }
       saveDrafts(drafts);
     }
+  },
+});
+
+export const UpdateNoteDraftKey = (
+  oldKey: string,
+  newKey: string,
+  isNewNote: boolean
+): UpdateNoteDraftKeyCommand => ({
+  type: CommandType.UpdateNoteDraftKey,
+  oldKey,
+  newKey,
+  isNewNote,
+  execute: async () => {
+    const drafts = loadDrafts();
+    const draft = isNewNote ? drafts.newNotes[oldKey] : drafts.notes[oldKey];
+    if (isNewNote) {
+      delete drafts.newNotes[oldKey];
+    } else {
+      delete drafts.notes[oldKey];
+    }
+    if (draft) {
+      if (isNewNote) {
+        drafts.newNotes[newKey] = draft;
+      } else {
+        drafts.notes[newKey] = draft;
+      }
+    }
+    saveDrafts(drafts);
   },
 });
 

@@ -119,11 +119,12 @@ Saving draft:
 - --You can discard those unsaved changes, without editing--
 - --But it you start editing, you continue with the most recent unsaved changes--
 - --This should work both in text mode and markdown mode--
-- This should work for existing note or new note (so new note should be shown in the list even if not saved)
+- --This should work for existing note or new note (so new note should be shown in the list even if not saved)--
 - --Another scenario is switching to another note while editing, in which case going back to a note should work the same--
 - --Reporting the most recent changes every 3 seconds should not affect an open and active editor--
-- Unsaved changes are preserved if the note is renamed. In that case, the unsaved changes should be re-connected with the renamed note
-- As soon as you request to delete a note, all the unsaved changes are lost
+- --Unsaved changes are preserved if the note is renamed. In that case, the unsaved changes should be re-connected with the renamed note--
+- --As soon as you request to delete a note, all the unsaved changes are lost--
+- Draft is also deleted when you create a new note by editing a title
 - When you convert to markdown, the unsaved changes are preserved, if possible
 
 - Test: handling of the draft while saving note fails

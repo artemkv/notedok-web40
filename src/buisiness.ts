@@ -1,6 +1,10 @@
 import { AppCommand, DoMany, DoNothing } from "./commands";
 import { ScheduleIdTokenRefresh, StartUserSession } from "./commands/auth";
-import { DiscardNoteDraft, UpdateNoteDraft } from "./commands/draftStorage";
+import {
+  DiscardNoteDraft,
+  UpdateNoteDraft,
+  UpdateNoteDraftKey,
+} from "./commands/draftStorage";
 import {
   ConvertToMarkdown,
   CreateNewNoteWithText,
@@ -552,6 +556,7 @@ export const handleNoteTitleUpdated = (
             notes: replace(state.noteList.notes, noteCreatingFromTitle),
           },
         };
+        // TODO: kill the draft
         return [newState, CreateNewNoteWithTitle(noteCreatingFromTitle)];
       }
     }
@@ -576,7 +581,10 @@ export const handleNoteRenamed = (
           notes: replace(state.noteList.notes, noteLoaded),
         },
       };
-      return JustStateAuthenticated(newState);
+      return [
+        newState,
+        UpdateNoteDraftKey(getNoteKey(note), getNoteKey(noteLoaded), false),
+      ];
     }
   }
 

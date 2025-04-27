@@ -28,6 +28,7 @@ export enum CommandType {
   RestoreNote,
 
   UpdateNoteDraft,
+  UpdateNoteDraftKey,
   DiscardNoteDraft,
 
   ConvertToMarkdown,
@@ -97,6 +98,13 @@ export interface UpdateNoteDraftCommand extends Command<AppEvent> {
   draft: Maybe<string>;
 }
 
+export interface UpdateNoteDraftKeyCommand extends Command<AppEvent> {
+  type: CommandType.UpdateNoteDraftKey;
+  oldKey: string;
+  newKey: string;
+  isNewNote: boolean;
+}
+
 export interface DiscardNoteDraftCommand extends Command<AppEvent> {
   type: CommandType.DiscardNoteDraft;
   key: string;
@@ -122,6 +130,7 @@ export type AppCommand =
   | DeleteNoteCommand
   | RestoreNoteCommand
   | UpdateNoteDraftCommand
+  | UpdateNoteDraftKeyCommand
   | DiscardNoteDraftCommand
   | ConvertToMarkdownCommand;
 
