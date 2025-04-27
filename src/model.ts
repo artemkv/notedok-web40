@@ -329,8 +329,14 @@ export type Editor =
 
 // Draft
 
-export interface Drafts {
+export interface DraftKeyToTextMap {
   [key: string]: string;
+}
+
+export interface Drafts {
+  version: number;
+  newNotes: DraftKeyToTextMap;
+  notes: DraftKeyToTextMap;
 }
 
 // Note List

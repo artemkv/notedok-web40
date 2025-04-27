@@ -304,30 +304,42 @@ export const handleUserSessionCreated = (): [
   return [newState, DoMany([RetrieveFileList(), ScheduleIdTokenRefresh()])];
 };
 
+// TODO: definitely unit-test
 export const handleRetrieveFileListSuccess = (
   event: RetrieveFileListSuccessEvent
 ): [AppStateAuthenticated, AppCommand] => {
+  const notes = event.fileList.map((f, idx) => {
+    const noteRef = createNewNoteRef(idx, f.fileName, f.lastModified, None);
+    // restore draft, if exists
+    if (noteRef.path in event.drafts.notes) {
+      noteRef.draft = Some(event.drafts.notes[noteRef.path]);
+    }
+    return noteRef;
+  });
+
+  // Restore drafts for new notes, if any
+  let nextId = notes.length + 1;
+  const newNotes = [];
+  for (const key in event.drafts.newNotes) {
+    const newNoteDraft = event.drafts.newNotes[key];
+    try {
+      const noteNew = createNewNote(
+        nextId++,
+        new Date(parseInt(key)),
+        Some(newNoteDraft)
+      );
+      newNotes.push(noteNew);
+    } catch {
+      // Ignore
+    }
+  }
+
   const newState: AppStateAuthenticated = {
     auth: AuthenticationStatus.Authenticated,
     noteList: {
       state: NoteListState.Retrieved,
-      lastUsedNoteId: event.fileList.length - 1,
-      notes: sort(
-        event.fileList.map((f, idx) => {
-          const noteRef = createNewNoteRef(
-            idx,
-            f.fileName,
-            f.lastModified,
-            None
-          );
-          // restore draft, if exists
-          if (noteRef.path in event.drafts) {
-            noteRef.draft = Some(event.drafts[noteRef.path]);
-          }
-          return noteRef;
-        }),
-        SortingOrder.Alphabetic
-      ),
+      lastUsedNoteId: nextId - 1,
+      notes: sort([...newNotes, ...notes], SortingOrder.Alphabetic),
       sortingOrder: SortingOrder.Alphabetic,
       selectedNoteId: "",
       searchText: "",
@@ -672,7 +684,10 @@ export const handleCancelNoteEditRequested = (
             },
           },
         };
-        return [newState, DiscardNoteDraft(getNoteKey(noteWithoutDraft))];
+        return [
+          newState,
+          DiscardNoteDraft(getNoteKey(noteWithoutDraft), false),
+        ];
       }
     }
   }
@@ -705,7 +720,7 @@ export const handleNoteSaveTextRequested = (
         return [
           newState,
           DoMany([
-            DiscardNoteDraft(getNoteKey(noteSavingText)),
+            DiscardNoteDraft(getNoteKey(noteSavingText), false),
             SaveNoteText(noteSavingText),
           ]),
         ];
@@ -725,7 +740,10 @@ export const handleNoteSaveTextRequested = (
             },
           },
         };
-        return [newState, DiscardNoteDraft(getNoteKey(noteWithoutDraft))];
+        return [
+          newState,
+          DiscardNoteDraft(getNoteKey(noteWithoutDraft), false),
+        ];
       }
     }
 
@@ -823,7 +841,7 @@ export const handleEditorCurrentStateReport = (
       };
       return [
         newState,
-        UpdateNoteDraft(getNoteKey(noteUpdated), noteUpdated.draft),
+        UpdateNoteDraft(getNoteKey(noteUpdated), false, noteUpdated.draft),
       ];
     }
 
@@ -849,7 +867,7 @@ export const handleEditorCurrentStateReport = (
       };
       return [
         newState,
-        UpdateNoteDraft(getNoteKey(noteUpdated), noteUpdated.draft),
+        UpdateNoteDraft(getNoteKey(noteUpdated), true, noteUpdated.draft),
       ];
     }
   }
@@ -880,7 +898,7 @@ export const handleDiscardNoteDraftRequested = (
             },
           },
         };
-        return [newState, DiscardNoteDraft(getNoteKey(note))];
+        return [newState, DiscardNoteDraft(getNoteKey(note), false)];
       }
 
       if (note && note.state == NoteState.New) {
@@ -899,7 +917,7 @@ export const handleDiscardNoteDraftRequested = (
             },
           },
         };
-        return [newState, DiscardNoteDraft(getNoteKey(note))];
+        return [newState, DiscardNoteDraft(getNoteKey(note), true)];
       }
     }
   }
@@ -1069,7 +1087,7 @@ export const handleDeleteNoteRequested = (
       return [
         newState,
         DoMany([
-          DiscardNoteDraft(getNoteKey(noteDeleting)),
+          DiscardNoteDraft(getNoteKey(noteDeleting), false),
           DeleteNote(noteDeleting),
         ]),
       ];

@@ -93,12 +93,14 @@ export interface RestoreNoteCommand extends Command<AppEvent> {
 export interface UpdateNoteDraftCommand extends Command<AppEvent> {
   type: CommandType.UpdateNoteDraft;
   key: string;
+  isNewNote: boolean;
   draft: Maybe<string>;
 }
 
 export interface DiscardNoteDraftCommand extends Command<AppEvent> {
   type: CommandType.DiscardNoteDraft;
   key: string;
+  isNewNote: boolean;
 }
 
 export interface ConvertToMarkdownCommand extends Command<AppEvent> {

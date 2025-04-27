@@ -6,17 +6,28 @@ import {
 import { Drafts, Maybe, MaybeType } from "../model";
 
 const draftsKey = "notedok.com/drafts";
+const draftsVersion = 1;
+
+const emptyDrafts = {
+  version: draftsVersion,
+  newNotes: {},
+  notes: {},
+};
 
 export const loadDrafts = (): Drafts => {
   const json = localStorage.getItem(draftsKey);
   if (!json) {
-    return {};
+    return emptyDrafts;
   }
   try {
-    return JSON.parse(json);
+    const drafts = JSON.parse(json);
+    if (drafts.version !== draftsVersion) {
+      return emptyDrafts;
+    }
+    return drafts;
   } catch (err) {
     console.error(`Could not restore drafts (${err})`);
-    return {};
+    return emptyDrafts;
   }
 };
 
@@ -26,29 +37,47 @@ const saveDrafts = (drafts: Drafts) => {
 
 export const UpdateNoteDraft = (
   key: string,
+  isNewNote: boolean,
   draft: Maybe<string>
 ): UpdateNoteDraftCommand => ({
   type: CommandType.UpdateNoteDraft,
   key,
+  isNewNote,
   draft,
   execute: async () => {
     const drafts = loadDrafts();
     if (draft.type == MaybeType.Some) {
-      drafts[key] = draft.value;
+      if (isNewNote) {
+        drafts.newNotes[key] = draft.value;
+      } else {
+        drafts.notes[key] = draft.value;
+      }
       saveDrafts(drafts);
     } else {
-      delete drafts[key];
+      if (isNewNote) {
+        delete drafts.newNotes[key];
+      } else {
+        delete drafts.notes[key];
+      }
       saveDrafts(drafts);
     }
   },
 });
 
-export const DiscardNoteDraft = (key: string): DiscardNoteDraftCommand => ({
+export const DiscardNoteDraft = (
+  key: string,
+  isNewNote: boolean
+): DiscardNoteDraftCommand => ({
   type: CommandType.DiscardNoteDraft,
   key,
+  isNewNote,
   execute: async () => {
     const drafts = loadDrafts();
-    delete drafts[key];
+    if (isNewNote) {
+      delete drafts.newNotes[key];
+    } else {
+      delete drafts.notes[key];
+    }
     saveDrafts(drafts);
   },
 });
