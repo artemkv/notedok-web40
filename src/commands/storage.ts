@@ -1,6 +1,7 @@
 import {
   CommandType,
   ConvertToMarkdownCommand,
+  ConvertToTextCommand,
   CreateNewNoteWithTextCommand,
   CreateNewNoteWithTitleCommand,
   DeleteNoteCommand,
@@ -18,6 +19,7 @@ import {
 import { EventType } from "../events";
 import {
   NoteConvertingToMarkdown,
+  NoteConvertingToText,
   NoteCreatingFromText,
   NoteCreatingFromTitle,
   NoteDeleting,
@@ -357,8 +359,8 @@ export const ConvertToMarkdown = (
   note,
   execute: async (dispatch) => {
     try {
-      const newPath = await convertFileName(note);
-      const newText = await convertContent(note, newPath);
+      const newPath = await convertFileNameToMarkdown(note);
+      const newText = await convertContentToMarkdown(note, newPath);
 
       dispatch({
         type: EventType.NoteConvertedToMarkdown,
@@ -376,7 +378,7 @@ export const ConvertToMarkdown = (
   },
 });
 
-const convertFileName = async (note: NoteConvertingToMarkdown) => {
+const convertFileNameToMarkdown = async (note: NoteConvertingToMarkdown) => {
   const newPath = generatePathFromTitleMd(note.title, note.title === "");
   try {
     await renameFile(note.path, newPath);
@@ -393,11 +395,62 @@ const convertFileName = async (note: NoteConvertingToMarkdown) => {
   }
 };
 
-const convertContent = async (
+const convertContentToMarkdown = async (
   note: NoteConvertingToMarkdown,
   newPath: string
 ) => {
   const md = wiki2md(note.text);
   await putFile(newPath, encode(md));
   return md;
+};
+
+export const ConvertToText = (
+  note: NoteConvertingToText
+): ConvertToTextCommand => ({
+  type: CommandType.ConvertToText,
+  note,
+  execute: async (dispatch) => {
+    try {
+      const newPath = await convertFileNameToText(note);
+      const newText = await convertContentToText(note, newPath);
+
+      dispatch({
+        type: EventType.NoteConvertedToText,
+        noteId: note.id,
+        newPath,
+        newText,
+      });
+    } catch (err) {
+      dispatch({
+        type: EventType.NoteFailedToConvertToText,
+        noteId: note.id,
+        err: `${err}`,
+      });
+    }
+  },
+});
+
+const convertFileNameToText = async (note: NoteConvertingToText) => {
+  const newPath = generatePathFromTitleText(note.title, note.title === "");
+  try {
+    await renameFile(note.path, newPath);
+    return newPath;
+  } catch (err) {
+    if ((err as ApiError).statusCode === 409) {
+      // Regenerate path from title, this time focing uniqueness
+      const newPath = generatePathFromTitleText(note.title, true);
+      await renameFile(note.path, newPath);
+      return newPath;
+    } else {
+      throw err;
+    }
+  }
+};
+
+const convertContentToText = async (
+  note: NoteConvertingToText,
+  newPath: string
+) => {
+  await putFile(newPath, encode(note.text));
+  return note.text;
 };

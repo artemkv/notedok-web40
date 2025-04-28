@@ -1,6 +1,7 @@
 import { formatWiki } from "./formatting";
 
 // This is all legacy code to render wiki-formatted code as HTML
+// TODO: Since now I fully embrace plain text (.txt) notes, maybe I should review this
 
 export const htmlEscape = (unsafe: string): string => {
   let safe = String(unsafe);

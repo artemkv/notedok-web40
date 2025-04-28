@@ -3,6 +3,7 @@ import { Command } from "./hooks/useReducer";
 import {
   Maybe,
   NoteConvertingToMarkdown,
+  NoteConvertingToText,
   NoteCreatingFromText,
   NoteCreatingFromTitle,
   NoteDeleting,
@@ -35,6 +36,7 @@ export enum CommandType {
   DiscardNoteDraft,
 
   ConvertToMarkdown,
+  ConvertToText,
 }
 
 export interface DoNothingCommand extends Command<AppEvent> {
@@ -131,6 +133,11 @@ export interface ConvertToMarkdownCommand extends Command<AppEvent> {
   note: NoteConvertingToMarkdown;
 }
 
+export interface ConvertToTextCommand extends Command<AppEvent> {
+  type: CommandType.ConvertToText;
+  note: NoteConvertingToText;
+}
+
 export type AppCommand =
   | DoNothingCommand
   | DoManyCommand
@@ -149,7 +156,8 @@ export type AppCommand =
   | UpdateNoteDraftOnRenameCommand
   | UpdateNoteDraftOnCreateCommand
   | DiscardNoteDraftCommand
-  | ConvertToMarkdownCommand;
+  | ConvertToMarkdownCommand
+  | ConvertToTextCommand;
 
 export const DoNothing: DoNothingCommand = {
   type: CommandType.DoNothing,

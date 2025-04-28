@@ -1,6 +1,5 @@
 // This is re-using legacy code to make the best effor of converting to md
-// I am not going to review it, as I am moving to md support
-// This is not going to be used for any newly created notes
+// TODO: Since now I fully embrace plain text (.txt) notes, maybe I should review this
 export const wiki2md = (wiki: string) => {
   const WHITESPACE = /^\s$/;
   const NEWLINE = /^\n$/;

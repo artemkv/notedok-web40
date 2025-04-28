@@ -15,6 +15,7 @@ import { Dispatch } from "../hooks/useReducer";
 import { AppEvent, EventType } from "../events";
 import {
   canConvertToMarkdown,
+  canConvertToText,
   canDelete,
   canEdit,
   canRestore,
@@ -59,6 +60,8 @@ const EditorPanel = memo(function EditorPanel(props: {
           onNew={onNew}
           showConvertToMarkdown={false}
           onConvertToMarkdown={() => {}}
+          showConvertToText={false}
+          onConvertToText={() => {}}
           showEdit={false}
           onEdit={() => {}}
           showSave={false}
@@ -84,7 +87,8 @@ const EditorPanel = memo(function EditorPanel(props: {
   if (
     note.state == NoteState.Ref ||
     note.state == NoteState.Loading ||
-    note.state == NoteState.ConvertingToMarkdown
+    note.state == NoteState.ConvertingToMarkdown ||
+    note.state == NoteState.ConvertingToText
   ) {
     return (
       <>
@@ -93,6 +97,8 @@ const EditorPanel = memo(function EditorPanel(props: {
           onNew={onNew}
           showConvertToMarkdown={false}
           onConvertToMarkdown={() => {}}
+          showConvertToText={false}
+          onConvertToText={() => {}}
           showEdit={false}
           onEdit={() => {}}
           showSave={false}
@@ -125,6 +131,8 @@ const EditorPanel = memo(function EditorPanel(props: {
           onNew={onNew}
           showConvertToMarkdown={false}
           onConvertToMarkdown={() => {}}
+          showConvertToText={false}
+          onConvertToText={() => {}}
           showEdit={false}
           onEdit={() => {}}
           showSave={false}
@@ -150,6 +158,13 @@ const EditorPanel = memo(function EditorPanel(props: {
   const onConvertToMarkdown = () => {
     dispatch({
       type: EventType.ConvertToMarkdownRequested,
+      noteId: note.id,
+    });
+  };
+
+  const onConvertToText = () => {
+    dispatch({
+      type: EventType.ConvertToTextRequested,
       noteId: note.id,
     });
   };
@@ -391,7 +406,8 @@ const EditorPanel = memo(function EditorPanel(props: {
     note.state == NoteState.Deleted ||
     note.state == NoteState.Restoring ||
     note.state == NoteState.FailedToRestore ||
-    note.state == NoteState.FailedToConvertToMarkdown
+    note.state == NoteState.FailedToConvertToMarkdown ||
+    note.state == NoteState.FailedToConvertToText
   ) {
     const [hasError, error] = (() => {
       if (
@@ -401,7 +417,8 @@ const EditorPanel = memo(function EditorPanel(props: {
         note.state == NoteState.FailedToSaveText ||
         note.state == NoteState.FailedToDelete ||
         note.state == NoteState.FailedToRestore ||
-        note.state == NoteState.FailedToConvertToMarkdown
+        note.state == NoteState.FailedToConvertToMarkdown ||
+        note.state == NoteState.FailedToConvertToText
       ) {
         return [true, note.err];
       }
@@ -419,6 +436,10 @@ const EditorPanel = memo(function EditorPanel(props: {
             canConvertToMarkdown(note) && editor.state == EditorState.ReadOnly
           }
           onConvertToMarkdown={onConvertToMarkdown}
+          showConvertToText={
+            canConvertToText(note) && editor.state == EditorState.ReadOnly
+          }
+          onConvertToText={onConvertToText}
           showEdit={canEdit(note) && editor.state == EditorState.ReadOnly}
           onEdit={onEdit}
           showSave={

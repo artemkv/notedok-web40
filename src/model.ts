@@ -56,6 +56,8 @@ export enum NoteState {
   FailedToCreateFromText,
   ConvertingToMarkdown,
   FailedToConvertToMarkdown,
+  ConvertingToText,
+  FailedToConvertToText,
 }
 
 export interface NoteRef {
@@ -282,6 +284,28 @@ export interface NoteFailedToConvertToMarkdown {
   err: string;
 }
 
+export interface NoteConvertingToText {
+  state: NoteState.ConvertingToText;
+
+  id: string;
+  path: string;
+  title: string;
+  text: string;
+  lastModified: Date;
+}
+
+export interface NoteFailedToConvertToText {
+  state: NoteState.FailedToConvertToText;
+
+  id: string;
+  path: string;
+  title: string;
+  text: string;
+  lastModified: Date;
+
+  err: string;
+}
+
 export type Note =
   | NoteRef
   | NoteLoading
@@ -302,7 +326,9 @@ export type Note =
   | NoteCreatingFromText
   | NoteFailedToCreateFromText
   | NoteConvertingToMarkdown
-  | NoteFailedToConvertToMarkdown;
+  | NoteFailedToConvertToMarkdown
+  | NoteConvertingToText
+  | NoteFailedToConvertToText;
 
 // Editor
 

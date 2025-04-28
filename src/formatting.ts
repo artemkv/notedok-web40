@@ -1,5 +1,5 @@
-// This is legacy code, I am not going to review it, as I am moving to md support
-// This is not going to be used for any newly created notes
+// This is legacy code, ported as quickly as possible
+// TODO: Since now I fully embrace plain text (.txt) notes, maybe I should review this
 export const formatWiki = (wiki: string) => {
   const WHITESPACE = /^\s$/;
   const NEWLINE = /^\n$/;

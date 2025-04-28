@@ -14,6 +14,7 @@ const uistrings = {
   RestoreButtonText: "Restore",
   SearchTextBoxPlaceholder: "Search in titles",
   ConvertToMarkdownButtonText: "→.md",
+  ConvertToTextButtonText: "→.txt",
   AsTextButtonText: "Text",
   AsMarkdownButtonText: "Markdown",
   DraftText: "Unsaved Draft",

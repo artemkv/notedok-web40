@@ -52,6 +52,10 @@ export enum EventType {
   NoteConvertedToMarkdown,
   NoteFailedToConvertToMarkdown,
 
+  ConvertToTextRequested,
+  NoteConvertedToText,
+  NoteFailedToConvertToText,
+
   SwitchEditorToMarkdownRequested,
   SwitchEditorToTextRequested,
 
@@ -261,6 +265,24 @@ export interface NoteFailedToConvertToMarkdownEvent {
   err: string;
 }
 
+export interface ConvertToTextRequestedEvent {
+  type: EventType.ConvertToTextRequested;
+  noteId: string;
+}
+
+export interface NoteConvertedToTextEvent {
+  type: EventType.NoteConvertedToText;
+  noteId: string;
+  newPath: string;
+  newText: string;
+}
+
+export interface NoteFailedToConvertToTextEvent {
+  type: EventType.NoteFailedToConvertToText;
+  noteId: string;
+  err: string;
+}
+
 export interface SwitchEditorToMarkdownRequestedEvent {
   type: EventType.SwitchEditorToMarkdownRequested;
   text: string;
@@ -318,6 +340,9 @@ export type AppEvent =
   | ConvertToMarkdownRequestedEvent
   | NoteConvertedToMarkdownEvent
   | NoteFailedToConvertToMarkdownEvent
+  | ConvertToTextRequestedEvent
+  | NoteConvertedToTextEvent
+  | NoteFailedToConvertToTextEvent
   | SwitchEditorToMarkdownRequestedEvent
   | SwitchEditorToTextRequestedEvent
   | RetryNoteErrorRequestedEvent

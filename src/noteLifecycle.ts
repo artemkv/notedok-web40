@@ -3,11 +3,13 @@ import {
   Maybe,
   None,
   NoteConvertingToMarkdown,
+  NoteConvertingToText,
   NoteCreatingFromText,
   NoteCreatingFromTitle,
   NoteDeleted,
   NoteDeleting,
   NoteFailedToConvertToMarkdown,
+  NoteFailedToConvertToText,
   NoteFailedToCreateFromText,
   NoteFailedToCreateFromTitle,
   NoteFailedToDelete,
@@ -651,6 +653,83 @@ export const noteFailedToConvertToMarkdownToConvertingToMarkdown = (
 
 export const noteFailedToConvertToMarkdownToLoaded = (
   note: NoteFailedToConvertToMarkdown
+): NoteLoaded => {
+  return {
+    state: NoteState.Loaded,
+
+    id: note.id,
+    path: note.path,
+    title: note.title,
+    text: note.text,
+    lastModified: note.lastModified,
+    draft: None,
+  };
+};
+
+export const noteLoadedToConvertingToText = (
+  note: NoteLoaded
+): NoteConvertingToText => {
+  return {
+    state: NoteState.ConvertingToText,
+
+    id: note.id,
+    path: note.path,
+    title: note.title,
+    text: note.text,
+    lastModified: note.lastModified,
+  };
+};
+
+export const noteConvertingToTextToFailedToConvertToText = (
+  note: NoteConvertingToText,
+  err: string
+): NoteFailedToConvertToText => {
+  return {
+    state: NoteState.FailedToConvertToText,
+
+    id: note.id,
+    path: note.path,
+    title: note.title,
+    text: note.text,
+    lastModified: note.lastModified,
+
+    err,
+  };
+};
+
+export const noteConvertingToTextToLoaded = (
+  note: NoteConvertingToText,
+  newPath: string,
+  newText: string
+): NoteLoaded => {
+  return {
+    state: NoteState.Loaded,
+
+    id: note.id,
+    path: newPath,
+    title: getTitleFromPath(newPath),
+    text: newText,
+    lastModified: note.lastModified,
+    draft: None,
+  };
+};
+
+export const noteFailedToConvertToTextToConvertingToText = (
+  note: NoteFailedToConvertToText
+): NoteConvertingToText => {
+  return {
+    state: NoteState.ConvertingToText,
+
+    id: note.id,
+    path: note.path,
+    title: note.title,
+    text: note.text,
+    lastModified: note.lastModified,
+  };
+};
+
+export const noteFailedToConvertToTextToLoaded = (
+  note: NoteFailedToConvertToText
 ): NoteLoaded => {
   return {
     state: NoteState.Loaded,

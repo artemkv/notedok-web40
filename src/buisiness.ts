@@ -9,6 +9,7 @@ import {
 } from "./commands/draftStorage";
 import {
   ConvertToMarkdown,
+  ConvertToText,
   CreateNewNoteWithText,
   CreateNewNoteWithTitle,
   DeleteNote,
@@ -22,6 +23,7 @@ import { isMarkdownFile } from "./conversion";
 import {
   CancelNoteEditRequestedEvent,
   ConvertToMarkdownRequestedEvent,
+  ConvertToTextRequestedEvent,
   CreateNoteRequestedEvent,
   DeleteNoteRequestedEvent,
   DiscardNoteDraftRequestedEvent,
@@ -38,9 +40,11 @@ import {
   FailedToSaveNoteTextEvent,
   LoadNoteTextSuccessEvent,
   NoteConvertedToMarkdownEvent,
+  NoteConvertedToTextEvent,
   NoteCreatedEvent,
   NoteDeletedEvent,
   NoteFailedToConvertToMarkdownEvent,
+  NoteFailedToConvertToTextEvent,
   NoteRenamedEvent,
   NoteRestoredEvent,
   NoteRestoredOnNewPathEvent,
@@ -82,6 +86,8 @@ import {
   createNewNoteRef,
   noteConvertingToMarkdownToFailedToConvertToMarkdown,
   noteConvertingToMarkdownToLoaded,
+  noteConvertingToTextToFailedToConvertToText,
+  noteConvertingToTextToLoaded,
   noteCreatingFromTextToFailedToCreateFromText,
   noteCreatingFromTextToLoaded,
   noteCreatingFromTitleToFailedToCreateFromTitle,
@@ -91,6 +97,8 @@ import {
   noteDeletingToFailedToDelete,
   noteFailedToConvertToMarkdownToConvertingToMarkdown,
   noteFailedToConvertToMarkdownToLoaded,
+  noteFailedToConvertToTextToConvertingToText,
+  noteFailedToConvertToTextToLoaded,
   noteFailedToCreateFromTextToCreatingFromText,
   noteFailedToCreateFromTextToNew,
   noteFailedToCreateFromTitleToCreatingFromTitle,
@@ -105,6 +113,7 @@ import {
   noteFailedToSaveTextToLoaded,
   noteFailedToSaveTextToSavingText,
   noteLoadedToConvertingToMarkdown,
+  noteLoadedToConvertingToText,
   noteLoadedToDeleting,
   noteLoadedToRenaming,
   noteLoadedToSavingText,
@@ -267,6 +276,17 @@ export const canConvertToMarkdown = (note: Note) => {
   if (
     note.state == NoteState.Loaded &&
     !isMarkdownNote(note) &&
+    note.draft.type == MaybeType.None
+  ) {
+    return true;
+  }
+  return false;
+};
+
+export const canConvertToText = (note: Note) => {
+  if (
+    note.state == NoteState.Loaded &&
+    isMarkdownNote(note) &&
     note.draft.type == MaybeType.None
   ) {
     return true;
@@ -1376,6 +1396,80 @@ export const handleNoteFailedToConvertToMarkdown = (
   return JustStateAuthenticated(state);
 };
 
+export const handleConvertToTextRequested = (
+  state: AppStateAuthenticated,
+  event: ConvertToTextRequestedEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const note = getNote(state.noteList.notes, event.noteId);
+
+    if (note && note.state == NoteState.Loaded && isMarkdownNote(note)) {
+      const noteConvertingToText = noteLoadedToConvertingToText(note);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteConvertingToText),
+        },
+      };
+      return [newState, ConvertToText(noteConvertingToText)];
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+export const handleNoteConvertedToText = (
+  state: AppStateAuthenticated,
+  event: NoteConvertedToTextEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const note = getNote(state.noteList.notes, event.noteId);
+
+    if (note && note.state == NoteState.ConvertingToText) {
+      const noteLoaded = noteConvertingToTextToLoaded(
+        note,
+        event.newPath,
+        event.newText
+      );
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteLoaded),
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
+export const handleNoteFailedToConvertToText = (
+  state: AppStateAuthenticated,
+  event: NoteFailedToConvertToTextEvent
+): [AppStateAuthenticated, AppCommand] => {
+  if (state.noteList.state == NoteListState.Retrieved) {
+    const note = getNote(state.noteList.notes, event.noteId);
+
+    if (note && note.state == NoteState.ConvertingToText) {
+      const noteFailedToConvertToText =
+        noteConvertingToTextToFailedToConvertToText(note, event.err);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteFailedToConvertToText),
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+  }
+
+  return JustStateAuthenticated(state);
+};
+
 export const handleSwitchEditorToMarkdownRequested = (
   state: AppStateAuthenticated,
   event: SwitchEditorToMarkdownRequestedEvent
@@ -1509,6 +1603,18 @@ export const handleRetryNoteErrorRequested = (
       };
       return [newState, ConvertToMarkdown(noteConvertingToMarkdown)];
     }
+    if (note && note.state == NoteState.FailedToConvertToText) {
+      const noteConvertingToText =
+        noteFailedToConvertToTextToConvertingToText(note);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteConvertingToText),
+        },
+      };
+      return [newState, ConvertToText(noteConvertingToText)];
+    }
   }
 
   return JustStateAuthenticated(state);
@@ -1589,6 +1695,17 @@ export const handleNoteDiscardNoteErrorRequested = (
     }
     if (note && note.state == NoteState.FailedToConvertToMarkdown) {
       const noteLoaded = noteFailedToConvertToMarkdownToLoaded(note);
+      const newState: AppStateAuthenticated = {
+        ...state,
+        noteList: {
+          ...state.noteList,
+          notes: replace(state.noteList.notes, noteLoaded),
+        },
+      };
+      return JustStateAuthenticated(newState);
+    }
+    if (note && note.state == NoteState.FailedToConvertToText) {
+      const noteLoaded = noteFailedToConvertToTextToLoaded(note);
       const newState: AppStateAuthenticated = {
         ...state,
         noteList: {

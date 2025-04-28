@@ -27,7 +27,8 @@ const NoteListItem = memo(function NoteListItem(props: {
       note.state == NoteState.Renaming ||
       note.state == NoteState.Deleting ||
       note.state == NoteState.Restoring ||
-      note.state == NoteState.ConvertingToMarkdown
+      note.state == NoteState.ConvertingToMarkdown ||
+      note.state == NoteState.ConvertingToText
     ) {
       return true;
     }
@@ -43,7 +44,8 @@ const NoteListItem = memo(function NoteListItem(props: {
       note.state == NoteState.FailedToSaveText ||
       note.state == NoteState.FailedToDelete ||
       note.state == NoteState.FailedToRestore ||
-      note.state == NoteState.FailedToConvertToMarkdown
+      note.state == NoteState.FailedToConvertToMarkdown ||
+      note.state == NoteState.FailedToConvertToText
     ) {
       return [true, note.err];
     }

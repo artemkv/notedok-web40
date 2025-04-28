@@ -135,35 +135,29 @@ V 1.4 Allow creating text notes
 - --When command is triggered to create note from text or title, it uses the flag--
 - --New note should be recognized by the editor to be in a correct format--
 - --Draft should remember the format it was saved in--
-
-Lower priority
-- Allow conversion to text from markdown (content stays as is, only for existing note)
-- Re-think how the format is indicated in UI
+- --Allow conversion to text from markdown (content stays as is, only for existing note)--
 
 
 Later versions:
 
 - make layout responsive and shown correctly on mobile
 - use ems/rems?
-- make sure UI is accessible with keyboard
 - some note text doesn't wrap when browser width gets smaller (ai_general_methods). See why
 - bring back autosuggest (and consider react-friendly library, but only if it is worth it)
 - editor panel with buttons for formatting
 - sign out
-- title field autocompletes by chrome, it's annoying
-- auto-save draft every 3 seconds, if there are changes
 - auto-focus on title when note selected? not sure
 - auto-focus on text when edit is clicked? (doesn't seem to be easy or possible)
 - re-order notes when filtering
-- show recent notes in their own section when more than 10 notes visible, ordered by date, latest first
-- show new notes in their own section
 - maybe tags could be in blue in the note list titles?
 - otherwise, maybe parts of the text that match the search could be in blue
 - try to keep unsaved changes when error happened saving them, but then was discarded by user. Go back to edit instead?
-- convert markdown back to text (what to do with formatting?)?
-- allow to create notes in .txt or .md?
+- Re-think how the format is indicated in UI
+- make sure UI is accessible with keyboard
+- during format conversion, if you error after rename but before save, and retry, file gets duplicated
 
 Not sure if possible:
 
+- Title/filter field autocomplete by chrome, it's annoying. But this is done on purpose by Google
 - Text placeholder for an existing and new note is "No text"
 - You can cancel md editing by clicking `Esc`
