@@ -7,6 +7,7 @@ import {
   UpdateNoteDraftOnCreate,
   UpdateNoteDraftOnRename,
 } from "./commands/draftStorage";
+import { SaveSortingOrder } from "./commands/preferencesStorage";
 import {
   ConvertToMarkdown,
   ConvertToText,
@@ -371,8 +372,8 @@ export const handleRetrieveFileListSuccess = (
     noteList: {
       state: NoteListState.Retrieved,
       lastUsedNoteId: nextId - 1,
-      notes: sort([...newNotes, ...notes], SortingOrder.Alphabetic),
-      sortingOrder: SortingOrder.Alphabetic,
+      notes: sort([...newNotes, ...notes], event.prefs.sortingOrder),
+      sortingOrder: event.prefs.sortingOrder,
       selectedNoteId: "",
       searchText: "",
       editor: { state: EditorState.Inactive },
@@ -425,7 +426,7 @@ export const handleSortingOrderUpdated = (
         sortingOrder: event.sortingOrder,
       },
     };
-    return JustStateAuthenticated(newState);
+    return [newState, SaveSortingOrder(event.sortingOrder)];
   }
 
   return JustStateAuthenticated(state);

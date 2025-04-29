@@ -12,6 +12,7 @@ import {
   NoteRenaming,
   NoteRestoring,
   NoteSavingText,
+  SortingOrder,
 } from "./model";
 
 export enum CommandType {
@@ -37,6 +38,8 @@ export enum CommandType {
 
   ConvertToMarkdown,
   ConvertToText,
+
+  SaveSortingOrder,
 }
 
 export interface DoNothingCommand extends Command<AppEvent> {
@@ -138,6 +141,11 @@ export interface ConvertToTextCommand extends Command<AppEvent> {
   note: NoteConvertingToText;
 }
 
+export interface SaveSortingOrderCommand extends Command<AppEvent> {
+  type: CommandType.SaveSortingOrder;
+  sortingOrder: SortingOrder;
+}
+
 export type AppCommand =
   | DoNothingCommand
   | DoManyCommand
@@ -157,7 +165,8 @@ export type AppCommand =
   | UpdateNoteDraftOnCreateCommand
   | DiscardNoteDraftCommand
   | ConvertToMarkdownCommand
-  | ConvertToTextCommand;
+  | ConvertToTextCommand
+  | SaveSortingOrderCommand;
 
 export const DoNothing: DoNothingCommand = {
   type: CommandType.DoNothing,

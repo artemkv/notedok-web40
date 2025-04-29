@@ -40,6 +40,7 @@ import {
 } from "../sessionapi";
 import { wiki2md } from "../wikitomd";
 import { loadDrafts } from "./draftStorage";
+import { loadPrefs } from "./preferencesStorage";
 
 interface FileData {
   fileName: string;
@@ -93,8 +94,9 @@ export const RetrieveFileList = (): RetrieveFileListCommand => ({
         files = [...files, ...mapToFiles(getFilesResponse.files)];
       }
 
-      // Combine with drafts here for simplicity
+      // Combine with drafts/prefs here for simplicity
       const drafts = loadDrafts();
+      const prefs = loadPrefs();
 
       dispatch({
         type: EventType.RetrieveFileListSuccess,
@@ -103,6 +105,7 @@ export const RetrieveFileList = (): RetrieveFileListCommand => ({
           lastModified: f.lastModified,
         })),
         drafts,
+        prefs,
       });
     } catch (err) {
       dispatch({

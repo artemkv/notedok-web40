@@ -386,8 +386,16 @@ export interface Drafts {
   notes: DraftKeyToTextMap;
 }
 
+// Preferences
+
+export interface Prefs {
+  version: number;
+  sortingOrder: SortingOrder;
+}
+
 // Note List
 
+// Do not change order, is persisted in draft storage
 export enum SortingOrder {
   Alphabetic,
   MostRecentFirst,
